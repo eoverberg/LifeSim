@@ -14,10 +14,10 @@ router.post('/:userName', (req, res) => {
     try{
    
     console.log(userName);
-    avatar.mv(path.join(".\\assets\\", avatar.name)); //send incoming file to backend assets folder
+    avatar.mv(path.join("./assets/", avatar.name)); //send incoming file to backend assets folder
     //parses data and sends to frontend assets folder
-    fs.readFile(path.join(".\\assets\\", avatar.name), 'utf8',(error, numbers) => {
-        xmlParser(numbers, path.join("..\\frontend\\src\\assets\\", `${userName}.xml`) );
+    fs.readFile(path.join("./assets/", avatar.name), 'utf8',(error, numbers) => {
+        xmlParser(numbers, path.join("../frontend/src/assets/", `${userName}.xml`) );
     });
     
     res.status(200).json({message: 'ok' });

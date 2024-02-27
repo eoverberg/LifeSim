@@ -1,12 +1,9 @@
-import App from "../App.js"
-import Canvas from "../Canvas.js";
-
+import Navbar from "../Navbar.js";
 const Student = () => {
 
     return (
         <>
-        <App /> 
-        <Canvas />
+        <Navbar/>
         </>
     );
 };

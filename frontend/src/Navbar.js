@@ -6,7 +6,7 @@ const Navbar = () => {
 
   function changeHandle(){
     const name = dropdown_menu.current.value;
-    window.location.href = `./${name}`;
+    window.location.href = `./Student/${name}`;
   }
 
   useEffect(() =>{

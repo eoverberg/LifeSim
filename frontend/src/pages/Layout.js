@@ -1,9 +1,10 @@
 import {Outlet, Link} from "react-router-dom";
-import Navbar from "../Navbar";
 const Layout = () => {
     return (
         <>
-        <Navbar/>
+        <Link to ="Instructor">Instructor</Link><p></p>
+        <Link to ="Review">TopScores</Link><p></p>
+        <Link to ="Student">Student</Link>        
         <Outlet/>
         </>
     )

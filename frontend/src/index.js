@@ -9,12 +9,12 @@ import Navbar from './Navbar.js'; //student selector
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
-  <React.StrictMode>
+  <div>
     <Navbar/>
     <App /> 
     <Canvas />
     <UserInput2/>
-  </React.StrictMode>
+ </div>
 );
 
-
+ // <React.StrictMode>  </React.StrictMode>

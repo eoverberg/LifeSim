@@ -28,12 +28,12 @@ router.post('/update/:userName', (req, res) => {
 //
 router.post('/updateRoster', (req, res) => {
     try{
-    fs.readFile(path.join("./assets/", "roster.txt"), 'utf8',(students, error) => {    
+    fs.readFile(path.join("./assets/", "roster.txt"), 'utf8',( error, students) => {    
     res.send(students);
-    res.status(200).json({message: 'ok' });
+    //res.status(200).json({message: 'ok' });
 });
     }catch (e) {
-        res.status(500).json({message: e.message });
+       //res.status(500).json({message: e.message });
     }
 
 })

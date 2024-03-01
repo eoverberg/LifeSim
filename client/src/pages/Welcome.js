@@ -1,5 +1,7 @@
 const Welcome = () => {
-    return (<h><p>Put a fancy welcome thing here</p></h>);
+    
+    localStorage.clear()
+    return (<h1><p>Put a fancy welcome thing here</p></h1>);
  
  };
  

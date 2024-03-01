@@ -1,5 +1,5 @@
 import { useLocalStorage } from "../components/useLocalStorage";
-import UpdateRoster from "../components/updateRoster.js";
+import UpdateRoster from "../components/UpdateRoster.js";
 import StudentSelection from "../components/StudentSelection.js";
 
 const StudentInitial = () => {

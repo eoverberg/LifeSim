@@ -55,14 +55,16 @@ router.post('/nextUpdate/:userName/:userMod/:fileName', (req, res) => {
     } 
 });
 
+//
 //initial file upload
-router.post('/:userName/:userMod', (req, res) => {
+router.post('/intialStore/:userName/:userMod', (req, res) => {
     const userName = req.params.userName;
     const userMod = req.params.userMod;
     const { avatar } = req.files;
     
     try{
         console.log(userName);
+        console.log(avatar.name);
         const nam = userMod + avatar.name;
         let pName = path.join('./assets', nam );
         console.log(pName);
@@ -71,7 +73,7 @@ router.post('/:userName/:userMod', (req, res) => {
                 console.log("Error Found: ", err);
             }else{
                 console.log("\nFile Contents of copied_file:");
-                initialFileParser(fs.readFileSync(pName, "utf8"), path.join("../frontend/src/assets/Student/", `${userName}.xml`) );
+                initialFileParser(fs.readFileSync(pName, "utf8"), path.join("./assets/", `${userName}${userMod}.txt`) );
                 res.status(200).json({message: 'ok' });  
             }
         });  
@@ -79,14 +81,25 @@ router.post('/:userName/:userMod', (req, res) => {
         res.status(500).json({message: e.message });
     } 
 
-})
+});
 
-//  delete_extra(nam);
-// function delete_extra(file_name){
-//     fs.readdirSync('./assets').forEach(file => {
-//         if (file!==file_name || file !== 'LifeSimulation01.xml'){
-//         fs.rm(file);}
-//     });
-// };
+//
+//
+router.post('/getData/:fileName', (req, res) => {
+    const fileName = req.params.fileName;
+       
+    try{
+        let pName = path.join('./assets/', `${fileName}.txt`);
+        console.log(pName);
+        fs.readFile(pName, 'utf8', (error, fileText)=>{
+            console.log(fileText);
+            res.send(fileText);
+        });
+       
+    }catch (e) {
+        //add error handling
+    } 
+        
+});
 
 module.exports = router;

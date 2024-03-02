@@ -26,7 +26,7 @@ router.post('/update/:userName', (req, res) => {
 
 //
 //
-router.post('/updateRoster', (req, res) => {
+router.post('/getRoster', (req, res) => {
     try{
     fs.readFile(path.join("./assets/", "roster.txt"), 'utf8',( error, students) => {    
     res.send(students);
@@ -37,6 +37,22 @@ router.post('/updateRoster', (req, res) => {
     }
 
 })
+
+//
+//
+router.post('/setRoster/:roster', (req, res) => {
+    const roster = req.params.roster;
+    try{
+        fs.writeFile("./assets/roster.txt", roster, (err) => {
+            if (err) throw err;
+            console.log(`${roster}`);
+          });
+    }catch (e) {
+       //res.status(500).json({message: e.message });
+    }
+
+})
+
 
 //
 //
@@ -92,7 +108,6 @@ router.post('/getData/:fileName', (req, res) => {
         let pName = path.join('./assets/', `${fileName}.txt`);
         console.log(pName);
         fs.readFile(pName, 'utf8', (error, fileText)=>{
-            console.log(fileText);
             res.send(fileText);
         });
        

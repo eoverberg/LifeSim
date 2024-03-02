@@ -1,57 +1,57 @@
-function seek(character, target) {
-    let desiredVelocity = subtractVectors(target.position, character.position);
+function seek(entity, target) {
+    let desiredVelocity = subtractVectors(target.position, entity.position);
     desiredVelocity = normalize(desiredVelocity);
-    desiredVelocity = multiplyVector(desiredVelocity, character.maxSpeed);
+    desiredVelocity = multiplyVector(desiredVelocity, entity.maxSpeed);
     
-    let steeringForce = subtractVectors(desiredVelocity, character.velocity);
+    let steeringForce = subtractVectors(desiredVelocity, entity.velocity);
     return steeringForce;
 }
 
-function flee(character, target) {
-    // Calculate the vector from the character to the target
-    let desiredVelocity = subtractVectors(character.position, target.position);
+function flee(entity, target) {
+    // Calculate the vector from the entity to the target
+    let desiredVelocity = subtractVectors(entity.position, target.position);
     desiredVelocity = normalize(desiredVelocity); // Normalize to get the direction
-    desiredVelocity = multiplyVector(desiredVelocity, character.maxSpeed); // Scale to maximum speed
+    desiredVelocity = multiplyVector(desiredVelocity, entity.maxSpeed); // Scale to maximum speed
     
     // The steering force is the difference between desired velocity and current velocity
-    let steeringForce = subtractVectors(desiredVelocity, character.velocity);
+    let steeringForce = subtractVectors(desiredVelocity, entity.velocity);
     return steeringForce;
 }
 
-function wander(character) {
+function wander(entity) {
     // Parameters for wander behavior
     let wanderRadius = 10; // Radius of the wander circle
-    let wanderDistance = 15; // Distance the wander circle is in front of the character
+    let wanderDistance = 15; // Distance the wander circle is in front of the entity
     let wanderJitter = 1; // How much the target point can change each tick
 
-    // Ensure character has a wanderTarget property
-    character.wanderTarget = character.wanderTarget || [wanderRadius, 0]; // Initialize if not set
+    // Ensure entity has a wanderTarget property
+    entity.wanderTarget = entity.wanderTarget || [wanderRadius, 0]; // Initialize if not set
 
     // Add a small random vector to the target's position
-    character.wanderTarget[0] += Math.random() * wanderJitter - wanderJitter * 0.5;
-    character.wanderTarget[1] += Math.random() * wanderJitter - wanderJitter * 0.5;
+    entity.wanderTarget[0] += Math.random() * wanderJitter - wanderJitter * 0.5;
+    entity.wanderTarget[1] += Math.random() * wanderJitter - wanderJitter * 0.5;
 
     // Re-project this new vector back to the wander circle
-    character.wanderTarget = normalize(character.wanderTarget);
-    character.wanderTarget = multiplyVector(character.wanderTarget, wanderRadius);
+    entity.wanderTarget = normalize(entity.wanderTarget);
+    entity.wanderTarget = multiplyVector(entity.wanderTarget, wanderRadius);
 
-    // Move the target to a position in front of the character
-    let targetLocal = addVectors(character.wanderTarget, [wanderDistance, 0]);
-    let targetWorld = localToWorld(character.position, character.orientation, targetLocal);
+    // Move the target to a position in front of the entity
+    let targetLocal = addVectors(entity.wanderTarget, [wanderDistance, 0]);
+    let targetWorld = localToWorld(entity.position, entity.orientation, targetLocal);
 
     // Seek towards the target
-    return seek(character, {position: targetWorld});
+    return seek(entity, {position: targetWorld});
 }
 
-function directMovement(character, direction) {
+function directMovement(entity, direction) {
     // Assuming 'direction' is a normalized vector representing the desired direction of movement
-    let desiredVelocity = multiplyVector(direction, character.maxSpeed);
+    let desiredVelocity = multiplyVector(direction, entity.maxSpeed);
 
-    // Update character's velocity directly towards the desired direction
-    character.velocity = desiredVelocity;
+    // Update entity's velocity directly towards the desired direction
+    entity.velocity = desiredVelocity;
 
-    // Calculate the steering force required to align the character's current velocity with the desired velocity
-    let steeringForce = subtractVectors(desiredVelocity, character.velocity);
+    // Calculate the steering force required to align the entity's current velocity with the desired velocity
+    let steeringForce = subtractVectors(desiredVelocity, entity.velocity);
     return steeringForce;
 }
 

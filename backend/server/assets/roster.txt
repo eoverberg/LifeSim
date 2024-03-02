@@ -1,5 +1,1 @@
-StanSmith
-JohnDoe
-JaneDoe
-JoeSmoe
-ScoobyDoo
+StanSmith,JohnDoe,JaneDoe,JoeSmoe,ScoobyDoo,SecondStudent

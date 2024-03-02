@@ -1,5 +1,5 @@
 import { useLocalStorage } from "../components/useLocalStorage";
-import UpdateRoster from "../components/UpdateRoster.js";
+import GetRoster from "../components/GetRoster.js";
 import StudentSelection from "../components/StudentSelection.js";
 
 const StudentInitial = () => {
@@ -10,7 +10,7 @@ const StudentInitial = () => {
 
         <h1>Student logon screen</h1>
 
-        <UpdateRoster
+        <GetRoster
         setRoster = {setRoster}
         />
 

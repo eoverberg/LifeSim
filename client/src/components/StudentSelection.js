@@ -1,4 +1,5 @@
 import React, {createRef, useEffect} from "react";
+import GetRoster from "./GetRoster";
 
 function StudentSelection ({roster, setName}) {
     const dropdown_menu = createRef(null);
@@ -21,7 +22,7 @@ function StudentSelection ({roster, setName}) {
         // removes defualt on options on startup, no idea why it works
         ddm.remove(0); 
         // iterates through roster and creates menu options
-        const students = roster.split('\n');
+        const students = roster.split(',');
         for(let student of students){
         let option = document.createElement("option");
         option.text = student;
@@ -34,6 +35,7 @@ function StudentSelection ({roster, setName}) {
         <p>Select student before uploading file</p>
         <select ref={dropdown_menu} onChange={changeHandle}/>
         </nav>
+        
     );
 }
 

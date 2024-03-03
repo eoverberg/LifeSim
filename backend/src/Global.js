@@ -13,19 +13,19 @@ class Global {
     }
 
     newPlant() {
-        // Implement newPlant method logic here
+        // Create new plant and append to list
     }
 
     newGrazer() {
-        // Implement newGrazer method logic here
+        // Create new grazer and append to list
     }
 
     newPredator() {
-        // Implement newPredator method logic here
+        // Create new predator and append to list
     }
 
     newObs() {
-        // Implement newObs method logic here
+        // Create new obstacle and append to list
     }
 
     initializeWorld() {

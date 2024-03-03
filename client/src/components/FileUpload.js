@@ -1,11 +1,10 @@
 import React, {createRef} from "react";
 
-function FileUpload({name, nameMod, setName, setRunFlag, setFileName, setMod}){
+function FileUpload({name, nameMod, setFileName, setMod}){
     const fileInput = createRef();
     const onSubmit = async(e) => {
         e.preventDefault();
         
-        setRunFlag(true);
         setMod(nameMod+1);
 
         const file_name = `${name}${nameMod}`;

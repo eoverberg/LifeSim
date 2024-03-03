@@ -1,5 +1,5 @@
 import React, {createRef, useEffect} from "react";
-import GetRoster from "./GetRoster";
+
 
 function StudentSelection ({roster, setName}) {
     const dropdown_menu = createRef(null);

@@ -38,60 +38,60 @@ function drawCircle(ctx, x1, y1, d1, bColor)
     
 function Canvas({file_name, runflag, displayData}) {
 
-    const canvasRef = useRef(null); 
+  const canvasRef = useRef(null); 
 
     //hoook for drawing on canvas
-    useEffect(() => {
+  useEffect(() => {
     //reference
     const canvas = canvasRef.current;
     const context = canvas.getContext('2d');
-
-    let lines = displayData.split(',');
+    let lines = displayData.split('\n');
     context.canvas.width = parseFloat(lines[0]);;
-        context.canvas.height = parseFloat(lines[1]);
-        context.canvas.style = "border:1px solid #000000;";
-        let num_plants = parseInt(lines[2]);
-        let grazers_start = 6 + 3 * num_plants;
-        let num_grazers = parseInt(lines[3]);
-        let predators_start = grazers_start + 2 * num_grazers;
-        let num_predators = parseInt(lines[4]);
-        let obstacles_start = predators_start + 2 * num_predators;
-        let num_obstacles = parseInt(lines[5]);
-       //draw grid
-        for(let i = 25; i < context.canvas.width; i+=25)
-        {
-          drawLine(context, i, 0, i, context.canvas.height, "black");
-        }
-        for(let i = 25; i < context.canvas.height; i+=25)
-        {
-          drawLine(context, 0, i, context.canvas.width, i, "black");
-        }
-        //draw plants
-        for (let i = 0; i < num_plants; i++)
-        {
-          drawCircle(context, parseInt(lines[6 + 3*i]), parseInt(lines[7 +3*i]), parseFloat(lines[8 +3*i]),"green");
-        }
-        //draw grazers
-        for (let i = 0; i < num_grazers; i++)
-        {
-          drawBlock(context, parseInt(lines[grazers_start+2*i]), parseInt(lines[grazers_start+1+2*i]),"blue");
-        }
-        //draw predators
-        for (let i = 0; i < num_predators; i++)
-        {
-          drawBlock(context, parseInt(lines[predators_start+2*i]), parseInt(lines[predators_start+1+2*i]),"red");
-        }
-        //draw obstacles
-        for (let i = 0; i < num_obstacles; i++)
-        {
-          drawCircle(context, parseInt(lines[obstacles_start+3*i]), parseInt(lines[obstacles_start+1+3*i]), parseFloat(lines[obstacles_start+2+3*i]),"grey");
-        }
+    context.canvas.height = parseFloat(lines[1]);
+    context.canvas.style = "border:1px solid #000000;";
+    let num_plants = parseInt(lines[2]);
+    let grazers_start = 6 + 3 * num_plants;
+    let num_grazers = parseInt(lines[3]);
+    let predators_start = grazers_start + 2 * num_grazers;
+    let num_predators = parseInt(lines[4]);
+    let obstacles_start = predators_start + 2 * num_predators;
+    let num_obstacles = parseInt(lines[5]);
+     //draw grid
+    for(let i = 25; i < context.canvas.width; i+=25)
+    {
+      drawLine(context, i, 0, i, context.canvas.height, "black");
+    }
+    for(let i = 25; i < context.canvas.height; i+=25)
+    {
+      drawLine(context, 0, i, context.canvas.width, i, "black");
+    }
+      //draw plants
+    for (let i = 0; i < num_plants; i++)
+    {
+      drawCircle(context, parseInt(lines[6 + 3*i]), parseInt(lines[7 +3*i]), parseFloat(lines[8 +3*i]),"green");
+    }
+    //draw grazers
+    for (let i = 0; i < num_grazers; i++)
+    {
+      drawBlock(context, parseInt(lines[grazers_start+2*i]), parseInt(lines[grazers_start+1+2*i]),"blue");
+    }
+    //draw predators
+    for (let i = 0; i < num_predators; i++)
+    {
+      drawBlock(context, parseInt(lines[predators_start+2*i]), parseInt(lines[predators_start+1+2*i]),"red");
+    }
+    //draw obstacles
+    for (let i = 0; i < num_obstacles; i++)
+    {
+      drawCircle(context, parseInt(lines[obstacles_start+3*i]), parseInt(lines[obstacles_start+1+3*i]), parseFloat(lines[obstacles_start+2+3*i]),"grey");
+    }
     
-}, [displayData]);
+  }, [displayData]);
 
-return (<>
+  return (<>
     <canvas ref={canvasRef} />
-    </>);
+    </>
+  );
 
 };
 

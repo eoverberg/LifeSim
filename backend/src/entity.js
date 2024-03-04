@@ -54,7 +54,7 @@ class plant extends entity{
 class plantInfo {
     constructor(size,seedAmount,reproductionDistance,seedChance,growthPercent,growthRate){
         this.maxSize = size;
-        this.maxSeeds = seedAmount
+        this.maxSeeds = seedAmount;
         this.maxReproductionDis = reproductionDistance;
         this.seedChance = seedChance;
         this.growthPercent = growthPercent;

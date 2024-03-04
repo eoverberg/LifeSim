@@ -2,6 +2,7 @@ import FileUpload from "../components/FileUpload.js"
 import Canvas from "../components/Canvas.js";
 import { useLocalStorage } from "../components/useLocalStorage";
 import GetData from "../components/GetData.js";
+import IntervalControl from "../components/IntervalControl.js";
 
 const StudentSimulation = () => {
     const [name, setName] = useLocalStorage("student_name", "");
@@ -18,6 +19,15 @@ const StudentSimulation = () => {
         setName={setName}
         setRunFlag={setRunFlag}
         setFileName={setFileName}
+        setMod={setMod}
+        />
+        <IntervalControl
+        name={name}
+        runFlag={runFlag}
+        setRunFlag={setRunFlag}
+        fileName={fileName}
+        setFileName={setFileName}
+        nameMod={nameMod}
         setMod={setMod}
         />
         <GetData

@@ -3,7 +3,7 @@ const fileUpload = require('express-fileupload');
 const fs = require('fs');
 const path = require('path');
 const initialFileParser = require('./utility/initialFileParser');
-//const simUpdate = require('./simUpdate');
+const simUpdate = require('./utility/simUpdate');
 const router = express.Router();
 
 router.use(fileUpload({useTempFiles : true, tempFileDir:'/tmp/'}));
@@ -25,7 +25,7 @@ router.post('/update/:userName', (req, res) => {
 })
 
 //
-//
+// returns the text from the roster file
 router.post('/getRoster', (req, res) => {
     try{
     fs.readFile(path.join("./assets/", "roster.txt"), 'utf8',( error, students) => {    
@@ -39,7 +39,7 @@ router.post('/getRoster', (req, res) => {
 })
 
 //
-//
+// replaces text to the roster file
 router.post('/setRoster/:roster', (req, res) => {
     const roster = req.params.roster;
     try{
@@ -55,24 +55,40 @@ router.post('/setRoster/:roster', (req, res) => {
 
 
 //
-//
-router.post('/nextUpdate/:userName/:userMod/:fileName', (req, res) => {
-    const userName = req.params.userName;
+// updates the data file
+router.post('/nextUpdate/:name/:userMod/:fileName', (req, res) => {
+    const userName = req.params.name;
     const userMod = req.params.userMod;
     const fileName = req.params.fileName;
     try{
-        console.log(userName);
-        const nam = userMod + fileName;
-        let pName = path.join('./assets', nam );
-        console.log(pName);
-        //simUpdate(fs.readFileSync(pName, "utf8"), path.join("../frontend/src/assets/Student/", `${userName}.xml`) );
+        console.log(fileName);
+        //const nam = userMod + fileName;
+        //let pName = path.join('./assets',  );
+        const newFile = userName.concat(userMod);
+        console.log(newFile);
+        simUpdate(fs.readFileSync(`assets/${fileName}.txt`, "utf8"), newFile );
+        res.status(200).json({message: 'ok' });
     }catch (e) {
         res.status(500).json({message: e.message });
     } 
 });
 
 //
-//initial file upload
+// updates the data file
+router.post('/remove/:fileName', (req, res) => {
+    const fileName = req.params.fileName;
+    try{
+        console.log(fileName);
+        fs.rmSync(`assets/${fileName}.txt`);
+        res.status(200).json({message: 'ok' });
+    }catch (e) {
+        res.status(500).json({message: e.message });
+    } 
+});
+
+
+//
+// initial file upload
 router.post('/intialStore/:userName/:userMod', (req, res) => {
     const userName = req.params.userName;
     const userMod = req.params.userMod;
@@ -100,7 +116,7 @@ router.post('/intialStore/:userName/:userMod', (req, res) => {
 });
 
 //
-//
+// retrieves the display data from the backend
 router.post('/getData/:fileName', (req, res) => {
     const fileName = req.params.fileName;
        

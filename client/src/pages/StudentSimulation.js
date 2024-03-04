@@ -36,8 +36,7 @@ const StudentSimulation = () => {
         />
         <Canvas 
         displayData={displayData}
-        runFlag={runFlag}
-        fileName={fileName}/>
+        />
         </>
     );
 };

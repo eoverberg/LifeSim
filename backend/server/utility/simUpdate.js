@@ -1,7 +1,7 @@
 const fs = require('fs');
 
 function simUpdate(dataFile, toFile){
-    let data_delimiter = '\n';
+    let data_delimiter = ',';
     let lines =  dataFile.split(data_delimiter);
     let num_plants = parseInt(lines[2]);
     let grazers_start = 6 + 3 * num_plants;

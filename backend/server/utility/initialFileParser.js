@@ -4,8 +4,8 @@
 const fs = require('fs');
 
 function xmlParser(dataFile, toFile){
-    
-    let lines =  dataFile.split('\n');
+    let data_limiter = ',';
+    let lines =  dataFile.split(data_limiter);
     console.log(lines.length);
     //map width and height
     let width = parseFloat(lines[3]);
@@ -29,30 +29,30 @@ function xmlParser(dataFile, toFile){
     let num_obstacles = parseInt(lines[obstacles_start + 2]);
 
     //start string with known data so front doesn't have to calculant
-    let fileString  = lines[3].trim() + "\n" + 
-                        lines[6].trim() + "\n" +
-                        lines[11].trim() + "\n" +
-                        lines[grazers_start + 2].trim() + "\n" +
-                        lines[predators_start + 2].trim() + "\n" +
-                        lines[obstacles_start + 2].trim() + "\n";
+    let fileString  = lines[3].trim() + data_limiter + 
+                        lines[6].trim() + data_limiter +
+                        lines[11].trim() + data_limiter +
+                        lines[grazers_start + 2].trim() + data_limiter +
+                        lines[predators_start + 2].trim() + data_limiter +
+                        lines[obstacles_start + 2].trim() + data_limiter;
     
     //save each line to file for each object
     //only extracts data needed to display
     for(let i = 0; i < num_plants; i++)
     {
-        fileString += lines[30+11*i].trim() + "\n" + lines[33+11*i].trim() + "\n" + lines[36+11*i].trim()+ "\n";
+        fileString += lines[30+11*i].trim() + data_limiter + lines[33+11*i].trim() + data_limiter + lines[36+11*i].trim()+ data_limiter;
     }
     for(let i = 0; i < num_grazers; i++)
     {
-        fileString += lines[grazers_end+3+11*i].trim() + "\n" + lines[grazers_end+6+11*i].trim() + "\n";
+        fileString += lines[grazers_end+3+11*i].trim() + data_limiter + lines[grazers_end+6+11*i].trim() + data_limiter;
     }
     for(let i = 0; i < num_predators; i++)
     {
-        fileString += lines[predators_end+3+14*i].trim() + "\n" + lines[predators_end+6+14*i].trim() + "\n";
+        fileString += lines[predators_end+3+14*i].trim() + data_limiter + lines[predators_end+6+14*i].trim() + data_limiter;
     }
     for(let i = 0; i < num_obstacles; i++)
     {
-        fileString += lines[obstacles_end+3+14*i].trim() + "\n" + lines[obstacles_end+6+14*i].trim() + "\n" + lines[obstacles_end+9+14*i].trim() + "\n";
+        fileString += lines[obstacles_end+3+14*i].trim() + data_limiter + lines[obstacles_end+6+14*i].trim() + data_limiter + lines[obstacles_end+9+14*i].trim() + data_limiter;
     }
 
     //writes whole string to file

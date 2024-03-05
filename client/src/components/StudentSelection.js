@@ -12,7 +12,10 @@ function StudentSelection ({roster, setName}) {
 
     useEffect(() =>{
         const ddm = dropdown_menu.current;
-        
+        const ddlength = ddm.length;
+        for(let i = 0; i < ddlength; i++){
+            ddm.remove(0);
+        }
         // defualt option, allows for onchange of first student
         let default_opt = document.createElement("option");
         default_opt.text = 'Select your option';
@@ -20,7 +23,7 @@ function StudentSelection ({roster, setName}) {
         default_opt.disabled = default_opt.selected;
         ddm.add(default_opt);
         // removes defualt on options on startup, no idea why it works
-        ddm.remove(0); 
+        //ddm.remove(0); 
         // iterates through roster and creates menu options
         const students = roster.split(',');
         for(let student of students){

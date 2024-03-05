@@ -1,5 +1,6 @@
 import StudentAdder from "../components/StudentAdder";
 import StudentDeleter from "../components/StudentDeleter";
+import GetRoster from "../components/GetRoster";
 import { useLocalStorage } from "../components/useLocalStorage";
 
 const Instructor = () => { 
@@ -7,6 +8,9 @@ const Instructor = () => {
     
     return(
         <>
+        <GetRoster
+        setRoster = {setRoster}
+        />
         <StudentAdder
             setRoster={setRoster}
             roster={roster}

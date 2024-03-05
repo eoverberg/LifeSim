@@ -20,6 +20,7 @@ class predator extends entity{
         this.currentSpeed = 0;
         this.energy = energy;
         this.genesObj = geneObj;
+        this.orientation = 0.0;
     }
 }
 class predatorInfo {
@@ -36,6 +37,7 @@ class grazer extends entity{
         super(xPos,yPos,zPos,lifeTime);
         this.currentSpeed = 0;
         this.energy = energy;
+        this.orientation = 0.0;
     }
 }
 class grazerInfo {

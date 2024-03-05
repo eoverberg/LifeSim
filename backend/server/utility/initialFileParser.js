@@ -5,7 +5,7 @@ const fs = require('fs');
 
 function xmlParser(dataFile, toFile){
     let data_limiter = ',';
-    let lines =  dataFile.split(data_limiter);
+    let lines =  dataFile.split('\n');
     console.log(lines.length);
     //map width and height
     let width = parseFloat(lines[3]);

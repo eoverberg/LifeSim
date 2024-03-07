@@ -1,16 +1,26 @@
 function seek(entity, target) {
+    // Calculate the desired velocity as a vector pointing from the entity to the target.
     let desiredVelocity = subtractVectors(target.position, entity.position);
+    
+    // Normalize the desired velocity to get it in the direction of the target only.
     desiredVelocity = normalize(desiredVelocity);
+    
+    // Multiply the normalized vector by the entity's maximum speed to get the maximum desired velocity.
     desiredVelocity = multiplyVector(desiredVelocity, entity.maxSpeed);
     
+    // Calculate the steering force as the difference between the desired velocity and the entity's current velocity.
     let steeringForce = subtractVectors(desiredVelocity, entity.velocity);
+    
+    // Return the steering force which will adjust the entity's velocity in the next update.
     return steeringForce;
 }
 
 function flee(entity, target) {
     // Calculate the vector from the entity to the target
     let desiredVelocity = subtractVectors(entity.position, target.position);
+    
     desiredVelocity = normalize(desiredVelocity); // Normalize to get the direction
+    
     desiredVelocity = multiplyVector(desiredVelocity, entity.maxSpeed); // Scale to maximum speed
     
     // The steering force is the difference between desired velocity and current velocity
@@ -24,20 +34,26 @@ function wander(entity) {
     let wanderDistance = 15; // Distance the wander circle is in front of the entity
     let wanderJitter = 1; // How much the target point can change each tick
 
-    // Ensure entity has a wanderTarget property
-    entity.wanderTarget = entity.wanderTarget || [wanderRadius, 0]; // Initialize if not set
+    // Initialize entity.target to the entity's current position if it doesn't exist
+    // Creates a shallow copy of entity.position & assigns to entity.target so target won't affect position
+    entity.target = entity.target || [...entity.position]; 
 
     // Add a small random vector to the target's position
+    let randomDisplcement = [
     entity.wanderTarget[0] += Math.random() * wanderJitter - wanderJitter * 0.5;
     entity.wanderTarget[1] += Math.random() * wanderJitter - wanderJitter * 0.5;
+    ];
+    randomDisplacement = normalize(randomDisplacement);
+    randomDisplacement = multiplyVector(randomDisplacement, wanderRadius);
 
-    // Re-project this new vector back to the wander circle
-    entity.wanderTarget = normalize(entity.wanderTarget);
-    entity.wanderTarget = multiplyVector(entity.wanderTarget, wanderRadius);
+    // Calculate the forward vector based on the entity's orientation
+    let forwardVector = multiplyVector(orientationToVector(entity.orientation), wanderDistance);
 
-    // Move the target to a position in front of the entity
-    let targetLocal = addVectors(entity.wanderTarget, [wanderDistance, 0]);
-    let targetWorld = localToWorld(entity.position, entity.orientation, targetLocal);
+    // Combine the forward vector and random displacement to get the target in local space
+    let targetLocal = addVectors(forwardVector, randomDisplacement);
+
+    // Convert the local target to world space using the entity's current position
+    entity.target = addVectors(entity.position, targetLocal);
 
     // Seek towards the target
     return seek(entity, {position: targetWorld});
@@ -68,8 +84,6 @@ function normalize(vector) {
 function multiplyVector(vector, scalar) {
     return [vector[0] * scalar, vector[1] * scalar];
 }
-
-
 
 function addVectors(vector1, vector2) {
     return [vector1[0] + vector2[0], vector1[1] + vector2[1]];

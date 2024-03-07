@@ -25,6 +25,8 @@ function flee(entity, target) {
     
     // The steering force is the difference between desired velocity and current velocity
     let steeringForce = subtractVectors(desiredVelocity, entity.velocity);
+
+    // Return the computed steering force to adjust the entity's velocity away from the target
     return steeringForce;
 }
 
@@ -71,33 +73,38 @@ function directMovement(entity, direction) {
     return steeringForce;
 }
 
+// Subtracts one vector from another and returns the resulting vector.
 function subtractVectors(vector1, vector2) {
     return [vector1[0] - vector2[0], vector1[1] - vector2[1]];
 }
 
+// Normalizes a vector to a unit vector (length of 1), maintaining its direction.
 function normalize(vector) {
-    const length = Math.sqrt(vector[0] ** 2 + vector[1] ** 2);
-    if (length === 0) return [0, 0];
-    return [vector[0] / length, vector[1] / length];
+    const length = Math.sqrt(vector[0] ** 2 + vector[1] ** 2); // Calculate the vector's length.
+    if (length === 0) return [0, 0]; // Handle the zero-length case to avoid division by zero.
+    return [vector[0] / length, vector[1] / length]; // Scale the vector components to normalize it.
 }
 
+// Multiplies a vector by a scalar and returns the resulting scaled vector.
 function multiplyVector(vector, scalar) {
-    return [vector[0] * scalar, vector[1] * scalar];
+    return [vector[0] * scalar, vector[1] * scalar]; // Scale both components of the vector.
 }
 
+// Adds two vectors together and returns the resulting vector.
 function addVectors(vector1, vector2) {
-    return [vector1[0] + vector2[0], vector1[1] + vector2[1]];
+    return [vector1[0] + vector2[0], vector1[1] + vector2[1]]; // Add corresponding components.
 }
 
-// Converts local space coordinates to world space
+// Converts local space coordinates to world space based on position and orientation.
 function localToWorld(position, orientation, localPoint) {
     // Assuming orientation is in radians and points are [x, y]
-    let cosTheta = Math.cos(orientation);
-    let sinTheta = Math.sin(orientation);
+    let cosTheta = Math.cos(orientation); // Cosine of the orientation angle.
+    let sinTheta = Math.sin(orientation); // Sine of the orientation angle.
 
+    // Calculate the world coordinates by rotating and then translating the local point.
     let worldX = cosTheta * localPoint[0] - sinTheta * localPoint[1] + position[0];
     let worldY = sinTheta * localPoint[0] + cosTheta * localPoint[1] + position[1];
 
-    return [worldX, worldY];
+    return [worldX, worldY]; // Return the transformed coordinates.
 }
 

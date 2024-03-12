@@ -1,4 +1,4 @@
-class entity {
+ class entity {
     constructor(xPos,yPos,zPos,lifeTime){
         this.xPos = xPos;
         this.yPos = yPos;
@@ -6,7 +6,7 @@ class entity {
         this.lifeTime = lifeTime;   
     }
 }
-class genes{
+ class genes{
     constructor(geneString, initMaxHOD,initMaxHED,initMaxHOR){
         this.geneString = geneString;
         this.initMaxHOD = initMaxHOD; 
@@ -14,7 +14,7 @@ class genes{
         this.initMaxHOR = initMaxHOR; 
     }
 }
-class predator extends entity{
+ class predator extends entity{
     constructor(xPos,yPos,zPos,lifeTime,energy,geneObj){
         super(xPos,yPos,zPos,lifeTime);
         this.currentSpeed = 0;
@@ -23,7 +23,7 @@ class predator extends entity{
         this.orientation = 0.0;
     }
 }
-class predatorInfo {
+ class predatorInfo {
     constructor(energyIn,energyOut,energytoReproduce,maxOffsprings){
         this.energyIn = energyIn;
         this.energyOut = energyOut;
@@ -32,7 +32,7 @@ class predatorInfo {
 
     }
 }
-class grazer extends entity{
+ class grazer extends entity{
     constructor(xPos,yPos,zPos,lifeTime,energy){
         super(xPos,yPos,zPos,lifeTime);
         this.currentSpeed = 0;
@@ -40,7 +40,7 @@ class grazer extends entity{
         this.orientation = 0.0;
     }
 }
-class grazerInfo {
+ class grazerInfo {
     constructor(maxSpeed,energyIn,energyOut,energytoReproduce){
         this.maxSpeed = maxSpeed;
         this.energyIn = energyIn;
@@ -48,12 +48,12 @@ class grazerInfo {
         this.energytoReproduce = energytoReproduce;
     }
 }
-class plant extends entity{
+ class plant extends entity{
     constructor(xPos,yPos,zPos,lifeTime){
         super(xPos,yPos,zPos,lifeTime);
     }
 }
-class plantInfo {
+ class plantInfo {
     constructor(size,seedAmount,reproductionDistance,seedChance,growthPercent,growthRate){
         this.maxSize = size;
         this.maxSeeds = seedAmount;
@@ -68,3 +68,5 @@ class obstacle extends entity{
         super(xPos,yPos,zPos,lifeTime);
     }
 }
+
+module.exports = {entity,genes,plant,plantInfo,predator,predatorInfo,obstacle};

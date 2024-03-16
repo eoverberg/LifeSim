@@ -1,6 +1,7 @@
+// allows student to upload a file to server
 import React, {createRef} from "react";
 
-function FileUpload({name, nameMod, setFileName, setMod}){
+function FileUpload({name, nameMod, setFileName, setMod, setBufferFlag}){
     const fileInput = createRef();
     const onSubmit = async(e) => {
         e.preventDefault();
@@ -8,7 +9,7 @@ function FileUpload({name, nameMod, setFileName, setMod}){
         setMod(nameMod+1);
 
         const file_name = `${name}${nameMod}`;
-        setFileName(file_name);
+       
 
         const formData = new FormData();
         formData.set("avatar", fileInput.current.files[0]);
@@ -20,11 +21,10 @@ function FileUpload({name, nameMod, setFileName, setMod}){
             });
             await response.json();
         if (response.status === 200) {
-            alert(`a ${response.status}`); //popup after submission
-        }else if(response.status===204){
-            alert(`a ${response.status}`);
-        } 
-        else {
+             setFileName(file_name);
+             setBufferFlag(true);
+            alert(`File Upload Successful`); //popup after submission
+        }else {
             console.error("some error occured");
         }
     }catch (e) {
@@ -35,7 +35,7 @@ function FileUpload({name, nameMod, setFileName, setMod}){
 
 return(
     <div>
-        <h2>Upload Initial File</h2>
+        <h4>Upload Initial File</h4>
         <form onSubmit={onSubmit}>
             <input type="file" name="avatar" ref={fileInput}/>
             <input type="submit" value="Submit"/>

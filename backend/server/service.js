@@ -52,21 +52,35 @@ router.post('/setRoster/:roster', (req, res) => {
     }
 
 })
+// returns the text from the roster file
+router.post('/getBuffer/:fileName', (req, res) => {
+    const fileName = req.params.fileName; 
+    try{
+        console.log("in buffer getter");
+    fs.readFile(path.join("./assets/", `${fileName}.txt`), 'utf8',( error, buffer) => {    
+    res.send(buffer);
+    //res.status(200).json({message: 'ok' });
+});
+    }catch (e) {
+       //res.status(500).json({message: e.message });
+    }
 
+})
 
 //
 // updates the data file
-router.post('/nextUpdate/:name/:userMod/:fileName', (req, res) => {
+router.post('/nextUpdate/:name/:userMod/', (req, res) => {
     const userName = req.params.name;
     const userMod = req.params.userMod;
-    const fileName = req.params.fileName;
     try{
-        console.log(fileName);
+        //console.log(fileName);
         //const nam = userMod + fileName;
         //let pName = path.join('./assets',  );
         const newFile = userName.concat(userMod);
-        console.log(newFile);
-        simUpdate(fs.readFileSync(`assets/${fileName}.txt`, "utf8"), newFile );
+        const zeroFile = userName.concat("0");
+        console.log("Update Start");
+        simUpdate(userName, fs.readFileSync(`assets/${zeroFile}.txt`, "utf8"), newFile );
+        console.log("Update Done");
         res.status(200).json({message: 'ok' });
     }catch (e) {
         res.status(500).json({message: e.message });

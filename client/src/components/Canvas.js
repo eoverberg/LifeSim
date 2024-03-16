@@ -1,3 +1,5 @@
+// draws simulation to screen
+
 import { useRef, useEffect } from 'react';
 
 

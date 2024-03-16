@@ -1,61 +1,46 @@
-import React,{ useEffect, useReducer } from "react";
+import React from "react";
 
-// const reducer = (mod, action) => {
-//   switch(action.type){
-//     case true:
-//       action.setMod(action.nameMod+1);
-//       return ;
-//     default:
-//       return mod;
-//   }
-// }
 
-function IntervalControl({runFlag, setRunFlag, fileName, setFileName, nameMod, setMod, name}){
+function IntervalControl({setIntervalTime}){
+    
 
-    function clickHandle(){
-        setRunFlag(!runFlag);
+
+    function handleClick(e){
+      let intervalSwitch = 0;
+      const selected = e.target.value;
+      switch(selected){
+        case "1": 
+          intervalSwitch=1000;
+          break;
+        case "10":
+          intervalSwitch=100;
+          break;
+        case "50":
+          intervalSwitch=20;
+          break;
+        case "100":
+          intervalSwitch=10;
+          break;
+        default:
+          intervalSwitch=1000
+      }
+      setIntervalTime(intervalSwitch);
     }
 
-   // const [mod, dispatch] = useReducer(reducer, 0);
-    //dispatch({type: runFlag, mod: nameMod, setMod: setMod});
-    // useEffect(()=>{
-      
-    // })
-
-    useEffect(() =>{
-        const interval = setInterval( async() => { //const interval =
-            
-            if (runFlag === true){
-              try{
-              const response =  await fetch(`/service/nextUpdate/${name}/${nameMod}/${fileName}`,{ 
-                  method: "POST",
-                  headers: {Accept: "json"}
-              });
-              await response.json();
-              if (response.ok) {
-                const oldName  = fileName;
-                setFileName(name.concat(nameMod));
-                setMod(nameMod+1);
-                await fetch(`/service/remove/${oldName}`,{ 
-                  method: "POST",
-                  headers: {Accept: "json"}
-              });
-                console.log("DataUpdated"); //popup after submission
-              } else {
-                console.error("some error occured");
-              }
-      
-              }catch (error) {
-                console.error("error")
-              }
-            }
-        }, 1000);
-       return () => clearInterval(interval);
-    }, [name, nameMod, fileName, runFlag]);
-
     return(
-        <button onClick={clickHandle}>Run</button>
-    );
+      <div>
+      <h4>Speed</h4>
+      <input type="radio" id="1" name="interval_select" onChange={handleClick} value="1" checked="checked"/>
+      <label for="1">1X </label> <br/>
+      <input type="radio" id="10" name="interval_select" onChange={handleClick} value="10"/>
+      <label for="10">10X </label> <br/>
+      <input type="radio" id="10" name="interval_select" onChange={handleClick} value="50"/>
+      <label for="50">50X </label> <br/>
+      <input type="radio" id="10" name="interval_select" onChange={handleClick} value="100"/>
+      <label for="100">100X</label> 
+      </div>
+
+);
 
 }
 

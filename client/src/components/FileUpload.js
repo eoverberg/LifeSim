@@ -15,7 +15,7 @@ function FileUpload({name, nameMod, setFileName, setMod, setBufferFlag}){
         formData.set("avatar", fileInput.current.files[0]);
 
         try{
-            const response = await fetch(`/service/intialStore/${name}/${nameMod}`,{
+            const response = await fetch(`/service/initialStore/${name}/${nameMod}`,{
                 method: "POST",
                 body: formData
             });

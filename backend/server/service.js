@@ -106,7 +106,7 @@ router.post('/instructorStore', (req, res) => {
     
     try{
         console.log(avatar.name);
-        let pName = path.join('./assets/instructorFile.xml' );
+        let pName = path.join('./assets/InstructorFile.xml' );
         console.log(pName);
         fs.copyFile(avatar.tempFilePath, pName, (err) => {
             if (err){

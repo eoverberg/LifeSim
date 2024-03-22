@@ -27,7 +27,7 @@ console.log(`Student Data Valid: ${result1}`)// throws an error
 
 
 // Read second XML content from a file
-let instructorData = fs.readFileSync('../assets/instructorFile.xml', 'utf-8', (error, data) => {
+let instructorData = fs.readFileSync('../assets/InstructorFile.xml', 'utf-8', (error, data) => {
     if (error) {
       console.error('Failed to read XML file:', error);
       return;

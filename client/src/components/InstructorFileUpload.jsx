@@ -1,4 +1,4 @@
-// allows student to upload a file to server
+// allows instructor to upload a file to server
 import React, {createRef} from "react";
 
 function InstructorFileUpload(){

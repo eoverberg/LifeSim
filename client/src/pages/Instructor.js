@@ -2,6 +2,7 @@ import StudentAdder from "../components/StudentAdder";
 import StudentDeleter from "../components/StudentDeleter";
 import GetRoster from "../components/GetRoster";
 import { useLocalStorage } from "../components/useLocalStorage";
+import InstructorFileUpload from "../components/InstructorFileUpload";
 
 const Instructor = () => { 
     const [roster, setRoster] = useLocalStorage("roster", "default");
@@ -19,7 +20,10 @@ const Instructor = () => {
             setRoster={setRoster}
             roster={roster}
         />
-        <p>unchangable data here</p>
+        <p>Upload file containing unchangable data</p>
+        <InstructorFileUpload
+        
+        />
         </>
     );
 

@@ -100,10 +100,30 @@ router.post('/remove/:fileName', (req, res) => {
     } 
 });
 
+// initial file upload
+router.post('/instructorStore', (req, res) => {
+    const { avatar } = req.files;
+    
+    try{
+        console.log(avatar.name);
+        let pName = path.join('./assets/instructorFile.xml' );
+        console.log(pName);
+        fs.copyFile(avatar.tempFilePath, pName, (err) => {
+            if (err){
+                console.log("Error Found: ", err);
+            }else{
+                res.status(200).json({message: 'ok' });  
+            }
+        });  
+    }catch (e) {
+        res.status(500).json({message: e.message });
+    } 
+
+});
 
 //
 // initial file upload
-router.post('/intialStore/:userName/:userMod', (req, res) => {
+router.post('/initialStore/:userName/:userMod', (req, res) => {
     const userName = req.params.userName;
     const userMod = req.params.userMod;
     const { avatar } = req.files;

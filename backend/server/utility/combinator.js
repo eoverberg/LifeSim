@@ -157,7 +157,7 @@ const output = builder.build(studentJSON);
 //   if (err) throw err;
 //   console.log(`${"StatusReset"}`);
 // });
-fs.writeFile("combinedFile.xml", `${output}`, (err) => {
+fs.writeFile("./assets/combinedFile.xml", `${output}`, (err) => {
   if (err) throw err;
   console.log(`${"Files Combined"}`);
 });

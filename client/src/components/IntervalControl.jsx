@@ -30,13 +30,13 @@ function IntervalControl({setIntervalTime}){
     return(
       <div>
       <h4>Speed</h4>
-      <input type="radio" id="1" name="interval_select" onChange={handleClick} value="1" checked="checked"/>
+      <input type="radio" id="1" name="interval_select" onChange={handleClick} value="1"/>
       <label for="1">1X </label> <br/>
       <input type="radio" id="10" name="interval_select" onChange={handleClick} value="10"/>
       <label for="10">10X </label> <br/>
-      <input type="radio" id="10" name="interval_select" onChange={handleClick} value="50"/>
+      <input type="radio" id="50" name="interval_select" onChange={handleClick} value="50"/>
       <label for="50">50X </label> <br/>
-      <input type="radio" id="10" name="interval_select" onChange={handleClick} value="100"/>
+      <input type="radio" id="100" name="interval_select" onChange={handleClick} value="100"/>
       <label for="100">100X</label> 
       </div>
 

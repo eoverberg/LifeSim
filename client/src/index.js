@@ -3,12 +3,12 @@ import ReactDOM from 'react-dom/client';
 import {BrowserRouter, Routes, Route} from "react-router-dom";
 import './index.css';
 import reportWebVitals from './reportWebVitals';
-import Layout from "./pages/Layout.js";
-import Welcome from './pages/Welcome.js';
-import StudentInitial from './pages/StudentInitial.js';
-import StudentSimulation from './pages/StudentSimulation.js';
-import Instructor from './pages/Instructor.js';
-import Review from './pages/Review.js';
+import Layout from "./pages/Layout";
+import Welcome from './pages/Welcome';
+import StudentInitial from './pages/StudentInitial';
+import StudentSimulation from './pages/StudentSimulation';
+import Instructor from './pages/Instructor';
+import Review from './pages/Review';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(

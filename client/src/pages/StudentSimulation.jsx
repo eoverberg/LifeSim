@@ -1,10 +1,9 @@
-import FileUpload from "../components/FileUpload.js"
-import Canvas from "../components/Canvas.js";
+import FileUpload from "../components/FileUpload"
+import Canvas from "../components/Canvas";
 import { useLocalStorage } from "../components/useLocalStorage";
-//import GetData from "../components/GetData.js";
-import IntervalControl from "../components/IntervalControl.js";
-import GetBuffer from "../components/GetBuffer.js";
-import RunBuffer from "../components/RunBuffer.js";
+import IntervalControl from "../components/IntervalControl";
+import GetBuffer from "../components/GetBuffer";
+import RunBuffer from "../components/RunBuffer";
 
 const StudentSimulation = () => {
     const [name, setName] = useLocalStorage("student_name", "");

@@ -4,6 +4,7 @@ const fs = require('fs');
 const path = require('path');
 const initialFileParser = require('./utility/initialFileParser');
 const simUpdate = require('./utility/simUpdate');
+const combineXML = require('./utility/combinator');
 const router = express.Router();
 
 router.use(fileUpload({useTempFiles : true, tempFileDir:'/tmp/'}));
@@ -131,16 +132,18 @@ router.post('/initialStore/:userName/:userMod', (req, res) => {
     try{
         console.log(userName);
         console.log(avatar.name);
-        const nam = userMod + avatar.name;
-        let pName = path.join('./assets', nam );
-        console.log(pName);
-        fs.copyFile(avatar.tempFilePath, pName, (err) => {
+        const oname = "./assets/" + avatar.name;
+        const cname = "./assets/combined" + avatar.name;
+        console.log(oname);
+        fs.copyFile(avatar.tempFilePath, oname, (err) => {
             if (err){
                 console.log("Error Found: ", err);
             }else{
                 console.log("\nFile Contents of copied_file:");
-                initialFileParser(fs.readFileSync(pName, "utf8"), path.join("./assets/", `${userName}${userMod}.txt`) );
-                res.status(200).json({message: 'ok' });  
+                combineXML(oname, './assets/InstructorFile.xml', cname, ()=>{
+                    initialFileParser(fs.readFileSync(cname, "utf8"), path.join("./assets/", `${userName}${userMod}.txt`) );
+                    res.status(200).json({message: 'ok' }); 
+                })
             }
         });  
     }catch (e) {

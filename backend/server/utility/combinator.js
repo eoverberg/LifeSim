@@ -1,11 +1,13 @@
 const fs = require('fs');
 const { XMLParser, XMLBuilder, XMLValidator} = require("fast-xml-parser");
 
-const parser = new XMLParser();
-//var xmlJsonObj = JSON;
 
-// Read XML content from a file
-let studentData = fs.readFileSync('../assets/LifeSimulation01.xml', 'utf-8', (error, data) => {
+function combineXML(studentXML, InstructorXML, saveLocation){
+
+const parser = new XMLParser();
+
+// Read student XML content from a file
+let studentData = fs.readFileSync(studentXML, 'utf-8', (error, data) => {
   if (error) {
     console.error('Failed to read XML file:', error);
     return;
@@ -26,8 +28,8 @@ const result1 = XMLValidator.validate( xmlData, {
 console.log(`Student Data Valid: ${result1}`)// throws an error
 
 
-// Read second XML content from a file
-let instructorData = fs.readFileSync('../assets/InstructorFile.xml', 'utf-8', (error, data) => {
+// Read instructor XML content from a file
+let instructorData = fs.readFileSync(InstructorXML, 'utf-8', (error, data) => {
     if (error) {
       console.error('Failed to read XML file:', error);
       return;
@@ -38,14 +40,14 @@ let instructorData = fs.readFileSync('../assets/InstructorFile.xml', 'utf-8', (e
   const result2 = XMLValidator.validate(instructorData, {
       allowBooleanAttributes: true
   });
-  console.log(`Instructor Data Loaded: ${result}`) // return true
+  console.log(`Instructor Data Loaded: ${result2}`) // return true
   
   // Validation Failure
   const xmlData2 = `<LIFE_SIMULATION></LIFE_SIMULATION>`;
-  const result12 = XMLValidator.validate( xmlData, {
+  const result12 = XMLValidator.validate( xmlData2, {
     unpairedTags: ["extra"]
   });
-  console.log(`Instructor Data Valid: ${result1}`)// throws an error
+  console.log(`Instructor Data Valid: ${result12}`)// throws an error
   
 
 // if (instructorJSON.!== -1)
@@ -148,8 +150,11 @@ if (instructorJSON.LIFE_SIMULATION.PREDATORS.P_OFFSPRING_ENERGY!== -1)
 // LIFE_SIMULATION.PREDATORS.PREDATOR
 // LIFE_SIMULATION.OBSTACLES.INITIAL_OBSTACLE_COUNT
 // LIFE_SIMULATION.OBSTACLES.OBSTACLE
-
-const builder = new XMLBuilder();
+const options = {
+  ignoreAttributes: false,
+  format: true,
+};
+const builder = new XMLBuilder(options);
 
 const output = builder.build(studentJSON);
 
@@ -157,7 +162,10 @@ const output = builder.build(studentJSON);
 //   if (err) throw err;
 //   console.log(`${"StatusReset"}`);
 // });
-fs.writeFile("./assets/combinedFile.xml", `${output}`, (err) => {
+fs.writeFile(saveLocation, `${output}`, (err) => {
   if (err) throw err;
   console.log(`${"Files Combined"}`);
-});
+}); 
+}
+
+module.exports = combineXML;

@@ -1,4 +1,4 @@
-const {entity,genes,plant,plantInfo,grazer,grazerInfo,predator,predatorInfo,obstacle} = require("./entity.js");
+const {genes,plant,plantInfo,grazer,grazerInfo,predator,predatorInfo,obstacle} = require("./entity.js");
 
 class Global {
     constructor() {

@@ -1,6 +1,5 @@
 const fs = require('fs');
-const { XMLParser, XMLBuilder, XMLValidator} = require("fast-xml-parser");
-const Global = require('../../src/Global');
+const { XMLParser,  XMLValidator} = require("fast-xml-parser");
 
 function xmlimporter(global, xmlLocation, callback){
   console.log("import started");
@@ -77,20 +76,6 @@ function xmlimporter(global, xmlLocation, callback){
   for (let obstacle of studentJSON.LIFE_SIMULATION.OBSTACLES.OBSTACLE){
     global.newObs(obstacle.X_POS,obstacle.Y_POS,obstacle.O_DIAMETER);
   }
-
-  // studentJSON.LIFE_SIMULATION.PLANTS.INITIAL_PLANT_COUNT
-  // LIFE_SIMULATION.PLANTS.PLANT
-  // LIFE_SIMULATION.GRAZERS.INITIAL_GRAZER_COUNT
-  
-  // LIFE_SIMULATION.GRAZERS.GRAZER
-  // LIFE_SIMULATION.PREDATORS.INITIAL_PREDATOR_COUNT
-  
-  
-  
-  //  LIFE_SIMULATION.PREDATORS.PREDATOR
-  //  LIFE_SIMULATION.OBSTACLES.INITIAL_OBSTACLE_COUNT
-  //  LIFE_SIMULATION.OBSTACLES.OBSTACLE
-
   callback();
 }
 

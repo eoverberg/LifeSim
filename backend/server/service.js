@@ -131,7 +131,6 @@ router.post('/instructorStore', (req, res) => {
 // initial file upload
 router.post('/initialStore/:userName/:userMod', (req, res) => {
     const userName = req.params.userName;
-    const userMod = req.params.userMod;
     const { avatar } = req.files;
     
     try{

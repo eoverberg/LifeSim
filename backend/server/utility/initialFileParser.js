@@ -29,12 +29,12 @@ function xmlParser(dataFile, toFile){
     let num_obstacles = parseInt(lines[obstacles_start + 2]);
 
     //start string with known data so front doesn't have to calculant
-    let fileString  = lines[3].trim() + data_limiter + 
-                        lines[6].trim() + data_limiter +
-                        lines[11].trim() + data_limiter +
-                        lines[grazers_start + 2].trim() + data_limiter +
-                        lines[predators_start + 2].trim() + data_limiter +
-                        lines[obstacles_start + 2].trim() + data_limiter;
+    let fileString  = lines[3].trim() + data_limiter + //width
+                        lines[6].trim() + data_limiter + //height
+                        lines[11].trim() + data_limiter + //num plants
+                        lines[grazers_start + 2].trim() + data_limiter + //num grazers
+                        lines[predators_start + 2].trim() + data_limiter + //num pred
+                        lines[obstacles_start + 2].trim() + data_limiter; //num obs
     
     //save each line to file for each object
     //only extracts data needed to display

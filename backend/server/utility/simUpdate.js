@@ -52,7 +52,7 @@ function simUpdate(userName, dataFile, toFile){
     }
     let lastString;
     lastString = fileString;
-    let endNum = 4000;
+    let endNum = 400;
     for(let j = 0; j < endNum; j++){
       lines = lastString.split(',');
       let newString = "";

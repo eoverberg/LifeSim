@@ -2,7 +2,7 @@ const fs = require('fs');
 const { XMLParser, XMLBuilder, XMLValidator} = require("fast-xml-parser");
 
 
-function combineXML(studentXML, InstructorXML, saveLocation){
+function combineXML(studentXML, InstructorXML, saveLocation, callback){
 
 const parser = new XMLParser();
 
@@ -158,13 +158,10 @@ const builder = new XMLBuilder(options);
 
 const output = builder.build(studentJSON);
 
-// fs.writeFile(toFile, `${fileString}`, (err) => {
-//   if (err) throw err;
-//   console.log(`${"StatusReset"}`);
-// });
 fs.writeFile(saveLocation, `${output}`, (err) => {
   if (err) throw err;
   console.log(`${"Files Combined"}`);
+  callback();
 }); 
 }
 

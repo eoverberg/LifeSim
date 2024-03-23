@@ -5,8 +5,13 @@ const path = require('path');
 const initialFileParser = require('./utility/initialFileParser');
 const simUpdate = require('./utility/simUpdate');
 const combineXML = require('./utility/combinator');
-const router = express.Router();
+const xmlimporter = require('./utility/xmlToClass');
+const Global = require('../src/Global');
+let tempSim = new Global();
 
+
+
+const router = express.Router();
 router.use(fileUpload({useTempFiles : true, tempFileDir:'/tmp/'}));
 
 //
@@ -141,8 +146,19 @@ router.post('/initialStore/:userName/:userMod', (req, res) => {
             }else{
                 console.log("\nFile Contents of copied_file:");
                 combineXML(oname, './assets/InstructorFile.xml', cname, ()=>{
-                    initialFileParser(fs.readFileSync(cname, "utf8"), path.join("./assets/", `${userName}${userMod}.txt`) );
-                    res.status(200).json({message: 'ok' }); 
+                    console.log('maybe');
+                    xmlimporter(tempSim, cname, ()=>{
+                        console.log("imported xml");
+                        fs.writeFile(path.join("./assets/", `${userName}0.txt`), `${tempSim.printEnts()}`, (err) => {
+                            if (err) throw err;
+                            console.log(`${"wrote initial"}`);
+                            res.status(200).json({message: 'ok' }); 
+                          });
+
+                    } );
+
+                    //initialFileParser(fs.readFileSync(cname, "utf8"), path.join("./assets/", `${userName}${userMod}.txt`) );
+                    
                 })
             }
         });  
@@ -169,5 +185,9 @@ router.post('/getData/:fileName', (req, res) => {
     } 
         
 });
+
+
+
+
 
 module.exports = router;

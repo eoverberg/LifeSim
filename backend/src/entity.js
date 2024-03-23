@@ -5,6 +5,7 @@
         this.zPos = zPos;
         this.lifeTime = lifeTime;   
     }
+    // getters for info
     get x() {return this.xPos;};
     get y() {return this.yPos;};
     get z() {return this.zPos;};
@@ -57,9 +58,7 @@
     }
 }
  class plant extends entity{
-    constructor(xPos,yPos,zPos,lifeTime){
-        super(xPos,yPos,zPos,lifeTime);
-    }
+    // z = height and diameter
 }
  class plantInfo {
     constructor(size,seedAmount,reproductionDistance,seedChance,growthPercent,growthRate){
@@ -72,8 +71,9 @@
     }
 }
 class obstacle extends entity{
-    constructor(xPos,yPos,zPos,lifeTime){
+    constructor(xPos,yPos,zPos,size,lifeTime){
         super(xPos,yPos,zPos,lifeTime);
+        this.size = size;// z = height and size = diameter?
     }
 }
 

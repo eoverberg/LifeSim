@@ -8,8 +8,6 @@ function xmlParser(dataFile, toFile){
     let lines =  dataFile.split('\n');
     console.log(lines.length);
     //map width and height
-    let width = parseFloat(lines[3]);
-    let height = parseFloat(lines[6]);
 
     //basically treat folder as array
     //finds number of each object 

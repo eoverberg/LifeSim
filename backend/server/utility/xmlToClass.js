@@ -14,7 +14,10 @@ function xmlimporter(global, xmlLocation, callback){
     }
   })
   
+  // Converts XML into JSON Data
   let studentJSON = parser.parse(studentData);
+  
+  // Validates Results
   const result = XMLValidator.validate(studentData, {
       allowBooleanAttributes: true
   });
@@ -27,9 +30,7 @@ function xmlimporter(global, xmlLocation, callback){
   });
   console.log(`Student Data Valid: ${result1}`)// throws an error
 
-  //console.log(studentJSON)
-
-  
+  // saves information to the Global object passed in
   global.height = studentJSON.LIFE_SIMULATION.LAND_BOUNDS.WIDTH;
   global.width = studentJSON.LIFE_SIMULATION.LAND_BOUNDS.HEIGHT;
 
@@ -74,8 +75,9 @@ function xmlimporter(global, xmlLocation, callback){
     global.newPredator(predator.X_POS,predator.Y_POS,predator.P_ENERGY_LEVEL,predator.GENOTYPE);
   }
   for (let obstacle of studentJSON.LIFE_SIMULATION.OBSTACLES.OBSTACLE){
-    global.newObs(obstacle.X_POS,obstacle.Y_POS,obstacle.O_DIAMETER);
+    global.newObs(obstacle.X_POS,obstacle.Y_POS,obstacle.O_HEIGHT,obstacle.O_DIAMETER);
   }
+
   callback();
 }
 

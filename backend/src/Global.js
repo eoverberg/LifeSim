@@ -48,13 +48,13 @@ class Global {
         this.predList.push(tmpPredator);
     }
 
-    newObs(x,y,z) {
+    newObs(x,y,z,size) {
         // Create new obstacle and append to list
         //var tools = require("./entity.js");
         //const x = new tools.obstacle(constructor calls from parser);
         //this.plantList.push()
         //Above is a possible method of creating a new obstacle
-        let tmpObs = new obstacle(x,y,z,0);
+        let tmpObs = new obstacle(x,y,z,size,0);
         this.obsList.push(tmpObs);
     }
 
@@ -69,6 +69,7 @@ class Global {
         // we can access worldMatrix[num][num] therefore we can set it to 1 to show something inside.
     }
 
+    // setters for map height and width.
     set width(x) {this.sizeX = x;};    
     set height(y) {this.sizeY = y;};
 

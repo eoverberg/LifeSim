@@ -2,9 +2,9 @@ import { isColliding } from './utilities';
 import Entity from './entity'
 
 class Obstacle extends Entity {
-    constructor(xPos,yPos,zPosm,lifeTime, diameter) {
-        super(xPos,yPos,zPosm,lifeTime);
+    constructor(xPos,yPos,zPos,lifeTime, diameter) {
+        super(xPos,yPos,zPos,lifeTime);
         this.diameter = diameter; // Obstacle size, could allow entities to go around it
-        this.height = zPosm;
+        this.height = zPos;
     }
 }

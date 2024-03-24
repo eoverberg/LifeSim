@@ -1,5 +1,6 @@
-import Entity from './entity'
-class Plant extends Entity {
+import entity from './entity'
+
+class Plant extends entity {
     constructor(xPos,yPos,zPos,lifeTime,growthRate) {
     super(xPos,yPos,zPos, lifeTime);
     this.growthRate = growthRate; //Growth rate for plant

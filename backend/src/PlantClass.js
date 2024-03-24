@@ -1,3 +1,4 @@
+import Entity from './entity'
 class Plant extends Entity {
     constructor(xPos,yPos,zPos,lifeTime,growthRate) {
     super(xPos,yPos,zPos, lifeTime);

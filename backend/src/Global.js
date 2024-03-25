@@ -89,6 +89,164 @@ class Global {
         this.gene = new genes(" ",MAX_SPEED_HOD, MAX_SPEED_HED, MAX_SPEED_HOR);
     }
 
+    updateFunction(){
+        //loop plants
+            // check for being eaten?
+            // check for reproduction/growth 
+                // grow or
+                // add new
+        //loop grazers
+            // check for predators
+            // check for reproduction
+            // check if eating 
+                // if not look for food and move 
+        //loop predators
+            // c
+
+    }
+     /*
+     Finding all with in sight then checking each.
+        predInSight(x,y,predatorArray,disCheck)
+        plantInSight(x,y,plantArray,disCheck)
+        grazersInSight(x,y,grazerArray,disCheck)
+        obsInSight(x,y,ObsArray,disCheck)
+
+        predArray 
+        foodArray
+        obsArray
+        mateArray
+
+        if G
+            predArray = preds
+            foodArray = plants
+            obsArray = grazers & Obs
+            mateArray = {}
+        else
+            if DTF
+                mateArray = pred
+            else 
+                mateArray = {}
+
+            if aa
+                predArray = preds
+                foodArray = grazers
+                obsArray = Obs & plants
+            elif aA
+                predArray = {}    
+                foodArray = grazers
+                obsArray = obs & preds & plants
+            elif AA
+                predArray = {}  
+                foodArray = grazers & preds
+                obsArray = obs & plants
+
+        if predArray.length > 0
+            composite 3 closest preds as target
+            flee and check obs
+        elif mateArray.length > 0
+            closest is target
+        elif foodArray.length > 0
+            closest is target
+        else 
+            wander
+
+    */
+    /*
+    Making an array of all in range
+        for(ent of ArrayIn)
+            tx = ent get x 
+            ty = ent get y
+            distance = sqrt((tx-x)^2 + (ty-y)^2)
+            if distance < discheck
+                returnArray.push(ent)
+    */
+
+    /*
+        if G
+            predArray = preds
+            foodArray = plants
+            obsArray = grazers & Obs
+            mateArray = {}
+        else
+            if DTF
+                mateArray = pred
+            else 
+                mateArray = {}
+
+            if aa
+                predArray = preds
+                foodArray = grazers
+                obsArray = Obs & plants
+            elif aA
+                predArray = {}    
+                foodArray = grazers
+                obsArray = obs & preds & plants
+            elif AA
+                predArray = {}  
+                foodArray = grazers & preds
+                obsArray = obs & plants
+        if predArray.length > 0
+            target(x,y) = find predators
+        if target(x,y) == (0,0) && mate.length>0
+            target(x,y) = find mate
+        if target(x,y) == (0,0) 
+            target(x,y) = find food
+        if target(x,y) == (0,0)
+            target(x,y) = random
+        
+    */            
+    
+    /* 
+    Food || mate:
+        closest = radius;
+        closestX = 0;
+        closestY = 0;
+        for(ent of ArrayIn)
+            tx = ent get x 
+            ty = ent get y
+            distance = sqrt((tx-x)^2 + (ty-y)^2)
+            if distance < closest
+                closestX = tx;
+                closestY = ty;
+                closest = distance;
+        return (closestX, closestY)
+    */
+    /*
+    Predators: combining all pred coordinates in radius 
+        compositePredX = 0.0
+        compositePredY = 0.0
+        for(pred of ArrayIn)
+            tx = pred get x 
+            ty = pred get y
+            distance = sqrt((tx-x)^2 + (ty-y)^2)
+            if distance < discheck
+                compPredX += tx
+                compPredY += ty
+        return (compPredX, compPredX)
+    */
+
+    /*
+    might divide into quadrants 
+        less check but more cpu
+        evey enitity has map
+    or have whole map and just set range of for loop to desired box
+        check every empty 
+        one map for all entity
+    Check LOS
+        Draw Straight line from middle of current entity to edge of target entity
+        Ditto for other edge
+        does line pass through any other plant of popsicle
+        loop through plant and obstacle arrays
+        // better to make these a field, topLeft, topRight, BottLeft, BottRight.
+        check each corner of entity if pass through either line.
+        if pass through line == blocked
+        if both lines blocked == hidden
+        
+        */
+
+
+   
+    
     // outputs string of all entities' information needed to display.
     printEnts(){
         let returnString = this.sizeX+","+this.sizeY+","+this.plantList.length+","+this.grazerList.length+","+this.predList.length+","+this.obsList.length+",";

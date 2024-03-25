@@ -1,7 +1,8 @@
 const fs = require('fs');
 
-function simUpdate(dataFile, toFile){
-    let data_delimiter = '\n';
+function simUpdate(userName, dataFile, toFile){
+  console.log("Sim Update Started")
+    let data_delimiter = ',';
     let lines =  dataFile.split(data_delimiter);
     let num_plants = parseInt(lines[2]);
     let grazers_start = 6 + 3 * num_plants;
@@ -49,11 +50,41 @@ function simUpdate(dataFile, toFile){
       let diameter = parseFloat(lines[obstacles_start+2+3*i]).toString();
       fileString  = fileString.concat(x, data_delimiter, y, data_delimiter, diameter, data_delimiter);
     }
+    let lastString;
+    lastString = fileString;
+    let endNum = 400;
+    for(let j = 0; j < endNum; j++){
+      lines = lastString.split(',');
+      let newString = "";
+      for (let i = 0; i < predators_start; i++){
+           newString = newString.concat(lines[i], data_delimiter);
+      }
+      for (let i = 0; i < num_predators; i++)
+      {
+        let x_direction = (Math.floor(Math.random() * 5) - 2) * 5 ;
+        let y_direction = (Math.floor(Math.random() * 5) - 2) * 5 ;
+        let x = (parseInt(lines[predators_start+2*i])+x_direction).toString();
+        let y = (parseInt(lines[predators_start+1+2*i])+y_direction).toString();
+        newString  = newString.concat(x, data_delimiter, y, data_delimiter);
+      }
+      for (let i = obstacles_start; i < lines.length - 1; i++){
+        newString = newString.concat(lines[i], data_delimiter);
+      }
+      newString = newString.concat(lines[lines.length - 1]);
+      if (j === endNum-1){
+        fs.writeFile(`assets/${userName}0.txt`, newString, (err) => {
+          if (err) throw err;
+          console.log("StartFileUpdated");
+        });
+      }
+      fileString = fileString.concat('\n', newString);
+      lastString = newString;
+    } 
 
     //writes whole string to file
     fs.writeFile(`assets/${toFile}.txt`, fileString, (err) => {
         if (err) throw err;
-        console.log(`${"StatusReset"}`);
+        console.log(`${"SimulationUpdated"}`);
       });
 };
 

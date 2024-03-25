@@ -1,4 +1,6 @@
+// used to set and store values to the users local storage
 import {useState, useEffect} from "react";
+
 
 function getStorageValue(key, defaultValue) {
     const saved = localStorage.getItem(key);

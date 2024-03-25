@@ -5,6 +5,10 @@
         this.zPos = zPos;
         this.lifeTime = lifeTime;   
     }
+    // getters for info
+    get x() {return this.xPos;};
+    get y() {return this.yPos;};
+    get z() {return this.zPos;};
 }
  class genes{
     constructor(geneString, initMaxHOD,initMaxHED,initMaxHOR){
@@ -13,6 +17,7 @@
         this.initMaxHED = initMaxHED; 
         this.initMaxHOR = initMaxHOR; 
     }
+    set geneotype(gString){this.geneString = gString} 
 }
  class predator extends entity{
     constructor(xPos,yPos,zPos,lifeTime,energy,geneObj){
@@ -24,11 +29,14 @@
     }
 }
  class predatorInfo {
-    constructor(energyIn,energyOut,energytoReproduce,maxOffsprings){
+    constructor(maintainSpeed, energyIn,energyOut,energytoReproduce,maxOffsprings, gestationTime, offSpringEnergy){
+        this.maintainSpeed = maintainSpeed;
         this.energyIn = energyIn;
         this.energyOut = energyOut;
         this.energytoReproduce = energytoReproduce;
         this.maxOffsprings = maxOffsprings;
+        this.gestationTime = gestationTime
+        this.offSpringEnergy = offSpringEnergy;
 
     }
 }
@@ -41,7 +49,8 @@
     }
 }
  class grazerInfo {
-    constructor(maxSpeed,energyIn,energyOut,energytoReproduce){
+    constructor(maxSpeed, maintain_speed, energyIn,energyOut,energytoReproduce){
+        this.maintain_speed = maintain_speed;
         this.maxSpeed = maxSpeed;
         this.energyIn = energyIn;
         this.energyOut = energyOut;
@@ -49,9 +58,7 @@
     }
 }
  class plant extends entity{
-    constructor(xPos,yPos,zPos,lifeTime){
-        super(xPos,yPos,zPos,lifeTime);
-    }
+    // z = height and diameter
 }
  class plantInfo {
     constructor(size,seedAmount,reproductionDistance,seedChance,growthPercent,growthRate){
@@ -64,9 +71,10 @@
     }
 }
 class obstacle extends entity{
-    constructor(xPos,yPos,zPos,lifeTime){
+    constructor(xPos,yPos,zPos,size,lifeTime){
         super(xPos,yPos,zPos,lifeTime);
+        this.size = size;// z = height and size = diameter?
     }
 }
 
-module.exports = {entity,genes,plant,plantInfo,predator,predatorInfo,obstacle};
+module.exports = {entity,genes,plant,plantInfo,grazer,grazerInfo,predator,predatorInfo,obstacle};

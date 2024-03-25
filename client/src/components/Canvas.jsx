@@ -1,3 +1,5 @@
+// draws simulation to screen
+
 import { useRef, useEffect } from 'react';
 
 
@@ -36,7 +38,7 @@ function drawCircle(ctx, x1, y1, d1, bColor)
   ctx.stroke();
 };
     
-function Canvas({file_name, runflag, displayData}) {
+function Canvas({displayData}) {
 
   const canvasRef = useRef(null); 
 
@@ -45,7 +47,7 @@ function Canvas({file_name, runflag, displayData}) {
     //reference
     const canvas = canvasRef.current;
     const context = canvas.getContext('2d');
-    let lines = displayData.split('\n');
+    let lines = displayData.split(',');
     context.canvas.width = parseFloat(lines[0]);;
     context.canvas.height = parseFloat(lines[1]);
     context.canvas.style = "border:1px solid #000000;";

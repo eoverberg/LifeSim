@@ -4,11 +4,12 @@ function StudentAdder({setRoster, roster}){
     const newName = createRef(null);   
     
     function onSubmit(e){
-      let new_roster = roster.concat(',', newName.current.value);
+      if(newName.current.value !== '')
+      {let new_roster = roster.concat(',', newName.current.value);
       setRoster(new_roster);
         fetch(`/service/setRoster/${new_roster}`,{
           method: "POST",
-        }); 
+        }); }
     }
 
     return (

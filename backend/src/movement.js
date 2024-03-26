@@ -10,7 +10,9 @@ function seek(entity, target) {
     
     // Calculate the steering force as the difference between the desired velocity and the entity's current velocity.
     let steeringForce = subtractVectors(desiredVelocity, entity.velocity);
-    
+    // Change the energy for each time it seeks
+    entity.energy = entity.energy - 5;
+
     // Return the steering force which will adjust the entity's velocity in the next update.
     return steeringForce;
 }
@@ -26,6 +28,8 @@ function flee(entity, target) {
     // The steering force is the difference between desired velocity and current velocity
     let steeringForce = subtractVectors(desiredVelocity, entity.velocity);
 
+    // Change the energy for each time it flees
+    entity.energy = entity.energy - 5;
     // Return the computed steering force to adjust the entity's velocity away from the target
     return steeringForce;
 }
@@ -41,9 +45,9 @@ function wander(entity) {
     entity.target = entity.target || [...entity.position]; 
 
     // Add a small random vector to the target's position
-    let randomDisplcement = [
-    entity.wanderTarget[0] += Math.random() * wanderJitter - wanderJitter * 0.5;
-    entity.wanderTarget[1] += Math.random() * wanderJitter - wanderJitter * 0.5;
+    let randomDisplacement = [
+    entity.wanderTarget[0] += Math.random() * wanderJitter - wanderJitter * 0.5,
+    entity.wanderTarget[1] += Math.random() * wanderJitter - wanderJitter * 0.5
     ];
     randomDisplacement = normalize(randomDisplacement);
     randomDisplacement = multiplyVector(randomDisplacement, wanderRadius);
@@ -70,6 +74,9 @@ function directMovement(entity, direction) {
 
     // Calculate the steering force required to align the entity's current velocity with the desired velocity
     let steeringForce = subtractVectors(desiredVelocity, entity.velocity);
+
+    // Change the energy for each time it seeks
+    entity.energy = entity.energy - 5;
     return steeringForce;
 }
 

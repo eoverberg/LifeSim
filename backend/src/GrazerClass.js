@@ -4,6 +4,7 @@ class Grazer extends Entity {
     constructor(xPos, yPos, zPos, lifeTime, energy){
         super(xPos, yPos, zPos, lifeTime); //inherits properties defined in entity constructor
         this.energy = energy; // energy level of grazer
+        this.orientation = Math.random() * 2 * Math.PI; //initilizes orientation with random angle
     }
 
     //Similates grazer eating plant and gaining energy

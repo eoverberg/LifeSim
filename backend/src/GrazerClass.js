@@ -1,3 +1,5 @@
+import Entity from './entity'
+ 
 class Grazer extends Entity {
     constructor(xPos, yPos, zPos, lifeTime, energy){
         super(xPos, yPos, zPos, lifeTime); //inherits properties defined in entity constructor

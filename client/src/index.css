@@ -5,9 +5,20 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  background-color: #ffe4c4;
+  padding: 0;
 }
-
+.title {
+  text-align: center;
+  margin-top: 50px; /* Adjust as needed */
+  color: #333; /* You can change #333 to any color you prefer */
+}
+.bordered-component {
+  border: 2px solid #ccc; /* You can adjust border properties as needed */
+  padding: 20px; /* Optional: Add padding for better spacing */
+}
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+

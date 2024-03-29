@@ -9,9 +9,13 @@ class Predator extends entity {
 
     hunt(grazersArray) {
         //find the closest grazer
+        let visibilityRange = 50; //predators can only see grazers in this range
         let closestGrazer = grazersArray.reduce((closest, grazer) => {
             const distance = this.distanceTo(grazer);
+            if (distance <= visibilityRange) {
             return (closest === null || distance < this.distanceTo(closest)) ? grazer : closest; //finds closest grazer to predator
+            }
+            return closest; 
         }, null);
 
         //move towards the closest grazer 

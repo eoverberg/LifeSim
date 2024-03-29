@@ -22,7 +22,7 @@
     }
     set geneotype(gString) 
     {
-        if (gString.length>0)
+        if (gString)
         {
             let gArray = gString.split(' ');
             this.Speed = gArray[1];

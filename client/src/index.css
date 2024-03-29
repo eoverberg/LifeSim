@@ -14,6 +14,7 @@ body {
                     blue,
                     green,
                     red);
+            background-clip: text ;
             -webkit-background-clip: text;
             color: transparent; 
 }
@@ -29,6 +30,7 @@ body {
                     yellow,
                     orange,
                     red);
+            background-clip: text ;
             -webkit-background-clip: text;
             color: transparent; 
 }

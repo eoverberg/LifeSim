@@ -5,9 +5,11 @@ import {Outlet, Link} from "react-router-dom";
 const Layout = () => {
     return (
         <>
-        <Link to ="Instructor">Instructor</Link><p></p>
-        <Link to ="Review">Top Scores</Link><p></p>
-        <Link to ="Student">Student</Link>        
+        <h1 class ="title"><p>Welcome to LifeSimulation</p></h1>
+        <Link to ="Home">Home</Link><h2></h2>
+        <Link to ="Instructor">Instructor</Link><h2></h2>
+        <Link to ="Review">Top Scores</Link><h2></h2>
+        <Link to ="Student">Student</Link><h2></h2>       
         <Outlet/>
         </>
     )

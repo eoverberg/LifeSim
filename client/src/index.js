@@ -15,7 +15,8 @@ root.render(
     <BrowserRouter>
     <Routes>
     <Route path="/" element={<Layout/>}>
-      <Route index element={<Welcome/>}/>
+      <Route index element={<Welcome/>}/>  
+      <Route path="/Home" element={<Welcome/>}/>    
       <Route path="/Review" element={<Review/>}/>
       <Route path="/Student" element={<StudentInitial/>}/>
       <Route path="/Student/*" element={<StudentSimulation/>}/>

@@ -18,7 +18,7 @@ const StudentSimulation = () => {
     const [intervalTime, setIntervalTime] = useLocalStorage("interval_time", 1000)
     return (
         <>
-        <h1>{name}</h1>
+        <h1>{name} </h1>
         <FileUpload 
         name={name}
         nameMod={nameMod}

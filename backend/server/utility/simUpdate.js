@@ -1,3 +1,4 @@
+// TEMPORARY SHIT
 const fs = require('fs');
 
 function simUpdate(userName, dataFile, toFile){

@@ -4,8 +4,14 @@ const fs = require('fs');
 const path = require('path');
 const initialFileParser = require('./utility/initialFileParser');
 const simUpdate = require('./utility/simUpdate');
-const router = express.Router();
+const combineXML = require('./utility/combinator');
+const xmlimporter = require('./utility/xmlToClass');
+const Global = require('../src/Global');
+let tempSim = new Global();
 
+
+
+const router = express.Router();
 router.use(fileUpload({useTempFiles : true, tempFileDir:'/tmp/'}));
 
 //
@@ -52,21 +58,35 @@ router.post('/setRoster/:roster', (req, res) => {
     }
 
 })
+// returns the text from the roster file
+router.post('/getBuffer/:fileName', (req, res) => {
+    const fileName = req.params.fileName; 
+    try{
+        console.log("in buffer getter");
+    fs.readFile(path.join("./assets/", `${fileName}.txt`), 'utf8',( error, buffer) => {    
+    res.send(buffer);
+    //res.status(200).json({message: 'ok' });
+});
+    }catch (e) {
+       //res.status(500).json({message: e.message });
+    }
 
+})
 
 //
 // updates the data file
-router.post('/nextUpdate/:name/:userMod/:fileName', (req, res) => {
+router.post('/nextUpdate/:name/:userMod/', (req, res) => {
     const userName = req.params.name;
     const userMod = req.params.userMod;
-    const fileName = req.params.fileName;
     try{
-        console.log(fileName);
+        //console.log(fileName);
         //const nam = userMod + fileName;
         //let pName = path.join('./assets',  );
         const newFile = userName.concat(userMod);
-        console.log(newFile);
-        simUpdate(fs.readFileSync(`assets/${fileName}.txt`, "utf8"), newFile );
+        const zeroFile = userName.concat("0");
+        console.log("Update Start");
+        simUpdate(userName, fs.readFileSync(`assets/${zeroFile}.txt`, "utf8"), newFile );
+        console.log("Update Done");
         res.status(200).json({message: 'ok' });
     }catch (e) {
         res.status(500).json({message: e.message });
@@ -86,27 +106,59 @@ router.post('/remove/:fileName', (req, res) => {
     } 
 });
 
-
-//
 // initial file upload
-router.post('/intialStore/:userName/:userMod', (req, res) => {
-    const userName = req.params.userName;
-    const userMod = req.params.userMod;
+router.post('/instructorStore', (req, res) => {
     const { avatar } = req.files;
     
     try{
-        console.log(userName);
         console.log(avatar.name);
-        const nam = userMod + avatar.name;
-        let pName = path.join('./assets', nam );
+        let pName = path.join('./assets/InstructorFile.xml' );
         console.log(pName);
         fs.copyFile(avatar.tempFilePath, pName, (err) => {
             if (err){
                 console.log("Error Found: ", err);
             }else{
-                console.log("\nFile Contents of copied_file:");
-                initialFileParser(fs.readFileSync(pName, "utf8"), path.join("./assets/", `${userName}${userMod}.txt`) );
                 res.status(200).json({message: 'ok' });  
+            }
+        });  
+    }catch (e) {
+        res.status(500).json({message: e.message });
+    } 
+
+});
+
+//
+// initial file upload
+router.post('/initialStore/:userName/:userMod', (req, res) => {
+    const userName = req.params.userName;
+    const { avatar } = req.files;
+    
+    try{
+        console.log(userName);
+        console.log(avatar.name);
+        const oname = "./assets/" + avatar.name;
+        const cname = "./assets/combined" + avatar.name;
+        console.log(oname);
+        fs.copyFile(avatar.tempFilePath, oname, (err) => {
+            if (err){
+                console.log("Error Found: ", err);
+            }else{
+                console.log("\nFile Contents of copied_file:");
+                combineXML(oname, './assets/InstructorFile.xml', cname, ()=>{
+                    console.log('maybe');
+                    xmlimporter(tempSim, cname, ()=>{
+                        console.log("imported xml");
+                        fs.writeFile(path.join("./assets/", `${userName}0.txt`), `${tempSim.printEnts()}`, (err) => {
+                            if (err) throw err;
+                            console.log(`${"wrote initial"}`);
+                            res.status(200).json({message: 'ok' }); 
+                          });
+
+                    } );
+
+                    //initialFileParser(fs.readFileSync(cname, "utf8"), path.join("./assets/", `${userName}${userMod}.txt`) );
+                    
+                })
             }
         });  
     }catch (e) {
@@ -132,5 +184,9 @@ router.post('/getData/:fileName', (req, res) => {
     } 
         
 });
+
+
+
+
 
 module.exports = router;

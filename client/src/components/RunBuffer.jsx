@@ -24,7 +24,7 @@ function RunBuffer({runFlag,setRunFlag, buffer, setBuffer, bufferA, bufferLine, 
             setData(bufferData[bufferLine]);
             setBufferLine(bufferLine+1);
             // local storage can hold between 4000 and 5000 in initial testing
-            if(bufferLine >= 4000 ){
+            if(bufferLine >= 400 ){
               setBuffer(bufferA);
               setBufferLine(1);
               setBufferFlag(true);

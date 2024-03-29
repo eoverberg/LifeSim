@@ -16,17 +16,40 @@
         this.initMaxHOD = initMaxHOD; 
         this.initMaxHED = initMaxHED; 
         this.initMaxHOR = initMaxHOR; 
+        this.Aggro ="";
+        this.Speed ="";
+        this.Strength ="";
     }
-    set geneotype(gString){this.geneString = gString} 
+    set geneotype(gString) 
+    {
+        if (gString)
+        {
+            let gArray = gString.split(' ');
+            this.Speed = gArray[1];
+            this.Aggro = gArray[0];
+            this.Strength = gArray[2];
+        }
+        this.geneString = gString; 
+    } 
+
+    get geneotype(){return this.geneString}
+    get speed(){return this.Speed}
+    get aggro(){return this.Aggro}
+    get strength(){return this.Strength}
 }
  class predator extends entity{
     constructor(xPos,yPos,zPos,lifeTime,energy,geneObj){
         super(xPos,yPos,zPos,lifeTime);
         this.currentSpeed = 0;
         this.energy = energy;
-        this.genesObj = geneObj;
         this.orientation = 0.0;
+        this.mating = false;
+        this.genesObj = geneObj;
     }
+    get geneo(){return this.genesObj}
+    get aggro(){return this.genesObj.Aggro};
+    get speed(){return this.genesObj.Speed};
+    get strength(){return this.genesObj.Strength};
 }
  class predatorInfo {
     constructor(maintainSpeed, energyIn,energyOut,energytoReproduce,maxOffsprings, gestationTime, offSpringEnergy){

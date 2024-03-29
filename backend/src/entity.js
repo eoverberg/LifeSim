@@ -17,7 +17,7 @@
         this.initMaxHED = initMaxHED; 
         this.initMaxHOR = initMaxHOR; 
     }
-    set geneotype(gString){this.geneString = gString} 
+    set geneotype(gString) {this.geneString = gString} 
 }
  class predator extends entity{
     constructor(xPos,yPos,zPos,lifeTime,energy,geneObj){
@@ -26,6 +26,7 @@
         this.energy = energy;
         this.genesObj = geneObj;
         this.orientation = 0.0;
+        this.mating = false;
     }
 }
  class predatorInfo {

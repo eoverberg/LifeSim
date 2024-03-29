@@ -13,7 +13,8 @@ class Global {
         this.predList = [];
         this.grazerList = [];
         this.obsList = [];
-        //this.worldMatrix;
+        this.worldMatrix = [];
+        this.gene = new genes();
     }
 
     newPlant(x,y,z) {
@@ -24,7 +25,6 @@ class Global {
         //Above is a possible method of creating a new plant
         let tmpPlant = new plant(x,y,z,0);
         this.plantList.push(tmpPlant);
-
     }
 
     newGrazer(x,y,z,energy) {
@@ -56,7 +56,7 @@ class Global {
         //Above is a possible method of creating a new obstacle
         let tmpObs = new obstacle(x,y,z,size,0);
         this.obsList.push(tmpObs);
-    }
+        }
 
     initializeWorld() {
         // Implement initializeWorld method logic here ((sizeX and sizeY) -1 is bounds)
@@ -89,163 +89,160 @@ class Global {
         this.gene = new genes(" ",MAX_SPEED_HOD, MAX_SPEED_HED, MAX_SPEED_HOR);
     }
 
-    updateFunction(){
-        //loop plants
-            // check for being eaten?
-            // check for reproduction/growth 
-                // grow or
-                // add new
-        //loop grazers
-            // check for predators
-            // check for reproduction
-            // check if eating 
-                // if not look for food and move 
-        //loop predators
-            // c
 
+    // parameters: 
+    //      source (x,y) 
+    //      difference in source and target(x,y)
+    //      distance betweeen source and target
+    //      list of entities that could block LOS
+    // returns true if an obstacle is between target and source
+    checkLOS(sX,sY,xDiff,yDiff,distance,obstacles)
+    {
+        // flag if LOS is blocked
+        let blocked = false;
+        // iterate through obstacles and check if it is blocking LOS
+        for(let obstacle of obstacles) 
+        {
+        // find closest point on line of sight to obstacle     
+        let position = ((obstacle.x-sX)*(xDiff)+(obstacle.y-sY)*(yDiff))/distance;
+        // if 0 or 1 obstacle is closest to target or source and not blocking los
+        if (position < 1 && position > 0)
+        {
+            // find closest (x,y) on line to obstacle  
+            let lineX = sX+(position*(xDiff));
+            let lineY = sY+(position*(yDiff));
+            // find distance from obstacle to line
+            let distoLine =(obstacle.x-lineX)**2+(obstacle.y-lineY)**2;
+            // if distance is less than obstacle radius, it is blocking line of sight 
+            if (distoLine <= obstacle.z)
+            {
+                blocked = true;
+            }        
+        }
+        // if any obstacle is blocking LOS, exit for loop
+        if(blocked)
+            {
+                break;
+            }
+        } // for loop 
+        return blocked;
     }
-     /*
-     Finding all with in sight then checking each.
-        predInSight(x,y,predatorArray,disCheck)
-        plantInSight(x,y,plantArray,disCheck)
-        grazersInSight(x,y,grazerArray,disCheck)
-        obsInSight(x,y,ObsArray,disCheck)
 
-        predArray 
-        foodArray
-        obsArray
-        mateArray
+    findPredator(sX,sY,distance)
+    {
+        // distance squared so square root is never needed
+        let discheck = (distance)**2;
+        let targetX = 0;
+        let targetY = 0;
+        // loop through list of predators, list should never change
+        for(let pred of this.predList)
+        {
+            // (x,y) difference is used a lot in checkLOS
+            let xDiff = pred.x-sX;
+            let yDiff = pred.y-sY;
+            // check if predator is within LOS
+            let distance2 = (xDiff)**2 + (yDiff)**2;
+            if (distance2 < discheck)
+            { 
+                // check any obstacle or plant is blocking LOS
 
-        if G
-            predArray = preds
-            foodArray = plants
-            obsArray = grazers & Obs
-            mateArray = {}
-        else
-            if DTF
-                mateArray = pred
-            else 
-                mateArray = {}
+                if(this.checkLOS(sX,sY,xDiff,yDiff,distance2,this.obsList))
+                {
+                    continue; // next predator if blocking
+                }
+                if (this.checkLOS(sX,sY,xDiff,yDiff,distance2,this.plantList))
+                {
+                    continue; // next predator if blocking
+                }
+                // suppose to be the aggregate of all predators so prey doesn't run to another pred.
+                // if two on opposite sides, sum is (0,0), need to go 90. linear Algebra might be able to help
+                targetX += xDiff;
+                targetY += yDiff;
+            }
+        }
+        targetX += sX;
+        targetY += sY
+        return [targetX, targetY];
+    }
 
-            if aa
-                predArray = preds
-                foodArray = grazers
-                obsArray = Obs & plants
-            elif aA
-                predArray = {}    
-                foodArray = grazers
-                obsArray = obs & preds & plants
-            elif AA
-                predArray = {}  
-                foodArray = grazers & preds
-                obsArray = obs & plants
+    // source(x,y)
+    // list of possible targets
+    // list of possible obstacle blocking LOS
+    // distance to check
+    // returns closest target (x,y) in entities list
+    findClosest(sX, sY, entities, obstructions, distance)
+    {
+        let targetX = 0;
+        let targetY = 0;
+        // closest distance to source, starts at LOS
+        let discheck = (distance)**2;
+        for(let ent of entities)
+        {
+            let xDiff = ent.x-sX;
+            let yDiff = ent.y-sY;
+            let distance2 = (xDiff)**2 + (yDiff)**2;
+            // check if closest
+            if (distance2 < discheck)
+            {   
+                // ent is closest then change distance to check and return (x,y) to ent
+                if(this.checkLOS(sX,sY,xDiff,yDiff,distance,obstructions)) 
+                {
+                    discheck = distance;
+                    targetX = ent.x;
+                    targetY = ent.y
+                }
+            }
+        }
+        return [targetX, targetY];   
+    }
 
-        if predArray.length > 0
-            composite 3 closest preds as target
-            flee and check obs
-        elif mateArray.length > 0
-            closest is target
-        elif foodArray.length > 0
-            closest is target
-        else 
-            wander
+    // return [x,y, movementEnum  ]
+    // 0 = flee, 1 = pursuem, 2 = wander 
+    getGrazerTarget(gX,gY)
+    {
+        let grazerPredSight = 25;
+        let grazerFoodSight = 150;
+        // find predator in sight.
+        let target = this.findPredator(gX,gY,grazerPredSight)
+        // if return value goes nowhere find food
+        if (target[0]!==0&& target[1]!==0)
+        {return target.push(0);}
+        // no predator to flee, search for food
+        target = this.findClosest(gX,gY,this.plantList,this.obsList,grazerFoodSight)
+        if (target[0]!==0&& target[1]!==0)
+        {
+            return target.push(1);
+        }else{
+            return target.push(2);
+        }
+    }    
 
-    */
-    /*
-    Making an array of all in range
-        for(ent of ArrayIn)
-            tx = ent get x 
-            ty = ent get y
-            distance = sqrt((tx-x)^2 + (ty-y)^2)
-            if distance < discheck
-                returnArray.push(ent)
-    */
-
-    /*
-        if G
-            predArray = preds
-            foodArray = plants
-            obsArray = grazers & Obs
-            mateArray = {}
-        else
-            if DTF
-                mateArray = pred
-            else 
-                mateArray = {}
-
-            if aa
-                predArray = preds
-                foodArray = grazers
-                obsArray = Obs & plants
-            elif aA
-                predArray = {}    
-                foodArray = grazers
-                obsArray = obs & preds & plants
-            elif AA
-                predArray = {}  
-                foodArray = grazers & preds
-                obsArray = obs & plants
-        if predArray.length > 0
-            target(x,y) = find predators
-        if target(x,y) == (0,0) && mate.length>0
-            target(x,y) = find mate
-        if target(x,y) == (0,0) 
-            target(x,y) = find food
-        if target(x,y) == (0,0)
-            target(x,y) = random
-        
-    */            
-    
-    /* 
-    Food || mate:
-        closest = radius;
-        closestX = 0;
-        closestY = 0;
-        for(ent of ArrayIn)
-            tx = ent get x 
-            ty = ent get y
-            distance = sqrt((tx-x)^2 + (ty-y)^2)
-            if distance < closest
-                closestX = tx;
-                closestY = ty;
-                closest = distance;
-        return (closestX, closestY)
-    */
-    /*
-    Predators: combining all pred coordinates in radius 
-        compositePredX = 0.0
-        compositePredY = 0.0
-        for(pred of ArrayIn)
-            tx = pred get x 
-            ty = pred get y
-            distance = sqrt((tx-x)^2 + (ty-y)^2)
-            if distance < discheck
-                compPredX += tx
-                compPredY += ty
-        return (compPredX, compPredX)
-    */
-
-    /*
-    might divide into quadrants 
-        less check but more cpu
-        evey enitity has map
-    or have whole map and just set range of for loop to desired box
-        check every empty 
-        one map for all entity
-    Check LOS
-        Draw Straight line from middle of current entity to edge of target entity
-        Ditto for other edge
-        does line pass through any other plant of popsicle
-        loop through plant and obstacle arrays
-        // better to make these a field, topLeft, topRight, BottLeft, BottRight.
-        check each corner of entity if pass through either line.
-        if pass through line == blocked
-        if both lines blocked == hidden
-        
-        */
-
-
-   
+    // return [x,y, movementEnum  ]
+    // 0 = flee, 1 = pursuem, 2 = wander 
+    getPedatorTarget(pred){
+        let predatorSight = 150;
+        let targets = [];
+        let obstructions = [];
+        let target= [0,0];
+        obstructions = obstructions.concat(this.obsList, this.plantList);
+        if(!pred.mating && "aa"){
+            targets = targets.concat(this.grazerList);
+            target = this.findPredator(pred.x,pred.y,predatorSight);
+            if (target[0]!==0&& target[1]!==0)
+            {return target.push(0);}
+        }else if(!pred.mating && "Aa"){
+            targets = targets.concat(this.grazerList);
+        }else{
+              targets = targets.concat(this.predList,this.grazerList);
+        }
+        target = this.findClosest(pred.x,pred.y,targets,obstructions,predatorSight)
+        if (target[0]!==0&& target[1]!==0)
+        {
+            return target.push(1);
+        }else{
+            return target.push(2);
+        }
+    }
     
     // outputs string of all entities' information needed to display.
     printEnts(){

@@ -1,6 +1,6 @@
-import Entity from './entity'
+import entity from './entity'
  
-class Grazer extends Entity {
+class Grazer extends entity {
     constructor(xPos, yPos, zPos, lifeTime, energy){
         super(xPos, yPos, zPos, lifeTime); //inherits properties defined in entity constructor
         this.energy = energy; // energy level of grazer

@@ -44,7 +44,7 @@ class Global {
         //this.plantList.push()
         //Above is a possible method of creating a new plant
         this.gene.geneotype = geneString;
-        let tmpPredator = new predator(x,y,z,energy,this.gene);
+        let tmpPredator = new predator(x,y,z,0,energy,{...this.gene});
         this.predList.push(tmpPredator);
     }
 
@@ -134,6 +134,8 @@ class Global {
         let discheck = (distance)**2;
         let targetX = 0;
         let targetY = 0;
+        let sumX = 0;
+        let sumY = 0;
         // loop through list of predators, list should never change
         for(let pred of this.predList)
         {
@@ -142,7 +144,7 @@ class Global {
             let yDiff = pred.y-sY;
             // check if predator is within LOS
             let distance2 = (xDiff)**2 + (yDiff)**2;
-            if (distance2 < discheck)
+            if (distance2 < discheck && distance2 !== 0)
             { 
                 // check any obstacle or plant is blocking LOS
 
@@ -154,15 +156,13 @@ class Global {
                 {
                     continue; // next predator if blocking
                 }
-                // suppose to be the aggregate of all predators so prey doesn't run to another pred.
-                // if two on opposite sides, sum is (0,0), need to go 90. linear Algebra might be able to help
-                targetX += xDiff;
-                targetY += yDiff;
+                sumX += xDiff;
+                sumY += yDiff;
+                targetX = sumX + sX;
+                targetY = sumY + sY;
             }
         }
-        targetX += sX;
-        targetY += sY
-        return [targetX, targetY];
+        return [targetX, targetY, 0];
     }
 
     // source(x,y)
@@ -170,7 +170,7 @@ class Global {
     // list of possible obstacle blocking LOS
     // distance to check
     // returns closest target (x,y) in entities list
-    findClosest(sX, sY, entities, obstructions, distance)
+    findClosest(sX, sY, entities, obstructions, distance, smellDistance)
     {
         let targetX = 0;
         let targetY = 0;
@@ -182,18 +182,19 @@ class Global {
             let yDiff = ent.y-sY;
             let distance2 = (xDiff)**2 + (yDiff)**2;
             // check if closest
-            if (distance2 < discheck)
+            
+            if (distance2 < discheck && distance2 !== 0)
             {   
-                // ent is closest then change distance to check and return (x,y) to ent
-                if(this.checkLOS(sX,sY,xDiff,yDiff,distance,obstructions)) 
+                // ent is closest then change distance to check and return (x,y) to ent(distance2<smellDistance) || 
+                if(!this.checkLOS(sX,sY,xDiff,yDiff,distance2,obstructions)) 
                 {
-                    discheck = distance;
+                    discheck = distance2;
                     targetX = ent.x;
                     targetY = ent.y
                 }
             }
         }
-        return [targetX, targetY];   
+        return [targetX, targetY, 0];   
     }
 
     // return [x,y, movementEnum  ]
@@ -202,45 +203,60 @@ class Global {
     {
         let grazerPredSight = 25;
         let grazerFoodSight = 150;
+        let grazerSmell = 0;
         // find predator in sight.
         let target = this.findPredator(gX,gY,grazerPredSight)
+        target[2] = 0;
         // if return value goes nowhere find food
-        if (target[0]!==0&& target[1]!==0)
-        {return target.push(0);}
+        if (target[0]!==0 || target[1]!==0)
+        {return target;}
         // no predator to flee, search for food
-        target = this.findClosest(gX,gY,this.plantList,this.obsList,grazerFoodSight)
-        if (target[0]!==0&& target[1]!==0)
+        target = this.findClosest(gX,gY,this.plantList,this.obsList,grazerFoodSight,grazerSmell)
+        if ((target[0]===0) && (target[1]===0))
         {
-            return target.push(1);
+            target[2] = 2;
+            return target;
         }else{
-            return target.push(2);
+            target[2] = 1;
+            return target;
         }
     }    
 
     // return [x,y, movementEnum  ]
     // 0 = flee, 1 = pursuem, 2 = wander 
-    getPedatorTarget(pred){
+    getPredatorTarget(pred){
+        console.log(pred.x + ',' + pred.y)
         let predatorSight = 150;
+        let predatorSmell = 150;
         let targets = [];
         let obstructions = [];
         let target= [0,0];
         obstructions = obstructions.concat(this.obsList, this.plantList);
-        if(!pred.mating && "aa"){
+        if(!pred.mating && pred.aggro === "aa")
+        {
+            console.log("start aa")
             targets = targets.concat(this.grazerList);
             target = this.findPredator(pred.x,pred.y,predatorSight);
-            if (target[0]!==0&& target[1]!==0)
-            {return target.push(0);}
-        }else if(!pred.mating && "Aa"){
+            if (target[0]!==0 || target[1]!==0)
+            {   
+                target[2] = 0;
+                return target;
+            }
+        }
+        else if(!pred.mating && pred.Aggro === "Aa"){
             targets = targets.concat(this.grazerList);
-        }else{
+        }
+        else{//if pred is mating. "AA" always targets other predators
               targets = targets.concat(this.predList,this.grazerList);
         }
-        target = this.findClosest(pred.x,pred.y,targets,obstructions,predatorSight)
+        target = this.findClosest(pred.x,pred.y,targets,obstructions,predatorSight,predatorSmell)
         if (target[0]!==0&& target[1]!==0)
         {
-            return target.push(1);
+            target[2] = 1;
+            return target;
         }else{
-            return target.push(2);
+            target[2] = 2;
+            return target;
         }
     }
     

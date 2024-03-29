@@ -8,14 +8,33 @@ body {
   background-color: #ffe4c4;
   padding: 0;
 }
+.style{
+  font-size: 25px;
+  background: linear-gradient(to left,
+                    blue,
+                    green,
+                    red);
+            -webkit-background-clip: text;
+            color: transparent; 
+}
 .title {
   text-align: center;
+  font-size: 75px;
   margin-top: 50px; /* Adjust as needed */
-  color: #333; /* You can change #333 to any color you prefer */
+  background: linear-gradient(to left,
+                    violet,
+                    indigo,
+                    blue,
+                    green,
+                    yellow,
+                    orange,
+                    red);
+            -webkit-background-clip: text;
+            color: transparent; 
 }
 .bordered-component {
-  border: 2px solid #ccc; /* You can adjust border properties as needed */
-  padding: 20px; /* Optional: Add padding for better spacing */
+
+  background-color: #ffffff;
 }
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',

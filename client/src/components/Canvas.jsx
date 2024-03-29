@@ -91,7 +91,7 @@ function Canvas({displayData}) {
   }, [displayData]);
 
   return (<>
-    <canvas ref={canvasRef} />
+    <canvas ref={canvasRef} class = "bordered-component"  />
     </>
   );
 

@@ -1,0 +1,107 @@
+CS 499 Senior Project
+Project Assignment
+Life Simulation Life Form Behavior Rules
+
+Notes
+Terms shown in all caps inside of angle brackets (<>) are the XML tag names in the sample simulation data file.
+
+Plant
+Plants grow from seeds in a hemispherical form, that is, it will be as high as the radius of its circular area on the ground. 
+A plant seed will begin growing 10 seconds of simulation time after it is ejected from its’ parent. 
+  In this first growth it will start with a radius of 1/100 of a DU.
+A plant grows at a rate defined in a simulation data file (<GROWTH_RATE>) as a fraction of its’ maximum size.
+The maximum size of a plant is defined in a simulation data file (<MAX_SIZE>).
+The plant continues to grow until it reaches its maximum size after which every hour of simulation time it will produce a seedpod which will pop spreading a random number of seeds. 
+  The maximum number of seeds that can be produced is defined in a simulation data file (<MAX_SEED_NUMBER>).  
+  The seeds will be distributed in a circular region around the plant.  
+  The maximum distance a seed can be thrown is defined in a simulation data file (<MAX_SEED_CAST_DISTANCE>).
+A percentage of the seeds distributed will germinate and grow.  
+  The percentage of viable seeds is defined in a simulation data file (<SEED_VIABILITY>).
+The number of plants present when the simulation starts is defined in a simulation data file (<INITIAL_PLANT_COUNT>).
+A plant will be defined in the data file with an X and Y coordinate (<X_POS> and <Y_POS>) and a diameter <P_DIAMETER>.
+
+Grazer
+Grazers feed on plants.
+When food is available the Grazer is able to eat enough to gain a number of EU per minute of simulation time.  
+  The number of EUs gained is defined in a simulation data file (<ENERGY_INPUT>).
+After 10 minutes of simulation time the Grazer will have eaten all food with in its’ reach (5 DU) and will have to move.
+A Grazer will expend a number of EU each time it moves 5 DU.  
+  The amount of energy expended is defined in a simulation data file (<ENERGY_OUTPUT>). 
+  The energy output is the same whether the Grazer is looking for food or fleeing from a Predator. 
+A Grazer can see any edible plant that is within its’ direct line of sight (not blocked by other obstructions) and within 150 DU of it.
+If a Grazer’s energy level drops below 25 it will be unable to move more than 10 DU because of weakness.
+If a Grazer’s energy level drops to zero it dies and disappears from the simulation.
+If a Grazer’s energy level rises above a level as defined in the data file (<ENERGY_TO_REPRODUCE> it will reproduce and produce two Grazer organisms each of which will have half of the original Grazer’s energy level. 
+A Grazer will see a Predator if it is within 25 DU and not hidden by an obstruction.  
+  It will attempt to escape by running or hiding behind an obstruction.  
+A Grazer can run faster than a Predator but only for a time defined in a simulation data file for a given number of simulation minutes (<MAINTAIN_SPEED>), it will then slow to 75% of its’ maximum speed <MAX_SPEED>. 
+The initial number of grazers, their energy levels, and locations will be defined in a simulation data file.
+A grazer will be defined in the data file with an X and Y coordinate (<X_POS> and <Y_POS>) and an initial energy level <G_ENERGY_LEVEL>.
+
+Predator
+The Predators feed on the Grazers.
+Predators shall have a limited set of genetic traits as defined below which will determine its reactions to other Predators and to Grazers.
+Aggression
+Dominant Gene = A
+Recessive Gene = a
+Genotypes
+Homozygous Dominant = AA – Predators with AA genotype are most aggressive.  
+                           They will attempt to kill and eat other Predators unless seeking a mate.
+Heterozygous Dominant = Aa – Predators with Aa genotype are moderately aggressive.  
+                             They will attack other Predators only when hungry and no other food is available.
+Homozygous Recessive = aa – Predators with aa genotype are non-aggressive.  
+                            They will always flee when approached or attacked by other Predators.  
+                            They will only approach another Predator when driven by the mating urge.
+Strength
+Dominant Gene = S
+Recessive Gene = s
+Genotypes
+Homozygous Dominant = SS – 
+    Predators with SS genotype are the strongest and will succeed in killing and eating Grazers 95% of the time if they are caught.  
+    If they attack another Predator they will succeed in killing and eating that Predator 75% of the time if its’ strength is Ss and 95% of the time if its’ strength is ss. 
+    If two Predators with genotype SS fight there is a 50% chance one or the other will kill and eat and 50% chance they will disengage and go their own way.  
+    If one does kill and eat the other there is an even chance as to which will succeed.
+Heterozygous Dominant = Ss – 
+    Predators with Ss genotype are moderately strong and will succeed in killing and eating Grazers 75% of the time if they are caught.  
+    If they attack another Predator they will succeed in killing and eating that Predator 25% of the time if its’ strength is SS and 75% of the time if its strength is ss.  
+    If two Predators with genotype Ss fight there is a 50% chance one or the other will kill and eat and 50% chance they will disengage and go their own way.  
+    If one does kill and eat the other there is an even chance as to which will succeed.
+Homozygous Recessive = ss – 
+    Predators with ss genotype are weakest and will succeed in killing and eating Grazers 50% of the time if they are caught.  
+    If they attack another Predator they will succeed in killing and eating that Predator 5% of the time if its’ strength is SS and 25% of the time if its strength is Ss.  If two Predators with genotype ss fight there is a 50% chance one or the other will kill and eat and 50% chance they will disengage and go their own way.  
+    If one does kill and eat the other there is an even chance as to which will succeed.
+
+Speed - The maximum speeds a Predator can run (see tags below) and the times it can maintain that maximum speed (<MAINTAIN_SPEED>) is defined in the data file.  
+       Speeds are given in DU per minute and times in minutes.  
+       After the maintain speed time is elapsed the Predator will slow at a rate of one DU per 15 seconds of simulation time till it comes to a stop.  
+Dominant Gene = F
+Recessive Gene = f
+Genotypes
+Homozygous Dominant = FF – Predators with FF genotype are the fastest running (<MAX_SPEED_HOD>).  
+Heterozygous Dominant = Ff – Predators with Ff genotype are moderate speed runners (<MAX_SPEED_HED>).
+Homozygous Recessive = ff – Predators with ff genotype are the slowest runners (<MAX_SPEED_HOR>).
+
+A Predator will expend a number of EU each time it moves 5 DU.  
+  The amount of energy expended is defined in a simulation data file (<ENERGY_OUTPUT>). 
+  The energy output is the same whether the Predator is looking for food or chasing a Grazer. 
+When a Predator kills and eats a Grazer or another Predator it will gain 90% of that organism’s energy.
+A Predator will see a Grazer or another Predator that is within its’ direct line of sight (not blocked by other obstructions) and within 150 DU of it.
+A Predator will smell a Grazer or another Predator even if it is not within its’ direct line of sight and within 25 DU of it.
+When a Predator’s energy level reaches a level defined in a simulation data file (<ENERGY_TO_REPRODUCE>) it will seek another predator and mate.  
+  Predators are bisexual, meaning they are both male and female but must mate with another Predator to reproduce.  
+  After mating each of the pair will give birth to a random number of new Predators up to a maximum number of offspring as defined in a simulation data file (<MAX_OFFSPRING>). 
+  The gestation period <GESTATION> is also defined in simulation days in the simulation data file.
+The genetic makeup of each offspring shall be determined by Mendel’s laws of genetics.
+Each offspring will receive one gene for each trait from each parent. 
+  For example: if two predators each with genes Aa for aggression mate their offspring may get an AA, Aa, or aa combination.  
+               For each parent and for each trait there is a 50:50 chance of receiving either of the parent genes.
+After giving birth a Predator and it’s offspring will move away from each other and not react to the other for one simulation hour.
+Predator offspring are born with an energy level defined in a simulation data file. 
+  This does not diminish the parent’s energy level.
+Predator offspring have all the characteristics of an adult when born.  
+The initial number of predators, their energy levels, and locations will be defined in a simulation data file.
+A predator will be defined in the data file with an X and Y coordinate (<X_POS> and <Y_POS>), an initial energy level <P_ENERGY_LEVEL> and a char array giving the genotype <GENOTYPE>.
+
+Obstacle
+An obstacle can be thought of as a round dome shaped rock.
+An obstacle will be defined in the data file with an X and Y coordinate (<X_POS> and <Y_POS>), a diameter  <O_DIAMETER> and a height  <O_HEIGHT>.

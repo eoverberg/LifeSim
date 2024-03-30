@@ -1,0 +1,81 @@
+Rationale
+In October 1970 John H. Conway, a mathematician at the University of Cambridge published a description of a game he called “Life”.  It had only simple rules but became a sensation with many computer simulations written based on it.  Conway’s Game of Life also led to many other simulations of the behavior of living organisms.  The latest is Virtual Worm which simulates the nematode Caenorhabditis elegans.  The complexity of the simulation for this project lies somewhere between Conway’s Game of Life and Virtual Worm.
+
+
+This is a four (4) person project. Changed from a three (3) person project at the start of Spring 2022 with the addition of using the simulation by biology students. 
+
+Relevant Terms
+Energy Unit (EU) – A measure of the life energy of a simulated life form.  When a life form eats food it gains energy units, and when it performs any action it uses energy units.  
+
+Distant Unit (DU) – This is a measure of the distance in the simulated world.  The developer team may call this any unit desired (inch, foot, yard, centimeter, meter, etc.) depending on how large the life forms are defined to be.
+
+Features
+
+Turn this into a competition that allows users to do a set-up and see how far the simulation can run to a non-recoverable condition. 
+Consider this to be used in a biology class where students can set-up certain aspects of the beginning of the simulation and compete to see who's set-up can last the longest.
+
+The features listed below shall be included in the software. 
+The Biology course instructor can set certain aspects of the simulation that cannot be changed by the players (students) of the game. 
+The CS499 team will decide during the requirements phase which attributes are only controlled by the instructor and which can be altered by the player/students. 
+
+1. The graphical display of the simulation shall meet all the following requirements:
+    a.	The GUI display shall display the simulation “world” from a top down view with appropriate color graphical representation of all simulated life forms and terrain features
+    b.	The primary life forms shall be represented as multicellular life forms.  
+        The exact representation is left up to the project developers but it must meet all requirements as stated in this and relevant documents.
+    c.	There shall be three life forms required in the simulation (1) Plant, (2) Grazer, and (3) Predator.  
+        The development team may choose any desired names for the life forms. 
+        Other life forms may be simulated if desired but they must not modify the behavior of the required life forms.
+    d.	When the simulation runs each second of real time shall represent one second of simulation so the display must be updated at a minimum of once every second.  
+        The simulation shall also be capable of being run at 10X, 50X, and 100X speeds.  
+        The speed shall be changeable while the simulation is running.
+    e.	The Plant is a botanical organism that provides food to the Grazers. 
+        The Plant grows by spreading outward in a hemispherical form following rules defined in a file to be provided by the instructor.
+    f.	The Grazer feeds on the Plants.  
+        The behavior, growth, and reproduction of Grazers follows rules defined in a file to be provided by the instructor. 
+    g.	The Predators feed on the Grazers. 
+        A Predator’s behavior patterns are influenced by its’ genetic makeup as defined in the provided data file. 
+        In this simulation there will be three genetic traits studied: Aggression, Strength, and Speed.  
+        Details of these traits are defined in the data file and in the rules file.
+    h.	A number of obstacles (large boulders) will be defined in a simulation data file.  
+        These will be defined giving an (X, Y) location, a radius, and a height.  
+        Obstacles can be represented as circles in the graphical display. 
+        Plants, Grazers and Predators cannot go over obstacles regardless of the supplied height. 
+    i.	As the simulation is running the number all plants, grazers, and predators shall be displayed.  
+        Any number of reports shall be produced while a simulation is running. 
+        A good default name for the data file is SimReport_hh_mm_ss.txt where “hh” is the current time in hours, “mm” the current time in minutes, and “ss” the current time in seconds.
+
+2. Values in the simulation data file are only approximate.  
+   The team may need to modify these values as needed to produce a stable world population and test their project. 
+
+3. The simulation will come to an end when any of the three life forms reaches zero (0). 
+   At this point the simulation is no longer stable and there is no reason to keep running the simulation. 
+
+4. The system will be hosted on a website. 
+   The purpose behind hosting on a website is to allow multiple users to specify an input datafile which is then run though the simulation.  
+   An overall scoring criteria of the input datafile will be determined by the team but should include the total simulation time before ending the simulation (see #5 above). 
+   The scoring may also include average or maximum of each of the life forms. 
+   The purpose behind this requirement is to allow biology students to try their hand at setting up an ecosystem and see how the initial setup of the simulation affects the life span of the ecosystem. New requirement for V 3.0. 
+
+5. The system will have the ability for users to review the scoring of the best datafiles runs in a sorted list (best to worst). 
+   The team needs to determine a maximum number of runs to display (i.e., top 40, top 100, top xxx). New requirement for V 3.0. 
+
+Note: Data does not have to be stored in a “database”. This is an implementation or design decision that needs to be made by the team. 
+
+
+Constraints
+
+The application shall be hosted on a website and can be run using any browser (Chrome, Edge, Firefox, etc.) (New requirement for V2). 
+
+The actual number of generations reached by the predators, grazers and plants at the end of the simulation shall be recorded. 
+
+The system will be considered to be open source and in the public domain, therefore all code must be original and may not include any copyrighted material. 
+
+No canned gaming or physics engine may be used.  
+All graphics and object control must be done using original code that the team writes. 
+This is a lesson learned from previous teams. 
+The cost in time to select and learn how to use these engines is much greater than just writing the code. 
+
+Additional information
+1. A data file will be provided giving the initial settings of the simulation. 
+2. A source file will be provided which will handle reading the simulation data file.  The file is available in both C++ and Java.  Note comments in the source files about use.
+

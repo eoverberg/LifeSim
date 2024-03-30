@@ -7,8 +7,13 @@
     }
     // getters for info
     get x() {return this.xPos;};
+    set x(pos) {this.xPos = pos};
     get y() {return this.yPos;};
+    set y(pos) {this.yPos = pos};
     get z() {return this.zPos;};
+    set z(pos) {this.zPos = pos};
+    get lifetime() {return this.lifeTime};
+    set lifetime(time) {this.lifeTime = time};
 }
  class genes{
     constructor(geneString, initMaxHOD,initMaxHED,initMaxHOR){
@@ -37,20 +42,6 @@
     get aggro(){return this.Aggro}
     get strength(){return this.Strength}
 }
- class predator extends entity{
-    constructor(xPos,yPos,zPos,lifeTime,energy,geneObj){
-        super(xPos,yPos,zPos,lifeTime);
-        this.currentSpeed = 0;
-        this.energy = energy;
-        this.orientation = 0.0;
-        this.mating = false;
-        this.genesObj = geneObj;
-    }
-    get geneo(){return this.genesObj}
-    get aggro(){return this.genesObj.Aggro};
-    get speed(){return this.genesObj.Speed};
-    get strength(){return this.genesObj.Strength};
-}
  class predatorInfo {
     constructor(maintainSpeed, energyIn,energyOut,energytoReproduce,maxOffsprings, gestationTime, offSpringEnergy){
         this.maintainSpeed = maintainSpeed;
@@ -63,14 +54,6 @@
     }
     get reproThreshold(){return this.energytoReproduce}
 }
- class grazer extends entity{
-    constructor(xPos,yPos,zPos,lifeTime,energy){
-        super(xPos,yPos,zPos,lifeTime);
-        this.currentSpeed = 0;
-        this.energy = energy;
-        this.orientation = 0.0;
-    }
-}
  class grazerInfo {
     constructor(maxSpeed, maintain_speed, energyIn,energyOut,energytoReproduce){
         this.maintain_speed = maintain_speed;
@@ -81,10 +64,7 @@
     }
     get reproThreshold(){return this.energytoReproduce}
 }
- class plant extends entity{
-    // z = height and diameter
-}
- class plantInfo {
+class plantInfo {
     constructor(size,seedAmount,reproductionDistance,seedChance,growthPercent,growthRate){
         this.maxSize = size;
         this.maxSeeds = seedAmount;
@@ -101,4 +81,4 @@ class obstacle extends entity{
     }
 }
 
-module.exports = {entity,genes,plant,plantInfo,grazer,grazerInfo,predator,predatorInfo,obstacle};
+module.exports = {entity,genes,plantInfo,grazerInfo,predatorInfo,obstacle};

@@ -8,3 +8,5 @@ class Obstacle extends entity {
         this.height = zPos;
     }
 }
+
+module.exports = Obstacle;

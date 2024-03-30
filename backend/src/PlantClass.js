@@ -24,3 +24,4 @@ class Plant extends entity {
         }
     }
 }
+module.exports = Plant;

@@ -1,5 +1,8 @@
-const {genes,plant,plantInfo,grazer,grazerInfo,predator,predatorInfo,obstacle} = require("./entity.js");
-
+const {genes,plantInfo,grazerInfo,predatorInfo} = require("./entity.js");
+const Obstacle = require("./ObstacleClass.js");
+const Grazer = require("./GrazerClass.js");
+const Predator = require("./PredatorClass.js");
+const Plant = require("./PlantClass.js");
 class Global {
     constructor() {
         this.intGrazerCount = 0;
@@ -19,23 +22,23 @@ class Global {
     }
 
     newPlant(x,y,z) {
-        let tmpPlant = new plant(x,y,z,0);
+        let tmpPlant = new Plant(x,y,z,0);
         this.plantList.push(tmpPlant);
     }
 
     newGrazer(x,y,z,energy) {
-        let tmpGrazer = new grazer(x,y,z,energy);
+        let tmpGrazer = new Grazer(x,y,z,energy);
         this.grazerList.push(tmpGrazer);
     }
 
     newPredator(x,y,z,energy,geneString) {
         this.gene.geneotype = geneString;
-        let tmpPredator = new predator(x,y,z,0,energy,{...this.gene});
+        let tmpPredator = new Predator(x,y,z,0,energy,{...this.gene});
         this.predList.push(tmpPredator);
     }
 
     newObs(x,y,z,size) {
-        let tmpObs = new obstacle(x,y,z,size,0);
+        let tmpObs = new Obstacle(x,y,z,size,0);
         this.obsList.push(tmpObs);
     }
 

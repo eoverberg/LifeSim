@@ -79,6 +79,7 @@
         this.energyOut = energyOut;
         this.energytoReproduce = energytoReproduce;
     }
+    get reproThreshold(){return this.energytoReproduce}
 }
  class plant extends entity{
     // z = height and diameter

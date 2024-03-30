@@ -128,6 +128,7 @@ class Global {
         return blocked;
     }
 
+    //returns summation of predators
     findPredator(sX,sY,distance)
     {
         // distance squared so square root is never needed
@@ -162,18 +163,17 @@ class Global {
                 targetY = sumY + sY;
             }
         }
-        return [targetX, targetY, 0];
+        return [targetX, targetY];
     }
 
     // source(x,y)
     // list of possible targets
     // list of possible obstacle blocking LOS
     // distance to check
-    // returns closest target (x,y) in entities list
+    // returns closest entity in entities list
     findClosest(sX, sY, entities, obstructions, distance, smellDistance)
     {
-        let targetX = 0;
-        let targetY = 0;
+        let target;
         // closest distance to source, starts at LOS
         let discheck = (distance)**2;
         for(let ent of entities)
@@ -185,41 +185,56 @@ class Global {
             
             if (distance2 < discheck && distance2 !== 0)
             {   
-                // ent is closest then change distance to check and return (x,y) to ent(distance2<smellDistance) || 
-                if(!this.checkLOS(sX,sY,xDiff,yDiff,distance2,obstructions)) 
+                // ent is closest then change distance to check and return (x,y) to ent
+                if((distance2<smellDistance) || !this.checkLOS(sX,sY,xDiff,yDiff,distance2,obstructions)) 
                 {
                     discheck = distance2;
-                    targetX = ent.x;
-                    targetY = ent.y
+                    target = ent;
                 }
             }
         }
-        return [targetX, targetY, 0];   
+        return target;   
     }
 
-    // return [x,y, movementEnum  ]
-    // 0 = flee, 1 = pursuem, 2 = wander 
-    getGrazerTarget(gX,gY)
+    grazerDecisionTree(thisGrazer)
     {
-        let grazerPredSight = 25;
-        let grazerFoodSight = 150;
-        let grazerSmell = 0;
-        // find predator in sight.
-        let target = this.findPredator(gX,gY,grazerPredSight)
-        target[2] = 0;
-        // if return value goes nowhere find food
-        if (target[0]!==0 || target[1]!==0)
-        {return target;}
-        // no predator to flee, search for food
-        target = this.findClosest(gX,gY,this.plantList,this.obsList,grazerFoodSight,grazerSmell)
-        if ((target[0]===0) && (target[1]===0))
-        {
-            target[2] = 2;
-            return target;
-        }else{
-            target[2] = 1;
-            return target;
-        }
+        //inside grazer for loop
+            let grazerPredSight = 25;
+            let grazerFoodSight = 150;
+            let grazerSmell = 0;
+            // find predator in sight.
+            let target = this.findPredator(thisGrazer.x,thisGrazer.y,grazerPredSight)
+            // if return value goes nowhere find food
+            if (target[0]!==0 || target[1]!==0)
+            {
+                thisGrazer.Flee(target);
+            }
+            // no predator to flee, search for food
+            else
+            {
+                
+                if(thisGrazer.energy > this.grazerInfo.reproThreshold)
+                {
+                    thisGrazer.Reproduce();
+                }
+                else 
+                {
+                    target = this.findClosest(thisGrazer.x,thisGrazer.y,this.plantList,this.obsList,grazerFoodSight,grazerSmell);
+                    if ((target[0]===0) && (target[1]===0))
+                    {
+                        thisGrazer.Wander();
+                    }
+                    else
+                    {
+                        let eatBool = thisGrazer.Seek(target);
+                        if(eatBool)
+                        {
+                            let plantDeathBool = thisGrazer.eat(target);
+                            plantDeathList.push(target);
+                        }
+                    } 
+                }
+            }
     }    
 
     // return [x,y, movementEnum  ]

@@ -60,8 +60,8 @@
         this.maxOffsprings = maxOffsprings;
         this.gestationTime = gestationTime
         this.offSpringEnergy = offSpringEnergy;
-
     }
+    get reproThreshold(){return this.energytoReproduce}
 }
  class grazer extends entity{
     constructor(xPos,yPos,zPos,lifeTime,energy){

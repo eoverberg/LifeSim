@@ -289,7 +289,7 @@ class Global {
 
         return returnString;
     }
-    plantdc()
+    plantDecisionTree()
     {
         //This is a tempory holder for the plant dc 
         if (plant.size != plantInfo.MAX_SIZE && plant.lifetime > 10) 

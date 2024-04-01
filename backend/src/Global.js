@@ -3,6 +3,7 @@ const Obstacle = require("./ObstacleClass.js");
 const Grazer = require("./GrazerClass.js");
 const Predator = require("./PredatorClass.js");
 const Plant = require("./PlantClass.js");
+const {findPredator, findClosest} = require("./UtilitiesFunctions.jsx");
 class Global {
     constructor() {
         this.intGrazerCount = 0;
@@ -74,107 +75,6 @@ class Global {
         this.gene = new genes(" ",MAX_SPEED_HOD, MAX_SPEED_HED, MAX_SPEED_HOR);
     }
 
-
-    // parameters: 
-    //      source (x,y) 
-    //      difference in source and target(x,y)
-    //      distance betweeen source and target
-    //      list of entities that could block LOS
-    // returns true if an obstacle is between target and source
-    checkLOS(sX,sY,xDiff,yDiff,distance,obstacles)
-    {
-        // flag if LOS is blocked
-        let blocked = false;
-        // iterate through obstacles and check if it is blocking LOS
-        for(let obstacle of obstacles) 
-        {
-        // find closest point on line of sight to obstacle     
-        let position = ((obstacle.x-sX)*(xDiff)+(obstacle.y-sY)*(yDiff))/distance;
-        // if 0 or 1 obstacle is closest to target or source and not blocking los
-        if (position < 1 && position > 0)
-        {
-            // find closest (x,y) on line to obstacle  
-            let lineX = sX+(position*(xDiff));
-            let lineY = sY+(position*(yDiff));
-            // find distance from obstacle to line
-            let distoLine =(obstacle.x-lineX)**2+(obstacle.y-lineY)**2;
-            // if distance is less than obstacle radius, it is blocking line of sight 
-            if (distoLine <= obstacle.z)
-            {
-                blocked = true;
-            }        
-        }
-        // if any obstacle is blocking LOS, exit for loop
-        if(blocked)
-            {
-                break;
-            }
-        } // for loop 
-        return blocked;
-    }
-
-    //returns summation of predators
-    findPredator(sX,sY,distance,ent2Find, obstructions)
-    {
-        // distance squared so square root is never needed
-        let discheck = (distance)**2;
-        let targetX = 0;
-        let targetY = 0;
-        let sumX = 0;
-        let sumY = 0;
-        // loop through list of predators, list should never change
-        for(let pred of ent2Find)
-        {
-            // (x,y) difference is used a lot in checkLOS
-            let xDiff = pred.x-sX;
-            let yDiff = pred.y-sY;
-            // check if predator is within LOS
-            let distance2 = (xDiff)**2 + (yDiff)**2;
-            if (distance2 < discheck && distance2 !== 0)
-            {
-                if(this.checkLOS(sX,sY,xDiff,yDiff,distance2,obstructions))
-                {
-                    continue; // next predator if blocking
-                }
-                sumX += xDiff;
-                sumY += yDiff;
-                targetX = sumX + sX;
-                targetY = sumY + sY;
-            }
-        }
-        return [targetX, targetY];
-    }
-
-    // source(x,y)
-    // list of possible targets
-    // list of possible obstacle blocking LOS
-    // distance to check
-    // returns closest entity in entities list
-    findClosest(sX, sY, entities, obstructions, distance, smellDistance)
-    {
-        let target;
-        // closest distance to source, starts at LOS
-        let discheck = (distance)**2;
-        for(let ent of entities)
-        {
-            let xDiff = ent.x-sX;
-            let yDiff = ent.y-sY;
-            let distance2 = (xDiff)**2 + (yDiff)**2;
-            // check if closest
-            
-            if (distance2 < discheck && distance2 !== 0)
-            {   
-                // ent is closest then change distance to check and return (x,y) to ent
-                if((distance2<smellDistance) || !this.checkLOS(sX,sY,xDiff,yDiff,distance2,obstructions)) 
-                {
-                    discheck = distance2;
-                    target = ent;
-                }
-            }
-        }
-        return target;   
-    }
-
     // body logic used in for loop, "thisGrazer" is an iteration of predList
     grazerDecisionTree(thisGrazer)
     {
@@ -186,7 +86,7 @@ class Global {
         obstructions = obstructions.concat(this.plantList);
         //inside grazer for loop
         // find predator in sight.
-        let targetXY = this.findPredator(thisGrazer.x,thisGrazer.y,grazerPredSight,this.predList, obstructions);
+        let targetXY = findPredator(thisGrazer.x,thisGrazer.y,grazerPredSight,this.predList, obstructions);
         if (targetXY[0]!==0 || targetXY[1]!==0)
         { // if there is a predator
             thisGrazer.Flee(targetXY);
@@ -199,7 +99,7 @@ class Global {
             }
             else 
             { // no predator, no reproduce, find food
-                let target = this.findClosest(thisGrazer.x,thisGrazer.y,this.plantList,this.obsList,grazerFoodSight,grazerSmell);
+                let target = findClosest(thisGrazer.x,thisGrazer.y,this.plantList,this.obsList,grazerFoodSight,grazerSmell);
                 if (target)
                 {
                     thisGrazer.Seek(target);
@@ -233,7 +133,7 @@ class Global {
 
         if (pred.energy >= this.predatorInfo.reproThreshold)
         {  // mating conditions 
-            target = this.findClosest(pred.x,pred.y,this.predList,obstructions,predatorSight,predatorSmell)
+            target = findClosest(pred.x,pred.y,this.predList,obstructions,predatorSight,predatorSmell)
             if (target != null)
             {   // predator in sight
                 pred.Seek(target);
@@ -242,7 +142,7 @@ class Global {
             }
             else
             {   // no predators in sight, find food
-                target = this.findClosest(pred.x,pred.y,this.grazerList,obstructions,predatorSight,predatorSmell) //no pred in sight
+                target = findClosest(pred.x,pred.y,this.grazerList,obstructions,predatorSight,predatorSmell) //no pred in sight
                 if (target != null)
                 {
                     pred.Seek(target);
@@ -263,14 +163,14 @@ class Global {
         else{ // not mating
             if(pred.aggro === "aa")
             {
-                targetXY = this.findPredator(pred.x,pred.y,predatorSight,this.predList, obstructions)
+                targetXY = findPredator(pred.x,pred.y,predatorSight,this.predList, obstructions)
                 if (targetXY[0]===0 || targetXY[1]===0)
                 { // predator in sight
                     pred.Flee(target)
                 }
                 else
                 { //no predator in sight   
-                    target = this.findClosest(pred.x,pred.y,this.grazerList,obstructions,predatorSight,predatorSmell) //no pred in sight
+                    target = findClosest(pred.x,pred.y,this.grazerList,obstructions,predatorSight,predatorSmell) //no pred in sight
                     if (target){
                         pred.Seek(target);                        
                         if (pred.distance2(target) < 5)
@@ -289,7 +189,7 @@ class Global {
             } // end "aa"
             else if(pred.aggro === "Aa")
             { // not mating just looking for food
-                target = this.findClosest(pred.x,pred.y,this.grazerList,obstructions,predatorSight,predatorSmell)
+                target = findClosest(pred.x,pred.y,this.grazerList,obstructions,predatorSight,predatorSmell)
                 if (target)
                 { // grazer in sight 
                     pred.Seek(target);
@@ -303,7 +203,7 @@ class Global {
                 }
                 else 
                 { // no grazer in sight   
-                    target = this.findClosest(pred.x,pred.y,this.predList,obstructions,predatorSight,predatorSmell) //no pred in sight
+                    target = findClosest(pred.x,pred.y,this.predList,obstructions,predatorSight,predatorSmell) //no pred in sight
                     if (target)
                     {
                         pred.Seek(target);
@@ -324,7 +224,7 @@ class Global {
             else if(pred.aggro === "AA")
             { //not mating just looking for food
                 targets = targets.concat(this.grazerList,this.predList)
-                target = this.findClosest(pred.x,pred.y,targets,obstructions,predatorSight,predatorSmell)
+                target = findClosest(pred.x,pred.y,targets,obstructions,predatorSight,predatorSmell)
                 if (target)
                 {
                     pred.Seek(target);

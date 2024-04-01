@@ -1,11 +1,19 @@
 import {entity, genes} from './entity'
 class Predator extends entity {
-    constructor(xPos, yPos, zPos, lifeTime, energy) {
+    constructor(xPos, yPos, zPos, lifeTime, energy, {...geneObj}) {
         super(xPos, yPos, zPos, lifeTime);
+        this.currentSpeed = 0;
         this.energy = energy;
+        this.orientation = 0.0;
+        this.genesObj = {...geneObj};
         this.orientation = Math.random() * 2 * Math.PI; //random initial orientation
         
     }
+
+    get geneo(){return this.genesObj}
+    get aggro(){return this.genesObj.Aggro};
+    get speed(){return this.genesObj.Speed};
+    get strength(){return this.genesObj.Strength};
 
     hunt(grazersArray) {
         //find the closest grazer
@@ -85,3 +93,5 @@ class Predator extends entity {
         return false;
     }
 }
+
+module.exports = Predator;

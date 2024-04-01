@@ -1,4 +1,3 @@
-import { isColliding } from './utilities';
 import entity from './entity'
 
 class Obstacle extends entity {
@@ -8,3 +7,5 @@ class Obstacle extends entity {
         this.height = zPos;
     }
 }
+
+module.exports = Obstacle;

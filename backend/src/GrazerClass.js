@@ -1,4 +1,4 @@
-import {entity} from './entity'
+const {entity} =require('./entity.js');
 //import plant
 class Grazer extends entity {
     constructor(xPos, yPos, zPos, lifeTime, Energy){

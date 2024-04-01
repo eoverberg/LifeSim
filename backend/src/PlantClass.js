@@ -1,4 +1,4 @@
-import entity from './entity'
+const {entity} =require('./entity.js');
 
 class Plant extends entity {
     constructor(xPos,yPos,zPos,lifeTime,growthRate) {

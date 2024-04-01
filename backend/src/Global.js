@@ -15,6 +15,11 @@ class Global {
         this.obsList = [];
         this.worldMatrix = [];
         this.gene = new genes();
+
+        this.plantDeathList = []
+        this.predatorDeathList = []
+        this.grazerDeathList = []
+
     }
 
     newPlant(x,y,z) {
@@ -289,7 +294,7 @@ class Global {
         //This is a tempory holder for the plant dc 
         if (plant.size != plantInfo.MAX_SIZE && plant.lifetime > 10) 
         {
-            plant.size += (plantInfo.MAX_SIZE * .01)
+            plant.grow()
         }
         if (plant.size == plantInfo.MAX_SIZE)
         {
@@ -301,15 +306,10 @@ class Global {
         }
         plant.lifetime++
     }
-    tempDeath()
+    tempDeathCheck()
     {
-        plantDeathList = []
-        predatorDeathList = []
-        grazerDeathList = []
-
 
         //when things die add to this list with append
-
         if (plantDeathList.length > 0)
         {
             for(i = 0; i < plantDeathList.length; i++)

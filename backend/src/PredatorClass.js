@@ -37,6 +37,10 @@ class Predator extends entity {
             predatorsArray.push(offspring);
             this.energy -= 50; //assume reproduction costs 50 energy units
         }
+
+
+ 
+
     }
 
     //utility function to measure distance to another entity
@@ -52,7 +56,7 @@ class Predator extends entity {
         this.orientation = angle;
     }
 
-    wantTwoRepro(predatorInfo){
+    wantTwoRepro(){
         if(this.energy >= predatorInfo.energyToReproduce)
         {
             return true;

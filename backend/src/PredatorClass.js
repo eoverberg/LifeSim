@@ -1,5 +1,4 @@
 import entity from './entity'
-
 class Predator extends entity {
     constructor(xPos, yPos, zPos, lifeTime, energy) {
         super(xPos, yPos, zPos, lifeTime);
@@ -51,5 +50,13 @@ class Predator extends entity {
         this.xPos += Math.cos(angle);
         this.yPos += Math.sin(angle);
         this.orientation = angle;
+    }
+
+    wantTwoRepro(predatorInfo){
+        if(this.energy >= predatorInfo.energyToReproduce)
+        {
+            return true;
+        }
+        return false;
     }
 }

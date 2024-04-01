@@ -284,7 +284,57 @@ class Global {
 
         return returnString;
     }
+    plantdc()
+    {
+        //This is a tempory holder for the plant dc 
+        if (plant.size != plantInfo.MAX_SIZE && plant.lifetime > 10) 
+        {
+            plant.size += (plantInfo.MAX_SIZE * .01)
+        }
+        if (plant.size == plantInfo.MAX_SIZE)
+        {
+            plant.reprotimer += 1 
+            if (plant.reprotimer % 3600 === 0)
+            {
+                plant.reproduce(this.plantList)
+            }
+        }
+        plant.lifetime++
+    }
+    tempDeath()
+    {
+        plantDeathList = []
+        predatorDeathList = []
+        grazerDeathList = []
 
+
+        //when things die add to this list with append
+
+        if (plantDeathList.length > 0)
+        {
+            for(i = 0; i < plantDeathList.length; i++)
+            {
+                x = plantDeathList.pop()
+                this.plantList = this.plantList[x].splice(x,1)
+            }
+        }
+        if (predatorDeathList.length > 0)
+        {
+            for(i = 0; i < predatorDeathList.length; i++)
+            {
+                x = predatorDeathList.pop()
+                this.predList = this.predList[x].splice(x,1)
+            }
+        }
+        if (grazerDeathList.length > 0)
+        {
+            for(i = 0; i < grazerDeathList.length; i++)
+            {
+                x = grazerDeathList.pop()
+                this.grazerList = this.grazerList[x].splice(x,1)
+            }
+        }
+    }
 }
 
 

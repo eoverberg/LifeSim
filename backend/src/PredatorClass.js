@@ -34,14 +34,29 @@ class Predator extends entity {
 
     reproduce(predatorsArray, target) {
 
-        var gString = ""
+        var gString = "";
+        var temp = "";
+        temp = temp.concat(this.genes.Aggro[Math.floor(Math.random * 2)], target.genes.Aggro[Math.floor(Math.random * 2)]);
+        if (temp === "aA")
+        {
+            temp = "Aa";
+        }
+        gString = gString.concat(temp, " ");
+        temp = "";
+        temp = temp.concat(this.genes.Speed[Math.floor(Math.random * 2)], target.genes.Speed[Math.floor(Math.random * 2)]);
+        if (temp === "sS")
+        {
+            temp = "Ss";
+        }
+        gString = gString.concat(temp, " ");
+        temp = "";
 
-        gString = gString.concat(this.genes.Aggro[Math.floor(Math.random * 2)], target.genes.Aggro[Math.floor(Math.random * 2)]);
-        gString.concat(" ");
-        gString = gString.concat(this.genes.Speed[Math.floor(Math.random * 2)], target.genes.Speed[Math.floor(Math.random * 2)]);
-        gString.concat(" ");
-        gString = gString.concat(this.genes.Strength[Math.floor(Math.random * 2)], target.genes.Strength[Math.floor(Math.random * 2)]);
-        
+        temp = temp.concat(this.genes.Strength[Math.floor(Math.random * 2)], target.genes.Strength[Math.floor(Math.random * 2)]);
+        if (temp === "fF")
+        {
+            temp = "Ff";
+        }
+        gString = gString.concat(temp);
         const offspring = new Predator(this.xPos + Math.random(), this.yPos + Math.random(), this.zPos, 0, this.energy / 2,gString);
         predatorsArray.push(offspring);
         

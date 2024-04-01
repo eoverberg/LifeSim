@@ -1,9 +1,10 @@
-import entity from './entity'
+import {entity, genes} from './entity'
 class Predator extends entity {
     constructor(xPos, yPos, zPos, lifeTime, energy) {
         super(xPos, yPos, zPos, lifeTime);
         this.energy = energy;
         this.orientation = Math.random() * 2 * Math.PI; //random initial orientation
+        
     }
 
     hunt(grazersArray) {
@@ -31,15 +32,20 @@ class Predator extends entity {
         grazer.beConsumed(); //consume the grazer
     }
 
-    reproduce(predatorsArray) {
-        if (this.energy > 100) { //assuming reproduction requires more than 100 energy units
-            const offspring = new Predator(this.xPos + Math.random(), this.yPos + Math.random(), this.zPos, this.lifeTime, this.energy / 2);
-            predatorsArray.push(offspring);
-            this.energy -= 50; //assume reproduction costs 50 energy units
-        }
+    reproduce(predatorsArray, target) {
 
+        var gString = ""
 
- 
+        gString = gString.concat(this.genes.Aggro[Math.floor(Math.random * 2)], target.genes.Aggro[Math.floor(Math.random * 2)]);
+        gString.concat(" ");
+        gString = gString.concat(this.genes.Speed[Math.floor(Math.random * 2)], target.genes.Speed[Math.floor(Math.random * 2)]);
+        gString.concat(" ");
+        gString = gString.concat(this.genes.Strength[Math.floor(Math.random * 2)], target.genes.Strength[Math.floor(Math.random * 2)]);
+        
+        const offspring = new Predator(this.xPos + Math.random(), this.yPos + Math.random(), this.zPos, 0, this.energy / 2,gString);
+        predatorsArray.push(offspring);
+        
+        this.energy -= 50;
 
     }
 

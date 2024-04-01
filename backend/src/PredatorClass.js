@@ -2,12 +2,12 @@ import {entity, genes} from './entity'
 //import grazer
 //import utils
 class Predator extends entity {
-    constructor(xPos, yPos, zPos, lifeTime, energy,geneObj) {
+    constructor(xPos, yPos, zPos, lifeTime, energy, {...geneObj}) {
         super(xPos, yPos, zPos, lifeTime);
         this.currentSpeed = 0;
         this.energy = energy;
         this.orientation = 0.0;
-        this.genesObj = geneObj;
+        this.genesObj = {...geneObj};
         this.orientation = Math.random() * 2 * Math.PI; //random initial orientation
     }
 

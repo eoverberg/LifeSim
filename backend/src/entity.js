@@ -24,6 +24,13 @@
         this.Aggro ="";
         this.Speed ="";
         this.Strength ="";
+        if (geneString)
+        {
+            let gArray = geneString.split(' ');
+            this.Speed = gArray[1];
+            this.Aggro = gArray[0];
+            this.Strength = gArray[2];
+        }
     }
     set geneotype(gString) 
     {

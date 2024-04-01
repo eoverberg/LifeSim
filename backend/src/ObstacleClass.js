@@ -1,4 +1,3 @@
-import { isColliding } from './utilities';
 import entity from './entity'
 
 class Obstacle extends entity {

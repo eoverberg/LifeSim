@@ -1,4 +1,4 @@
-function seek(entity, target) {
+export function seek(entity, target) {
     // Calculate the desired velocity as a vector pointing from the entity to the target.
     let desiredVelocity = subtractVectors(target.position, entity.position);
     
@@ -17,7 +17,7 @@ function seek(entity, target) {
     return steeringForce;
 }
 
-function flee(entity, target) {
+export function flee(entity, target) {
     // Calculate the vector from the entity to the target
     let desiredVelocity = subtractVectors(entity.position, target.position);
     
@@ -34,7 +34,7 @@ function flee(entity, target) {
     return steeringForce;
 }
 
-function wander(entity) {
+export function wander(entity) {
     // Parameters for wander behavior
     let wanderRadius = 10; // Radius of the wander circle
     let wanderDistance = 15; // Distance the wander circle is in front of the entity
@@ -65,7 +65,7 @@ function wander(entity) {
     return seek(entity, {position: targetWorld});
 }
 
-function directMovement(entity, direction) {
+export function directMovement(entity, direction) {
     // Assuming 'direction' is a normalized vector representing the desired direction of movement
     let desiredVelocity = multiplyVector(direction, entity.maxSpeed);
 
@@ -81,29 +81,29 @@ function directMovement(entity, direction) {
 }
 
 // Subtracts one vector from another and returns the resulting vector.
-function subtractVectors(vector1, vector2) {
+export function subtractVectors(vector1, vector2) {
     return [vector1[0] - vector2[0], vector1[1] - vector2[1]];
 }
 
 // Normalizes a vector to a unit vector (length of 1), maintaining its direction.
-function normalize(vector) {
+export function normalize(vector) {
     const length = Math.sqrt(vector[0] ** 2 + vector[1] ** 2); // Calculate the vector's length.
     if (length === 0) return [0, 0]; // Handle the zero-length case to avoid division by zero.
     return [vector[0] / length, vector[1] / length]; // Scale the vector components to normalize it.
 }
 
 // Multiplies a vector by a scalar and returns the resulting scaled vector.
-function multiplyVector(vector, scalar) {
+export function multiplyVector(vector, scalar) {
     return [vector[0] * scalar, vector[1] * scalar]; // Scale both components of the vector.
 }
 
 // Adds two vectors together and returns the resulting vector.
-function addVectors(vector1, vector2) {
+export function addVectors(vector1, vector2) {
     return [vector1[0] + vector2[0], vector1[1] + vector2[1]]; // Add corresponding components.
 }
 
 // Converts local space coordinates to world space based on position and orientation.
-function localToWorld(position, orientation, localPoint) {
+export function localToWorld(position, orientation, localPoint) {
     // Assuming orientation is in radians and points are [x, y]
     let cosTheta = Math.cos(orientation); // Cosine of the orientation angle.
     let sinTheta = Math.sin(orientation); // Sine of the orientation angle.

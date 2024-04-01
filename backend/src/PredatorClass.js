@@ -1,6 +1,4 @@
 import {entity, genes} from './entity'
-//import grazer
-//import utils
 class Predator extends entity {
     constructor(xPos, yPos, zPos, lifeTime, energy, {...geneObj}) {
         super(xPos, yPos, zPos, lifeTime);
@@ -9,6 +7,7 @@ class Predator extends entity {
         this.orientation = 0.0;
         this.genesObj = {...geneObj};
         this.orientation = Math.random() * 2 * Math.PI; //random initial orientation
+        
     }
 
     get geneo(){return this.genesObj}
@@ -41,12 +40,36 @@ class Predator extends entity {
         grazer.beConsumed(); //consume the grazer
     }
 
-    reproduce(predatorsArray) {
-        if (this.energy > 100) { //assuming reproduction requires more than 100 energy units
-            const offspring = new Predator(this.xPos + Math.random(), this.yPos + Math.random(), this.zPos, this.lifeTime, this.energy / 2);
-            predatorsArray.push(offspring);
-            this.energy -= 50; //assume reproduction costs 50 energy units
+    reproduce(predatorsArray, target) {
+
+        var gString = "";
+        var temp = "";
+        temp = temp.concat(this.genes.Aggro[Math.floor(Math.random * 2)], target.genes.Aggro[Math.floor(Math.random * 2)]);
+        if (temp === "aA")
+        {
+            temp = "Aa";
         }
+        gString = gString.concat(temp, " ");
+        temp = "";
+        temp = temp.concat(this.genes.Speed[Math.floor(Math.random * 2)], target.genes.Speed[Math.floor(Math.random * 2)]);
+        if (temp === "sS")
+        {
+            temp = "Ss";
+        }
+        gString = gString.concat(temp, " ");
+        temp = "";
+
+        temp = temp.concat(this.genes.Strength[Math.floor(Math.random * 2)], target.genes.Strength[Math.floor(Math.random * 2)]);
+        if (temp === "fF")
+        {
+            temp = "Ff";
+        }
+        gString = gString.concat(temp);
+        const offspring = new Predator(this.xPos + Math.random(), this.yPos + Math.random(), this.zPos, 0, this.energy / 2,gString);
+        predatorsArray.push(offspring);
+        
+        this.energy -= 50;
+
     }
 
     //utility function to measure distance to another entity
@@ -60,6 +83,14 @@ class Predator extends entity {
         this.xPos += Math.cos(angle);
         this.yPos += Math.sin(angle);
         this.orientation = angle;
+    }
+
+    wantTwoRepro(){
+        if(this.energy >= predatorInfo.energyToReproduce)
+        {
+            return true;
+        }
+        return false;
     }
 }
 

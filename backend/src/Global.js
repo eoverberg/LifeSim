@@ -132,7 +132,7 @@ class Global {
         let targetXY= [0,0];
         let target;
 
-        if (pred.energynergy >= this.predatorInfo.reproThreshold)
+        if (pred.energy >= this.predatorInfo.reproThreshold)
         {  // mating conditions 
             target = findClosest(pred.x,pred.y,this.predList,obstructions,predatorSight,predatorSmell)
             if (target != null)

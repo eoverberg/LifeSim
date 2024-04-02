@@ -277,11 +277,11 @@ class Global {
     plantDecisionTree(plant)
     {
         //This is a tempory holder for the plant dc 
-        if (plant.size != plantStuff.MAX_SIZE && plant.lifetime > 10) 
+        if (plant.size != plantStuff.maxSize && plant.lifetime > 10) 
         {
             plant.grow()
         }
-        if (plant.size == plantStuff.MAX_SIZE)
+        if (plant.size == plantStuff.maxSize)
         {
             plant.reprotimer += 1 
             if (plant.reprotimer % 3600 === 0)
@@ -289,7 +289,7 @@ class Global {
                 plant.reproduce(this.plantList)
             }
         }
-        plant.lifetime++
+        plant.lifeTime++
     }
     tempDeathCheck()
     {

@@ -23,7 +23,9 @@ class Global {
         this.plantDeathList = []
         this.predatorDeathList = []
         this.grazerDeathList = []
-
+        this.plantStuff;
+        this.predatorStuff;
+        this.grazerStuff;
     }
 
     newPlant(x,y,z) {

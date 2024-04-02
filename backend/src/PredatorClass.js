@@ -1,4 +1,4 @@
-import {entity, genes} from './entity'
+const {entity, genes} =require('./entity.js');
 class Predator extends entity {
     constructor(xPos, yPos, zPos, lifeTime, energy, {...geneObj}) {
         super(xPos, yPos, zPos, lifeTime);

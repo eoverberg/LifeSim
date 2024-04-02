@@ -1,4 +1,5 @@
-export function isColliding(entity1, entity2) {
+
+ function isColliding(entity1, entity2) {
     const dx = entity1.xPos - entity2.xPos;
     const dy = entity1.yPos - entity2.yPos;
     const distance = Math.sqrt(dx * dx + dy * dy);
@@ -11,7 +12,7 @@ export function isColliding(entity1, entity2) {
     //      distance betweeen source and target
     //      list of entities that could block LOS
     // returns true if an obstacle is between target and source
- export function checkLOS(sX,sY,xDiff,yDiff,distance,obstacles)
+  function checkLOS(sX,sY,xDiff,yDiff,distance,obstacles)
     {
         // flag if LOS is blocked
         let blocked = false;
@@ -44,7 +45,7 @@ export function isColliding(entity1, entity2) {
     }
 
    //returns summation of predators
- export function findPredator(sX,sY,distance,ent2Find, obstructions)
+   function findPredator(sX,sY,distance,ent2Find, obstructions)
    {
        // distance squared so square root is never needed
        let discheck = (distance)**2;
@@ -80,7 +81,7 @@ export function isColliding(entity1, entity2) {
    // list of possible obstacle blocking LOS
    // distance to check
    // returns closest entity in entities list
- export function findClosest(sX, sY, entities, obstructions, distance, smellDistance)
+  function findClosest(sX, sY, entities, obstructions, distance, smellDistance)
    {
        let target;
        // closest distance to source, starts at LOS
@@ -104,3 +105,6 @@ export function isColliding(entity1, entity2) {
        }
        return target;   
    }
+
+
+module.exports = {isColliding, checkLOS, findPredator, findClosest};

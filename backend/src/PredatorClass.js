@@ -9,7 +9,7 @@ class Predator extends entity {
         this.orientation = Math.random() * 2 * Math.PI; //random initial orientation
         
     }
-
+    get energy(){return this.Energy};
     get geneo(){return this.genesObj}
     get aggro(){return this.genesObj.Aggro};
     get speed(){return this.genesObj.Speed};

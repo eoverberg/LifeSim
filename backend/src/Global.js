@@ -96,7 +96,7 @@ class Global {
         }
         else
         { // no predator, search for food
-            if(thisGrazer.energy > this.grazerInfo.reproThreshold)
+            if(thisGrazer.Energy > this.grazerInfo.reproThreshold)
             { // check energy to reproduce
                 thisGrazer.Reproduce();
             }
@@ -132,7 +132,7 @@ class Global {
         let targetXY= [0,0];
         let target;
 
-        if (pred.energy >= this.predatorInfo.reproThreshold)
+        if (pred.energynergy >= this.predatorInfo.reproThreshold)
         {  // mating conditions 
             target = findClosest(pred.x,pred.y,this.predList,obstructions,predatorSight,predatorSmell)
             if (target != null)

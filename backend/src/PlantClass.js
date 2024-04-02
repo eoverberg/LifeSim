@@ -5,6 +5,7 @@ class Plant extends entity {
     super(xPos,yPos,zPos, lifeTime);
     this.growthRate = growthRate; //Growth rate for plant
     this.size = 1; //Size of plant
+    this.reproTimer = 0;
     }
 
     //simulates plant growth rate over time 

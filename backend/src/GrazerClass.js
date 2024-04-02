@@ -1,4 +1,5 @@
 const {entity} =require('./entity.js');
+const {seek, flee, wander} = require('./movement.js');
 //import plant
 class Grazer extends entity {
     constructor(xPos, yPos, zPos, lifeTime, Energy){
@@ -52,7 +53,7 @@ class Grazer extends entity {
         */
     move()
     {
-        
+                 
     }
 }
 

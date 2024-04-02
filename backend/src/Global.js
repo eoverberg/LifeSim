@@ -3,7 +3,7 @@ const Obstacle = require("./ObstacleClass.js");
 const Grazer = require("./GrazerClass.js");
 const Predator = require("./PredatorClass.js");
 const Plant = require("./PlantClass.js");
-const {findPredator, findClosest} = require("./UtilitiesFunctions.jsx");
+const {findPredator, findClosest, distanceTo} = require("./UtilitiesFunctions.jsx");
 class Global {
     constructor() {
         this.intGrazerCount = 0;
@@ -31,14 +31,14 @@ class Global {
         this.plantList.push(tmpPlant);
     }
 
-    newGrazer(x,y,z,energy) {
-        let tmpGrazer = new Grazer(x,y,z,energy);
+    newGrazer(x,y,energy) {
+        let tmpGrazer = new Grazer(x,y,5,0,energy);
         this.grazerList.push(tmpGrazer);
     }
 
-    newPredator(x,y,z,energy,geneString) {
+    newPredator(x,y,energy,geneString) {
         this.gene.geneotype = geneString;
-        let tmpPredator = new Predator(x,y,z,0,energy,{...this.gene});
+        let tmpPredator = new Predator(x,y,5,0,energy,{...this.gene});
         this.predList.push(tmpPredator);
     }
 
@@ -64,15 +64,15 @@ class Global {
 
     // sets constant info of objects
     initializePlantInfo(MAX_SIZE, MAX_SEED_NUMBER, MAX_SEED_CAST_DISTANCE, SEED_VIABILITY, GROWTH_RATE){
-        this.plantInfo = new plantInfo(MAX_SIZE, MAX_SEED_NUMBER, MAX_SEED_CAST_DISTANCE, SEED_VIABILITY, 0, GROWTH_RATE);
+        this.plantStuff = new plantInfo(MAX_SIZE, MAX_SEED_NUMBER, MAX_SEED_CAST_DISTANCE, SEED_VIABILITY, 0, GROWTH_RATE);
     }
 
     initializeGrazerInfo(G_ENERGY_INPUT, G_ENERGY_OUTPUT, G_ENERGY_TO_REPRODUCE, G_MAINTAIN_SPEED, G_MAX_SPEED){
-        this.grazerInfo = new grazerInfo(G_MAX_SPEED, G_MAINTAIN_SPEED,G_ENERGY_INPUT,G_ENERGY_OUTPUT,G_ENERGY_TO_REPRODUCE);
+        this.grazerStuff = new grazerInfo(G_MAX_SPEED, G_MAINTAIN_SPEED,G_ENERGY_INPUT,G_ENERGY_OUTPUT,G_ENERGY_TO_REPRODUCE);
     }
 
     intializePredatorInfo( P_MAINTAIN_SPEED, P_ENERGY_OUTPUT, P_ENERGY_TO_REPRODUCE, P_MAX_OFFSPRING, P_GESTATION, P_OFFSPRING_ENERGY){
-        this.predatorInfo= new predatorInfo( P_MAINTAIN_SPEED, P_ENERGY_OUTPUT, P_ENERGY_TO_REPRODUCE, P_MAX_OFFSPRING, P_GESTATION, P_OFFSPRING_ENERGY);
+        this.predatorStuff= new predatorInfo( P_MAINTAIN_SPEED, P_ENERGY_OUTPUT, P_ENERGY_TO_REPRODUCE, P_MAX_OFFSPRING, P_GESTATION, P_OFFSPRING_ENERGY);
     }
 
     initializeGenes( MAX_SPEED_HOD, MAX_SPEED_HED, MAX_SPEED_HOR){
@@ -96,7 +96,7 @@ class Global {
         }
         else
         { // no predator, search for food
-            if(thisGrazer.energy > this.grazerInfo.reproThreshold)
+            if(thisGrazer.energy > this.grazerStuff.reproThreshold)
             { // check energy to reproduce
                 thisGrazer.Reproduce();
             }
@@ -105,10 +105,10 @@ class Global {
                 let target = findClosest(thisGrazer.x,thisGrazer.y,this.plantList,this.obsList,grazerFoodSight,grazerSmell);
                 if (target)
                 {
-                    thisGrazer.Seek(target);
-                    if (thisGrazer.distance2(target) < 5)
+                    thisGrazer.Seek(target, );
+                    if (distanceTo([thisGrazer.x,thisGrazer.y], target) < 5)
                     {
-                        if(thisGrazer.eat(target))
+                        if(thisGrazer.eat(target, this.grazerStuff.energyGain))
                          {this.plantDeathList.push(target);}
                     }
                  }
@@ -132,7 +132,7 @@ class Global {
         let targetXY= [0,0];
         let target;
 
-        if (pred.energy >= this.predatorInfo.reproThreshold)
+        if (pred.energy >= this.predatorStuff.reproThreshold)
         {  // mating conditions 
             target = findClosest(pred.x,pred.y,this.predList,obstructions,predatorSight,predatorSmell)
             if (target != null)
@@ -275,11 +275,11 @@ class Global {
     plantDecisionTree()
     {
         //This is a tempory holder for the plant dc 
-        if (plant.size != plantInfo.MAX_SIZE && plant.lifetime > 10) 
+        if (plant.size != plantStuff.MAX_SIZE && plant.lifetime > 10) 
         {
             plant.grow()
         }
-        if (plant.size == plantInfo.MAX_SIZE)
+        if (plant.size == plantStuff.MAX_SIZE)
         {
             plant.reprotimer += 1 
             if (plant.reprotimer % 3600 === 0)

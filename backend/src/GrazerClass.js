@@ -29,6 +29,7 @@ class Grazer extends entity {
             this.eatTime = 0; // assuming one plant per ten minutes
             return true;
         }
+        this.eatTime++;
         return false;
     }
 
@@ -51,10 +52,58 @@ class Grazer extends entity {
     but only for a given number of simulation minutes (<MAINTAIN_SPEED>), 
     it will then slow to 75% of its’ maximum speed <MAX_SPEED>.
         */
-    move()
+    moveSeek(target, speed, energyUse, obstructions)
     {
-                 
-    }
+        speed = speed*.75;
+        //time check for speed
+        //if above XX speed *.75
+        //check distance to tarrget + reach
+        //if greater than speed.
+        //speed = same
+        // else speed = distance to edge
+
+        target = pathCheck([this.x, this.y], target, obstructions);
+        newCoords = seek(this, target, speed)
+        distanceMoved = Math.sqrt(newCoords[0],newCoords[1]);
+        // (amount 5 DU was moved) * energy used
+        let energyUsed = (distanceMoved/5)*energyUse;
+        this.xPos += newCords[0];
+        this.yPos += newCords[1];
+        this.Energy += energyUsed;
+
+     }
+
+     moveWander(this, target, speed)
+     {
+        speed = speed*.75;
+        target = pathCheck([this.x, this.y], target, obstructions);
+        newCoords = seek(this, target, speed)
+        distanceMoved = Math.sqrt(newCoords[0],newCoords[1]);
+        // (amount 5 DU was moved) * energy used
+        let energyUsed = (distanceMoved/5)*energyUse;
+        this.xPos += newCords[0];
+        this.yPos += newCords[1];
+        this.Energy += energyUsed
+     }
+
+     moveFlee()
+     {
+        //time check for speed
+        //if above XX speed *.75
+        //check distance to tarrget + reach
+        //if greater than speed.
+        //speed = same
+        // else speed = distance to edge
+
+        target = pathCheck([this.x, this.y], target, obstructions);
+        newCoords = seek(this, target, speed)
+        distanceMoved = Math.sqrt(newCoords[0],newCoords[1]);
+        // (amount 5 DU was moved) * energy used
+        let energyUsed = (distanceMoved/5)*energyUse;
+        this.xPos += newCords[0];
+        this.yPos += newCords[1];
+        this.Energy += energyUsed;
+     }
 }
 
 module.exports = Grazer;

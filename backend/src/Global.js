@@ -283,8 +283,8 @@ class Global {
         }
         if (plant.size == plantStuff.maxSize)
         {
-            plant.reprotimer += 1 
-            if (plant.reprotimer % 3600 === 0)
+            plant.reproTimer += 1 
+            if (plant.reproTimer % 3600 === 0)
             {
                 plant.reproduce(this.plantList)
             }

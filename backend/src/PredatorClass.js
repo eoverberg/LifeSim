@@ -3,7 +3,7 @@ class Predator extends entity {
     constructor(xPos, yPos, zPos, lifeTime, energy, {...geneObj}) {
         super(xPos, yPos, zPos, lifeTime);
         this.currentSpeed = 0;
-        this.Energy = Energy;
+        this.Energy = energy;
         this.orientation = 0.0;
         this.genesObj = {...geneObj};
         this.orientation = Math.random() * 2 * Math.PI; //random initial orientation

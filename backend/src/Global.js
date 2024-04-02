@@ -31,8 +31,8 @@ class Global {
         this.plantList.push(tmpPlant);
     }
 
-    newGrazer(x,y,z,energy) {
-        let tmpGrazer = new Grazer(x,y,z,energy);
+    newGrazer(x,y,energy) {
+        let tmpGrazer = new Grazer(x,y,5,0,energy);
         this.grazerList.push(tmpGrazer);
     }
 

@@ -63,7 +63,7 @@
            let distance2 = (xDiff)**2 + (yDiff)**2;
            if (distance2 < discheck && distance2 !== 0)
            {
-               if(this.checkLOS(sX,sY,xDiff,yDiff,distance2,obstructions))
+               if(checkLOS(sX,sY,xDiff,yDiff,distance2,obstructions))
                {
                    continue; // next predator if blocking
                }
@@ -96,7 +96,7 @@
            if (distance2 < discheck && distance2 !== 0)
            {   
                // ent is closest then change distance to check and return (x,y) to ent
-               if((distance2<smellDistance) || !this.checkLOS(sX,sY,xDiff,yDiff,distance2,obstructions)) 
+               if((distance2<smellDistance) || !checkLOS(sX,sY,xDiff,yDiff,distance2,obstructions)) 
                {
                    discheck = distance2;
                    target = ent;

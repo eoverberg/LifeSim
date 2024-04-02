@@ -85,13 +85,13 @@ class Predator extends entity {
         this.orientation = angle;
     }
 
-    wantTwoRepro(){
-        if(this.energy >= predatorInfo.energyToReproduce)
-        {
-            return true;
-        }
-        return false;
-    }
+    // wantTwoRepro(){
+    //     if(this.energy >= predatorInfo.energyToReproduce)
+    //     {
+    //         return true;
+    //     }
+    //     return false;
+    // }
 }
 
 module.exports = Predator;

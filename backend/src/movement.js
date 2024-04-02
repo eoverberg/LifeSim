@@ -1,6 +1,6 @@
- function seek(entity, target, speed) {
-    let targetVector = [target.x, target.y];
-    let entityVector = [entity.x, entity.y];
+ function seek(entityVector, targetVector, speed) {
+    //let targetVector = [target.x, target.y];
+    //let entityVector = [entity.x, entity.y];
     // Calculate the desired velocity as a vector pointing from the entity to the target.
     let desiredVelocity = subtractVectors(targetVector, entityVector);
     
@@ -19,9 +19,9 @@
     return steeringForce;
 }
 
- function flee(entity, target, speed) {
+ function flee(entityVector, target, speed) {
     // Calculate the vector from the entity to the target
-    let entityVector = [entity.x, entity.y];
+    //let entityVector = [entity.x, entity.y];
     let desiredVelocity = subtractVectors(entityVector, target);
     
     desiredVelocity = normalize(desiredVelocity); // Normalize to get the direction
@@ -58,15 +58,13 @@
     // Calculate the forward vector based on the entity's orientation
     let oVector = [Math.sin(entity.orientation/360),Math.cos(entity.orientation/360)]
     let forwardVector = multiplyVector(oVector, wanderDistance);
-
     // Combine the forward vector and random displacement to get the target in local space
     let targetLocal = addVectors(forwardVector, randomDisplacement);
 
     // Convert the local target to world space using the entity's current position
     target = addVectors(entityVector, targetLocal);
-
     // Seek towards the target
-    return seek(entity, target, speed);
+    return seek([entity.x,entity.y], target, speed);
 }
 
  function directMovement(entity, direction) {

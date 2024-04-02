@@ -1,5 +1,7 @@
+const {isColliding, checkLOS, findPredator, findClosest, checkPath, distanceTo} = require('./UtilitiesFunctions');
 const {entity} =require('./entity.js');
 const {seek, flee, wander} = require('./movement.js');
+
 //import plant
 class Grazer extends entity {
     constructor(xPos, yPos, zPos, lifeTime, Energy){
@@ -54,56 +56,56 @@ class Grazer extends entity {
         */
     moveSeek(target, speed, energyUse, obstructions)
     {
-        speed = speed*.75;
-        //time check for speed
-        //if above XX speed *.75
         //check distance to tarrget + reach
         //if greater than speed.
         //speed = same
-        // else speed = distance to edge
+       // else speed = distance to edge
+        speed = speed*.75;
 
-        target = pathCheck([this.x, this.y], target, obstructions);
-        newCoords = seek(this, target, speed)
-        distanceMoved = Math.sqrt(newCoords[0],newCoords[1]);
+        target = checkPath([this.x, this.y], target, obstructions);
+        let newCoords = seek([this.x, this.y], target, speed)
+        let distanceMoved = Math.sqrt(newCoords[0]**2 + newCoords[1]**2);
         // (amount 5 DU was moved) * energy used
-        let energyUsed = (distanceMoved/5)*energyUse;
-        this.xPos += newCords[0];
-        this.yPos += newCords[1];
-        this.Energy += energyUsed;
+        // floor or exact? 
+        let energyUsed = Math.floor(distanceMoved/5)*energyUse;
+        this.xPos += newCoords[0];
+        this.yPos += newCoords[1];
+        this.Energy -= energyUsed;
 
      }
 
-     moveWander(this, target, speed)
+     moveWander(speed, energyUse, obstructions)
      {
         speed = speed*.75;
-        target = pathCheck([this.x, this.y], target, obstructions);
-        newCoords = seek(this, target, speed)
-        distanceMoved = Math.sqrt(newCoords[0],newCoords[1]);
+        
+        let newCoords = wander(this, speed)
+        newCoords = checkPath([this.x, this.y], newCoords, obstructions);
+        let distanceMoved = Math.sqrt(newCoords[0]**2 + newCoords[1]**2);
+        console.log("distanceMoved:" + distanceMoved);
         // (amount 5 DU was moved) * energy used
-        let energyUsed = (distanceMoved/5)*energyUse;
-        this.xPos += newCords[0];
-        this.yPos += newCords[1];
-        this.Energy += energyUsed
+        let energyUsed = Math.floor(distanceMoved/5)*energyUse;
+        this.xPos += newCoords[0];
+        this.yPos += newCoords[1];
+        this.Energy -= energyUsed;
      }
 
-     moveFlee()
-     {
+    moveFlee(target, speed, energyUse, obstructions, stamina)
+    {
         //time check for speed
-        //if above XX speed *.75
-        //check distance to tarrget + reach
-        //if greater than speed.
-        //speed = same
-        // else speed = distance to edge
-
-        target = pathCheck([this.x, this.y], target, obstructions);
-        newCoords = seek(this, target, speed)
-        distanceMoved = Math.sqrt(newCoords[0],newCoords[1]);
+        if (this.sprintTime > stamina)
+        { speed = speed*.75}
+        // check if path is clear
+        target = checkPath([this.x, this.y], target, obstructions);
+        let newCoords = flee([this.x, this.y], target, speed)
+        let distanceMoved = Math.sqrt(newCoords[0]**2 + newCoords[1]**2);
         // (amount 5 DU was moved) * energy used
-        let energyUsed = (distanceMoved/5)*energyUse;
-        this.xPos += newCords[0];
-        this.yPos += newCords[1];
-        this.Energy += energyUsed;
-     }
+        // floor or exact? 
+        let energyUsed = Math.floor(distanceMoved/5)*energyUse;
+        this.xPos += newCoords[0];
+        this.yPos += newCoords[1];
+        this.Energy -= energyUsed;
+        this.sprintTime++;
+    }
 }
 
 module.exports = Grazer;

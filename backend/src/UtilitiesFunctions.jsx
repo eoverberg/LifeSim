@@ -18,41 +18,62 @@ function distanceTo(position1,position2) {
     // returns true if an obstacle is between target and source
 function checkPath(source,target,obstacles)
 {
-    // flag if LOS is blocked
-    let coords= [0,0]
+    // check if any obstacles
+    if (obstacles.length === 0)
+    {
+        return target;
+    }
     let sX = source[0];
     let sY = source[1];
-    let xDiff = sX - target[0];
-    let yDiff = sY - target[1];
+    let coords= [target[0], target[1]]
+    let xDiff = target[0] - sX;
+    let yDiff = target[1] - sY;
     let distance = (xDiff)**2 + (yDiff)**2;
-    // iterate through obstacles and check if it is blocking LOS
+    // iterate through obstacles and check if it is blocking path
     for(let obstacle of obstacles) 
     {
-    // find closest point on line of sight to obstacle     
-    let position = ((obstacle.x-sX)*(xDiff)+(obstacle.y-sY)*(yDiff))/distance;
-    // if 0 or 1 obstacle is closest to target or source and not blocking los
-    if (position < 1 && position > 0)
-    {
-        // find closest (x,y) on line to obstacle  
-        let lineX = sX+(position*(xDiff));
-        let lineY = sY+(position*(yDiff));
-        // find distance from obstacle to line
-        let diff = [obstacle.x-lineX, obstacle.y-lineY];
-        let disToLine =(diff[0])**2+(diff[1])**2;
-        // if distance is less than obstacle radius, it is blocking path 
-        if (disToLine <= obstacle.z)
+        // find closest point on path to obstacle     
+        let position = ((obstacle.x-sX)*(xDiff)+(obstacle.y-sY)*(yDiff))/distance;
+        // if 0 or 1 obstacle is closest to target or source and not blocking los
+        console.log("position: "+position);
+        if (position < 1 && position > 0)
         {
-            //normalize distance line then multiply by .z
-            let normDL = normalize([diff[0], diff[1]]);
-            let obsEdge = normDL * obstacle.z;
-            coords = checkPath(source, obsEdge, obstacles);
-            //change path to beside obstactle
-        }        
+            // find closest (x,y) on line to obstacle  
+            let lineX = sX+(position*(xDiff));
+            let lineY = sY+(position*(yDiff));
+            // find distance from obstacle to line
+            let xDiff2 = lineX-obstacle.x;
+            let yDiff2 = lineY-obstacle.y;
+            let disToLine =(xDiff2)**2+(yDiff2)**2;
+            // if distance is less than obstacle radius, it is blocking path 
+            console.log("distance to line: " + disToLine);
+    
+            if (disToLine <= obstacle.z)
+            {
+                //if point is on line, take recipical of original slope for 90  
+                if (disToLine === 0)
+                {
+                    xDiff2 = -yDiff;
+                    yDiff2 = xDiff;
+                }
+                //normalize distance line then multiply by .z
+                //use diff2 for direction if not on line
+                //change path to beside obstactle
+                let normDL = normalize([xDiff2, yDiff2]);
+                console.log("normDL: " + normDL);
+                let edgeDist = multiplyVector(normDL,obstacle.z);
+                console.log("edgeDist: " + edgeDist);
+
+                let obsEdge = [obstacle.x+edgeDist[0]  , obstacle.y +edgeDist[1] ]
+                if (distanceTo(source, coords) > distanceTo(source, obsEdge))
+                {
+                    coords = obsEdge
+                }
+            
+            }        
+        }
     }
     return coords
-    }
-    // return new path
-    // return blocked;
 }
 
 // parameters: 

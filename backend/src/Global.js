@@ -100,7 +100,7 @@ class Global {
         { // no predator, search for food
             if(thisGrazer.Energy > this.grazerStuff.reproThreshold)
             { // check energy to reproduce
-                thisGrazer.Reproduce();
+                thisGrazer.reproduce();
             }
             else 
             { // no predator, no reproduce, find food
@@ -141,7 +141,7 @@ class Global {
             {   // predator in sight
                 pred.Seek(target);
                 if (pred.distance2(target) < 5)
-                    pred.Reproduce(target);
+                    pred.reproduce(target);
             }
             else
             {   // no predators in sight, find food
@@ -277,11 +277,11 @@ class Global {
     plantDecisionTree(plant)
     {
         //This is a tempory holder for the plant dc 
-        if (plant.size != plantStuff.maxSize && plant.lifetime > 10) 
+        if (plant.size !== this.plantStuff.maxSize && plant.lifetime >= 10) 
         {
-            plant.grow()
+            plant.size = plant.size + (this.plantStuff.maxSize * 0.01); // grow by 1% max
         }
-        if (plant.size == plantStuff.maxSize)
+        if (plant.size === this.plantStuff.maxSize)
         {
             plant.reproTimer += 1 
             if (plant.reproTimer % 3600 === 0)

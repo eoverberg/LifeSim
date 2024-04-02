@@ -82,7 +82,6 @@ class Global {
     // body logic used in for loop, "thisGrazer" is an iteration of predList
     grazerDecisionTree(thisGrazer)
     {
-        let plantDeathList = [];
         let grazerPredSight = 25;
         let grazerFoodSight = 150;
         let grazerSmell = 0;
@@ -110,7 +109,7 @@ class Global {
                     if (thisGrazer.distance2(target) < 5)
                     {
                         if(thisGrazer.eat(target))
-                         {plantDeathList.push(target);}
+                         {this.plantDeathList.push(target);}
                     }
                  }
                 else
@@ -124,8 +123,6 @@ class Global {
     // body logic used in for loop, "pred" is an iteration of predList
     predatorDecisionTree(pred)
     {
-        let predatorDeathList = [];
-        let grazerDeathList = [];
         let predatorSight = 150;
         let predatorSmell = 150;
         let obstructions = [];
@@ -154,7 +151,7 @@ class Global {
                     {    
                         if(pred.eat(target))
                         {
-                            grazerDeathList.push(target);
+                            this.grazerDeathList.push(target);
                         }
                     }
                 }
@@ -181,7 +178,7 @@ class Global {
                         {
                             if(pred.eat(target))
                             {
-                                grazerDeathList.push(target);
+                                this.grazerDeathList.push(target);
                             }
                         }
                     }
@@ -201,7 +198,7 @@ class Global {
                     { 
                         if(pred.eat(target))
                             {
-                                grazerDeathList.push(target);
+                                this.grazerDeathList.push(target);
                             }
                     }
                 }
@@ -215,7 +212,7 @@ class Global {
                         { 
                             if(pred.eat(target))
                             {
-                                predatorDeathList.push(target);
+                                this.predatorDeathList.push(target);
                             }
                         }
                     }
@@ -237,9 +234,9 @@ class Global {
                         if(pred.eat(target))
                         {
                             if (pred instanceof Predator)
-                                predatorDeathList.push(target);
+                                this.predatorDeathList.push(target);
                             else if (pred instanceof Grazer)
-                                predatorDeathList.push(target);
+                                this.predatorDeathList.push(target);
                         }
                     }
                 }
@@ -296,27 +293,27 @@ class Global {
     {
 
         //when things die add to this list with append
-        if (plantDeathList.length > 0)
+        if (this.plantDeathList.length > 0)
         {
-            for(i = 0; i < plantDeathList.length; i++)
+            for(i = 0; i < this.plantDeathList.length; i++)
             {
-                x = plantDeathList.pop()
+                x = this.plantDeathList.pop()
                 this.plantList = this.plantList[x].splice(x,1)
             }
         }
-        if (predatorDeathList.length > 0)
+        if (this.predatorDeathList.length > 0)
         {
-            for(i = 0; i < predatorDeathList.length; i++)
+            for(i = 0; i < this.predatorDeathList.length; i++)
             {
-                x = predatorDeathList.pop()
+                x = this.predatorDeathList.pop()
                 this.predList = this.predList[x].splice(x,1)
             }
         }
-        if (grazerDeathList.length > 0)
+        if (this.grazerDeathList.length > 0)
         {
-            for(i = 0; i < grazerDeathList.length; i++)
+            for(i = 0; i < this.grazerDeathList.length; i++)
             {
-                x = grazerDeathList.pop()
+                x = this.grazerDeathList.pop()
                 this.grazerList = this.grazerList[x].splice(x,1)
             }
         }

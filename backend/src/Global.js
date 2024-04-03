@@ -108,7 +108,7 @@ class Global {
                 if (target)
                 {
                     thisGrazer.moveSeek(target, this.grazerStuff.maxSpeed, this.grazerStuff.energyOut, obstructions);
-                    if (distanceTo([thisGrazer.x,thisGrazer.y], target) < 5)
+                    if (distanceTo([thisGrazer.x,thisGrazer.y], [target.x, target.y]) < 5)
                     {
                         if(thisGrazer.eat(target, this.grazerStuff.energyGain))
                          {this.plantDeathList.push(target);}
@@ -140,7 +140,7 @@ class Global {
             if (target != null)
             {   // predator in sight
                 pred.moveSeek(target, this.predatorStuff.maintainSpeed, this.predatorStuff.energyOut, obstructions);
-                if (distanceTo([pred.x,pred.y],target) < 5)
+                if (distanceTo([pred.x,pred.y],[target.x, target.y]) < 5)
                     pred.reproduce(target);
             }
             else
@@ -149,7 +149,7 @@ class Global {
                 if (target != null)
                 {
                     pred.moveSeek(target, this.predatorStuff.maintainSpeed, this.predatorStuff.energyOut, obstructions);
-                    if (pred.distanceTo([pred.x,pred.y],target) < 5)
+                    if (pred.distanceTo([pred.x,pred.y],[target.x, target.y]) < 5)
                     {    
                         if(pred.eat(target))
                         {
@@ -176,7 +176,7 @@ class Global {
                     target = findClosest(pred.x,pred.y,this.grazerList,obstructions,predatorSight,predatorSmell) //no pred in sight
                     if (target){
                         pred.moveSeek(target, this.predatorStuff.maintainSpeed, this.predatorStuff.energyOut, obstructions);                      
-                        if (pred.distanceTo([pred.x,pred.y],target) < 5)
+                        if (pred.distanceTo([pred.x,pred.y],[target.x, target.y]) < 5)
                         {
                             if(pred.eat(target))
                             {
@@ -196,7 +196,7 @@ class Global {
                 if (target)
                 { // grazer in sight 
                     pred.moveSeek(target, this.predatorStuff.maintainSpeed, this.predatorStuff.energyOut, obstructions);
-                    if (pred.distanceTo([pred.x,pred.y],target) < 5)
+                    if (pred.distanceTo([pred.x,pred.y],[target.x, target.y]) < 5)
                     { 
                         if(pred.eat(target))
                             {
@@ -210,7 +210,7 @@ class Global {
                     if (target)
                     {
                         pred.moveSeek(target, this.predatorStuff.maintainSpeed, this.predatorStuff.energyOut, obstructions);
-                        if (pred.distanceTo([pred.x,pred.y],target) < 5)
+                        if (pred.distanceTo([pred.x,pred.y],[target.x, target.y]) < 5)
                         { 
                             if(pred.eat(target))
                             {
@@ -231,7 +231,7 @@ class Global {
                 if (target)
                 {
                     pred.moveSeek(target, this.predatorStuff.maintainSpeed, this.predatorStuff.energyOut, obstructions);
-                    if (pred.distanceTo([pred.x,pred.y],target) < 5)
+                    if (pred.distanceTo([pred.x,pred.y],[target.x, target.y]) < 5)
                     { 
                         if(pred.eat(target))
                         {

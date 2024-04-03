@@ -69,7 +69,8 @@
         this.energyOut = energyOut;
         this.energytoReproduce = energytoReproduce;
     }
-    get reproThreshold(){return this.energytoReproduce}
+    get reproThreshold(){return this.energytoReproduce};
+    get energyGain(){return this.energyInput};
 }
 class plantInfo {
     constructor(size,seedAmount,reproductionDistance,seedChance,growthPercent,growthRate){

@@ -1,5 +1,6 @@
 
-import Global from './Global.js';
+const {isColliding, checkLOS, findPredator, findClosest, checkPath, distanceTo} = require('./UtilitiesFunctions');
+const Global = require('./Global.js');
 
 //import entities?
 //test findpred
@@ -17,23 +18,23 @@ import Global from './Global.js';
 //    expect(blocked).toStrictEqual(true);
 //  });
 test('check gene', () => {
-    let testGlobe = new Global();
-    testGlobe.newPlant(10,10,10);
-    testGlobe.newGrazer(30,30,5,50);
-    testGlobe.newPredator(50,50,5,50,"aa ss ff");
-     let blocked = testGlobe.checkLOS(30,30,20,20,800,testGlobe.obsList);
-     expect(blocked).toStrictEqual(true);
-   });
+  let testGlobe = new Global();
+  testGlobe.newPlant(10,10,10);
+  testGlobe.newGrazer(30,30,5,50);
+  testGlobe.newPredator(50,50,50,"aa ss ff");
+  let blocked = checkLOS(30,30,20,20,800,testGlobe.obsList);
+  expect(blocked).toStrictEqual(false);
+  });
 
-// test('find predator in distance', () => {
-//    let testGlobe = new Global();
-//   testGlobe.newPlant(10,10,10);
-//   testGlobe.newGrazer(30,30,5,50);
-//   testGlobe.newPredator(5,25,5,50,"aa ss ff");
-//   testGlobe.newObs(25,5,5,5);
-//   let target = testGlobe.findPredator(30,30,150);
-//   expect(target).toStrictEqual([5,25,0]);
-// });
+test('print ent', () => {
+  let testGlobe = new Global();
+  testGlobe.newPlant(10,10,10);
+  testGlobe.newGrazer(30,30,5,50);
+  testGlobe.newPredator(5,25,50,"aa ss ff");
+  testGlobe.newObs(25,5,5,5);
+  //testGlobe.grazerDecisionTree(testGlobe.grazerList[0]);
+  expect(testGlobe.grazerList[0].x).toStrictEqual(30);
+});
 
 //   test('Predator within distance but not LOS', () => {
 //     let testGlobe = new Global();

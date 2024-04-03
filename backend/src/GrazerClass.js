@@ -1,4 +1,7 @@
+const {isColliding, checkLOS, findPredator, findClosest, checkPath, distanceTo} = require('./UtilitiesFunctions');
 const {entity} =require('./entity.js');
+const {seek, flee, wander} = require('./movement.js');
+
 //import plant
 class Grazer extends entity {
     constructor(xPos, yPos, zPos, lifeTime, Energy){
@@ -28,6 +31,7 @@ class Grazer extends entity {
             this.eatTime = 0; // assuming one plant per ten minutes
             return true;
         }
+        this.eatTime++;
         return false;
     }
 
@@ -50,9 +54,57 @@ class Grazer extends entity {
     but only for a given number of simulation minutes (<MAINTAIN_SPEED>), 
     it will then slow to 75% of its’ maximum speed <MAX_SPEED>.
         */
-    move()
+    moveSeek(target, speed, energyUse, obstructions)
     {
+        //check distance to tarrget + reach
+        //if greater than speed.
+        //speed = same
+       // else speed = distance to edge
+        speed = speed*.75;
+
+        target = checkPath([this.x, this.y], target, obstructions);
+        let newCoords = seek([this.x, this.y], target, speed)
+        let distanceMoved = Math.sqrt(newCoords[0]**2 + newCoords[1]**2);
+        // (amount 5 DU was moved) * energy used
+        // floor or exact? 
+        let energyUsed = Math.floor(distanceMoved/5)*energyUse;
+        this.xPos += newCoords[0];
+        this.yPos += newCoords[1];
+        this.Energy -= energyUsed;
+
+     }
+
+     moveWander(speed, energyUse, obstructions)
+     {
+        speed = speed*.75;
         
+        let newCoords = wander(this, speed)
+        newCoords = checkPath([this.x, this.y], newCoords, obstructions);
+        let distanceMoved = Math.sqrt(newCoords[0]**2 + newCoords[1]**2);
+        console.log("distanceMoved:" + distanceMoved);
+        // (amount 5 DU was moved) * energy used
+        let energyUsed = Math.floor(distanceMoved/5)*energyUse;
+        this.xPos += newCoords[0];
+        this.yPos += newCoords[1];
+        this.Energy -= energyUsed;
+     }
+
+    moveFlee(target, speed, energyUse, obstructions, stamina)
+    {
+        //time check for speed
+        if (this.sprintTime > stamina)
+        { speed = speed*.75}
+        // check if path is clear
+        target = checkPath([this.x, this.y], target, obstructions);
+        let newCoords = flee([this.x, this.y], target, speed)
+        let distanceMoved = Math.sqrt(newCoords[0]**2 + newCoords[1]**2);
+        // (amount 5 DU was moved) * energy used
+        // floor or exact? 
+        let energyUsed = Math.floor(distanceMoved/5)*energyUse;
+        this.xPos += newCoords[0];
+        this.yPos += newCoords[1];
+        this.Energy -= energyUsed;
+        this.sprintTime++;
     }
 }
 

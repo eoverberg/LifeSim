@@ -104,7 +104,6 @@ class Predator extends entity {
        // else speed = distance to edge
         speed = speed*.75;
 
-        target = checkPath([this.x, this.y], target, obstructions);
         let newCoords = seek([this.x, this.y], target, speed)
         let distanceMoved = Math.sqrt(newCoords[0]**2 + newCoords[1]**2);
         // (amount 5 DU was moved) * energy used
@@ -120,9 +119,7 @@ class Predator extends entity {
      {
         
         let newCoords = wander(this, speed)
-        newCoords = checkPath([this.x, this.y], newCoords, obstructions);
         let distanceMoved = Math.sqrt(newCoords[0]**2 + newCoords[1]**2);
-        console.log("distanceMoved:" + distanceMoved);
         // (amount 5 DU was moved) * energy used
         let energyUsed = Math.floor(distanceMoved/5)*energyUse;
         this.xPos += newCoords[0];
@@ -133,7 +130,6 @@ class Predator extends entity {
     moveFlee(target, speed, energyUse, obstructions)
     {
         // check if path is clear
-        target = checkPath([this.x, this.y], target, obstructions);
         let newCoords = flee([this.x, this.y], target, speed)
         let distanceMoved = Math.sqrt(newCoords[0]**2 + newCoords[1]**2);
         // (amount 5 DU was moved) * energy used

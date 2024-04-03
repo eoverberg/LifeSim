@@ -1,5 +1,5 @@
 const {entity, genes} =require('./entity.js');
-const {isColliding, checkLOS, findPredator, findClosest, checkPath, distanceTo} = require('./UtilitiesFunctions');
+const {isColliding, checkLOS, findPredator, findClosest, checkPath, distanceTo} = require('./UtilitiesFunctions.jsx');
 const {seek, flee, wander} = require('./movement.js');
 class Predator extends entity {
     constructor(xPos, yPos, zPos, lifeTime, energy, {...geneObj}) {

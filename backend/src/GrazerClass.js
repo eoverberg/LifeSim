@@ -1,4 +1,4 @@
-const {isColliding, checkLOS, findPredator, findClosest, checkPath, distanceTo} = require('./UtilitiesFunctions');
+const {isColliding, checkLOS, findPredator, findClosest, checkPath, distanceTo} = require('./UtilitiesFunctions.jsx');
 const {entity} =require('./entity.js');
 const {seek, flee, wander} = require('./movement.js');
 

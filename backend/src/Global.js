@@ -34,18 +34,18 @@ class Global {
     }
 
     newGrazer(x,y,energy) {
-        let tmpGrazer = new Grazer(x,y,5,0,energy);
+        let tmpGrazer = new Grazer(x,y,15,0,energy);
         this.grazerList.push(tmpGrazer);
     }
 
     newPredator(x,y,energy,geneString) {
         this.gene.geneotype = geneString;
-        let tmpPredator = new Predator(x,y,5,0,energy,{...this.gene});
+        let tmpPredator = new Predator(x,y,15,0,energy,{...this.gene});
         this.predList.push(tmpPredator);
     }
 
     newObs(x,y,z,size) {
-        let tmpObs = new Obstacle(x,y,z,size,0);
+        let tmpObs = new Obstacle(x,y,z,0,size);
         this.obsList.push(tmpObs);
     }
 

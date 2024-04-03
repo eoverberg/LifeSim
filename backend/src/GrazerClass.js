@@ -1,10 +1,10 @@
-const {isColliding, checkLOS, findPredator, findClosest, checkPath, distanceTo, boundsCheck} = require('./UtilitiesFunctions.jsx');
-const {entity} =require('./entity.js');
-const {seek, flee, wander} = require('./movement.js');
+const { isColliding, checkLOS, findPredator, findClosest, checkPath, distanceTo, boundsCheck } = require('./UtilitiesFunctions.jsx');
+const { entity } = require('./entity.js');
+const { seek, flee, wander } = require('./movement.js');
 
 //import plant
 class Grazer extends entity {
-    constructor(xPos, yPos, zPos, lifeTime, Energy){
+    constructor(xPos, yPos, zPos, lifeTime, Energy) {
         super(xPos, yPos, zPos, lifeTime); //inherits properties defined in entity constructor
         this.Energy = Energy; // energy level of grazer
         this.orientation = Math.random() * 2 * Math.PI; //initilizes orientation with random angle
@@ -12,7 +12,7 @@ class Grazer extends entity {
         this.eatTime = 0;
     }
 
-    get energy(){return this.Energy};
+    get energy() { return this.Energy };
 
     // Similates grazer eating plant and gaining energy
     /* 
@@ -22,8 +22,7 @@ class Grazer extends entity {
     */
     // returns true if plant was eated
     eat(plant, energyGained) {
-        if (this.eatTime%60 === 0)
-        {
+        if (this.eatTime % 60 === 0) {
             this.Energy += energyGained
         }
         if (this.eatTime >= 6000) {
@@ -39,10 +38,9 @@ class Grazer extends entity {
         this.Energy = 0;
     }
 
-    reproduce(grazersArray) 
-    {
-            const offspring = new Grazer(this.x + Math.random(), this.y + Math.random(), this.z, this.lifetime, this.Energy / 2);
-            grazersArray.push(offspring); //add the new grazer to the grazers array
+    reproduce(grazersArray) {
+        const offspring = new Grazer(this.x + Math.random(), this.y + Math.random(), this.z, this.lifetime, this.Energy / 2);
+        grazersArray.push(offspring); //add the new grazer to the grazers array
     }
 
 
@@ -54,49 +52,45 @@ class Grazer extends entity {
     but only for a given number of simulation minutes (<MAINTAIN_SPEED>), 
     it will then slow to 75% of its’ maximum speed <MAX_SPEED>.
         */
-    moveSeek(target, speed, energyUse, obstructions)
-    {
+    moveSeek(target, speed, energyUse, obstructions) {
         //check distance to tarrget + reach
         //if greater than speed.
         //speed = same
-       // else speed = distance to edge
-        speed = speed*.75;
+        // else speed = distance to edge
+        speed = speed * .75;
 
         let newCoords = seek([this.x, this.y], [target.x, target.y], speed)
-        let distanceMoved = Math.sqrt(newCoords[0]**2 + newCoords[1]**2);
+        let distanceMoved = Math.sqrt(newCoords[0] ** 2 + newCoords[1] ** 2);
         // (amount 5 DU was moved) * energy used
         // floor or exact? 
-        let energyUsed = Math.floor(distanceMoved/5)*energyUse;
+        let energyUsed = Math.floor(distanceMoved / 5) * energyUse;
         this.xPos += newCoords[0];
         this.yPos += newCoords[1];
         this.Energy -= energyUsed;
 
-     }
+    }
 
-     moveWander(speed, energyUse, obstructions)
-     {
-        speed = speed*.75;
-        
+    moveWander(speed, energyUse, obstructions) {
+        speed = speed * .75;
+
         let newCoords = wander(this, speed)
-        let distanceMoved = Math.sqrt(newCoords[0]**2 + newCoords[1]**2);
+        let distanceMoved = Math.sqrt(newCoords[0] ** 2 + newCoords[1] ** 2);
         // (amount 5 DU was moved) * energy used
-        let energyUsed = Math.floor(distanceMoved/5)*energyUse;
+        let energyUsed = Math.floor(distanceMoved / 5) * energyUse;
         this.xPos += newCoords[0];
         this.yPos += newCoords[1];
         this.Energy -= energyUsed;
-     }
+    }
 
-    moveFlee(target, speed, energyUse, obstructions, stamina)
-    {
+    moveFlee(target, speed, energyUse, obstructions, stamina) {
         //time check for speed
-        if (this.sprintTime > stamina)
-        { speed = speed*.75}
+        if (this.sprintTime > stamina) { speed = speed * .75 }
         // check if path is clear
         let newCoords = flee([this.x, this.y], [target.x, target.y], speed)
-        let distanceMoved = Math.sqrt(newCoords[0]**2 + newCoords[1]**2);
+        let distanceMoved = Math.sqrt(newCoords[0] ** 2 + newCoords[1] ** 2);
         // (amount 5 DU was moved) * energy used
         // floor or exact? 
-        let energyUsed = Math.floor(distanceMoved/5)*energyUse;
+        let energyUsed = Math.floor(distanceMoved / 5) * energyUse;
         this.xPos += newCoords[0];
         this.yPos += newCoords[1];
         this.Energy -= energyUsed;

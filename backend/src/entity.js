@@ -50,9 +50,8 @@
     get strength(){return this.Strength}
 }
  class predatorInfo {
-    constructor(maintainSpeed, energyIn,energyOut,energytoReproduce,maxOffsprings, gestationTime, offSpringEnergy){
+    constructor(maintainSpeed,energyOut,energytoReproduce,maxOffsprings, gestationTime, offSpringEnergy){
         this.maintainSpeed = maintainSpeed;
-        this.energyIn = energyIn;
         this.energyOut = energyOut;
         this.energytoReproduce = energytoReproduce;
         this.maxOffsprings = maxOffsprings;

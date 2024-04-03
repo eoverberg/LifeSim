@@ -104,7 +104,7 @@ class Predator extends entity {
        // else speed = distance to edge
         speed = speed*.75;
 
-        let newCoords = seek([this.x, this.y], target, speed)
+        let newCoords = seek([this.x, this.y], [target.x, target.y], speed)
         let distanceMoved = Math.sqrt(newCoords[0]**2 + newCoords[1]**2);
         // (amount 5 DU was moved) * energy used
         // floor or exact? 
@@ -130,7 +130,7 @@ class Predator extends entity {
     moveFlee(target, speed, energyUse, obstructions)
     {
         // check if path is clear
-        let newCoords = flee([this.x, this.y], target, speed)
+        let newCoords = flee([this.x, this.y], [target.x, target.y], speed)
         let distanceMoved = Math.sqrt(newCoords[0]**2 + newCoords[1]**2);
         // (amount 5 DU was moved) * energy used
         // floor or exact? 

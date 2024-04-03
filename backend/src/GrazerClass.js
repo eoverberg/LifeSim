@@ -1,4 +1,4 @@
-const {isColliding, checkLOS, findPredator, findClosest, checkPath, distanceTo} = require('./UtilitiesFunctions.jsx');
+const {isColliding, checkLOS, findPredator, findClosest, checkPath, distanceTo, boundsCheck} = require('./UtilitiesFunctions.jsx');
 const {entity} =require('./entity.js');
 const {seek, flee, wander} = require('./movement.js');
 
@@ -62,7 +62,7 @@ class Grazer extends entity {
        // else speed = distance to edge
         speed = speed*.75;
 
-        let newCoords = seek([this.x, this.y], target, speed)
+        let newCoords = seek([this.x, this.y], [target.x, target.y], speed)
         let distanceMoved = Math.sqrt(newCoords[0]**2 + newCoords[1]**2);
         // (amount 5 DU was moved) * energy used
         // floor or exact? 
@@ -92,7 +92,7 @@ class Grazer extends entity {
         if (this.sprintTime > stamina)
         { speed = speed*.75}
         // check if path is clear
-        let newCoords = flee([this.x, this.y], target, speed)
+        let newCoords = flee([this.x, this.y], [target.x, target.y], speed)
         let distanceMoved = Math.sqrt(newCoords[0]**2 + newCoords[1]**2);
         // (amount 5 DU was moved) * energy used
         // floor or exact? 

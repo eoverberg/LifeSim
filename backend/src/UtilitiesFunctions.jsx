@@ -1,4 +1,3 @@
-
  function isColliding(entity1, entity2) {
     const dx = entity1.x - entity2.x;
     const dy = entity1.y - entity2.y;
@@ -197,5 +196,19 @@ function subtractVectors(vector1, vector2) {
     return [vector1[0] + vector2[0], vector1[1] + vector2[1]]; // Add corresponding components.
 }
 
+function boundsCheck(worldx, worldy, posx, posy) {
+    if (posx > worldx) {
+        posx = worldx;
+    }
+    if (posx < 0) {
+        posx = 0;
+    }
+    if (posy < 0) {
+        posy = 0;
+    }
+    if (posy > worldy) {
+        posy = worldy;
+    }
+}
 
-module.exports = {isColliding, checkLOS, findPredator, findClosest, checkPath, distanceTo};
+module.exports = {isColliding, checkLOS, findPredator, findClosest, checkPath, distanceTo, boundsCheck};

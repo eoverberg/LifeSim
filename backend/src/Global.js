@@ -149,7 +149,7 @@ class Global {
         else { // not mating
             if (pred.aggro === "aa") {
                 targetXY = findPredator(pred.x, pred.y, predatorSight, this.predList, obstructions)
-                if (targetXY[0] === 0 || targetXY[1] === 0) { // predator in sight
+                if (targetXY[0] !== 0 || targetXY[1] !== 0) { // predator in sight
                     pred.moveFlee(targetXY, this.predatorStuff.maintainSpeed, this.predatorStuff.energyOut, obstructions)
                 }
                 else { //no predator in sight   

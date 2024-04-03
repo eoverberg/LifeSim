@@ -23,9 +23,9 @@ class Global {
         this.plantDeathList = []
         this.predatorDeathList = []
         this.grazerDeathList = []
-        this.plantStuff;
-        this.predatorStuff;
-        this.grazerStuff;
+        this.plantStuff = new plantInfo();
+        this.predatorStuff = new predatorInfo();
+        this.grazerStuff = new grazerInfo();
     }
 
     newPlant(x,y,z) {
@@ -35,15 +35,11 @@ class Global {
 
     newGrazer(x,y,energy) {
         let tmpGrazer = new Grazer(x,y,5,0,energy);
-    newGrazer(x,y,energy) {
-        let tmpGrazer = new Grazer(x,y,5,0,energy);
         this.grazerList.push(tmpGrazer);
     }
 
     newPredator(x,y,energy,geneString) {
-    newPredator(x,y,energy,geneString) {
         this.gene.geneotype = geneString;
-        let tmpPredator = new Predator(x,y,5,0,energy,{...this.gene});
         let tmpPredator = new Predator(x,y,5,0,energy,{...this.gene});
         this.predList.push(tmpPredator);
     }
@@ -71,16 +67,13 @@ class Global {
     // sets constant info of objects
     initializePlantInfo(MAX_SIZE, MAX_SEED_NUMBER, MAX_SEED_CAST_DISTANCE, SEED_VIABILITY, GROWTH_RATE){
         this.plantStuff = new plantInfo(MAX_SIZE, MAX_SEED_NUMBER, MAX_SEED_CAST_DISTANCE, SEED_VIABILITY, 0, GROWTH_RATE);
-        this.plantStuff = new plantInfo(MAX_SIZE, MAX_SEED_NUMBER, MAX_SEED_CAST_DISTANCE, SEED_VIABILITY, 0, GROWTH_RATE);
     }
 
     initializeGrazerInfo(G_ENERGY_INPUT, G_ENERGY_OUTPUT, G_ENERGY_TO_REPRODUCE, G_MAINTAIN_SPEED, G_MAX_SPEED){
         this.grazerStuff = new grazerInfo(G_MAX_SPEED, G_MAINTAIN_SPEED,G_ENERGY_INPUT,G_ENERGY_OUTPUT,G_ENERGY_TO_REPRODUCE);
-        this.grazerStuff = new grazerInfo(G_MAX_SPEED, G_MAINTAIN_SPEED,G_ENERGY_INPUT,G_ENERGY_OUTPUT,G_ENERGY_TO_REPRODUCE);
     }
 
     intializePredatorInfo( P_MAINTAIN_SPEED, P_ENERGY_OUTPUT, P_ENERGY_TO_REPRODUCE, P_MAX_OFFSPRING, P_GESTATION, P_OFFSPRING_ENERGY){
-        this.predatorStuff= new predatorInfo( P_MAINTAIN_SPEED, P_ENERGY_OUTPUT, P_ENERGY_TO_REPRODUCE, P_MAX_OFFSPRING, P_GESTATION, P_OFFSPRING_ENERGY);
         this.predatorStuff= new predatorInfo( P_MAINTAIN_SPEED, P_ENERGY_OUTPUT, P_ENERGY_TO_REPRODUCE, P_MAX_OFFSPRING, P_GESTATION, P_OFFSPRING_ENERGY);
     }
 
@@ -101,11 +94,10 @@ class Global {
         let targetXY = findPredator(thisGrazer.x,thisGrazer.y,grazerPredSight,this.predList, obstructions);
         if (targetXY[0]!==0 || targetXY[1]!==0)
         { // if there is a predator
-            thisGrazer.Flee(targetXY);
+            thisGrazer.moveFlee(targetXY, this.grazerStuff.maxSpeed,this.grazerStuff.energyOut, obstructions, this.grazerStuff.maintain_speed);
         }
         else
-        { // no predator, search for food
-            if(thisGrazer.energy > this.grazerStuff.reproThreshold)
+        { // no predator, search for food\
             if(thisGrazer.Energy > this.grazerStuff.reproThreshold)
             { // check energy to reproduce
                 thisGrazer.reproduce();
@@ -115,18 +107,16 @@ class Global {
                 let target = findClosest(thisGrazer.x,thisGrazer.y,this.plantList,this.obsList,grazerFoodSight,grazerSmell);
                 if (target)
                 {
-                    thisGrazer.Seek(target, );
+                    thisGrazer.moveSeek(target, this.grazerStuff.maxSpeed, this.grazerStuff.energyOut, obstructions);
                     if (distanceTo([thisGrazer.x,thisGrazer.y], target) < 5)
                     {
                         if(thisGrazer.eat(target, this.grazerStuff.energyGain))
-                         {this.plantDeathList.push(target);}
-                        if(thisGrazer.eat(target))
                          {this.plantDeathList.push(target);}
                     }
                  }
                 else
                 {
-                    thisGrazer.Wander();
+                    thisGrazer.moveWander(this.grazerStuff.maxSpeed,this.grazerStuff.energyOut,obstructions);
                 } 
              } // end no reproduce
         } // end no pred
@@ -145,13 +135,12 @@ class Global {
         let target;
 
         if (pred.energy >= this.predatorStuff.reproThreshold)
-        if (pred.energy >= this.predatorStuff.reproThreshold)
         {  // mating conditions 
             target = findClosest(pred.x,pred.y,this.predList,obstructions,predatorSight,predatorSmell)
             if (target != null)
             {   // predator in sight
-                pred.Seek(target);
-                if (pred.distance2(target) < 5)
+                pred.moveSeek(target, this.predatorStuff.maintainSpeed, this.predatorStuff.energyOut, obstructions);
+                if (distanceTo([pred.x,pred.y],target) < 5)
                     pred.reproduce(target);
             }
             else
@@ -159,19 +148,18 @@ class Global {
                 target = findClosest(pred.x,pred.y,this.grazerList,obstructions,predatorSight,predatorSmell) //no pred in sight
                 if (target != null)
                 {
-                    pred.Seek(target);
-                    if (pred.distance2(target) < 5)
+                    pred.moveSeek(target, this.predatorStuff.maintainSpeed, this.predatorStuff.energyOut, obstructions);
+                    if (pred.distanceTo([pred.x,pred.y],target) < 5)
                     {    
                         if(pred.eat(target))
                         {
-                            this.grazerDeathList.push(target);
                             this.grazerDeathList.push(target);
                         }
                     }
                 }
                 else 
                 {
-                    pred.Wander();
+                    pred.moveWander(this.predatorStuff.maxSpeed,this.predatorStuff.energyOut,obstructions);
                 }
             }
         }
@@ -181,25 +169,24 @@ class Global {
                 targetXY = findPredator(pred.x,pred.y,predatorSight,this.predList, obstructions)
                 if (targetXY[0]===0 || targetXY[1]===0)
                 { // predator in sight
-                    pred.Flee(target)
+                    pred.moveFlee(targetXY, this.predatorStuff.maintainSpeed, this.predatorStuff.energyOut, obstructions)
                 }
                 else
                 { //no predator in sight   
                     target = findClosest(pred.x,pred.y,this.grazerList,obstructions,predatorSight,predatorSmell) //no pred in sight
                     if (target){
-                        pred.Seek(target);                        
-                        if (pred.distance2(target) < 5)
+                        pred.moveSeek(target, this.predatorStuff.maintainSpeed, this.predatorStuff.energyOut, obstructions);                      
+                        if (pred.distanceTo([pred.x,pred.y],target) < 5)
                         {
                             if(pred.eat(target))
                             {
-                                this.grazerDeathList.push(target);
                                 this.grazerDeathList.push(target);
                             }
                         }
                     }
                     else 
                     {
-                        pred.Wander();
+                        pred.moveWander(this.predatorStuff.maxSpeed,this.predatorStuff.energyOut,obstructions);
                     }
                 } // end no predator
             } // end "aa"
@@ -208,12 +195,11 @@ class Global {
                 target = findClosest(pred.x,pred.y,this.grazerList,obstructions,predatorSight,predatorSmell)
                 if (target)
                 { // grazer in sight 
-                    pred.Seek(target);
-                    if (pred.distance2(target) < 5)
+                    pred.moveSeek(target, this.predatorStuff.maintainSpeed, this.predatorStuff.energyOut, obstructions);
+                    if (pred.distanceTo([pred.x,pred.y],target) < 5)
                     { 
                         if(pred.eat(target))
                             {
-                                this.grazerDeathList.push(target);
                                 this.grazerDeathList.push(target);
                             }
                     }
@@ -223,19 +209,18 @@ class Global {
                     target = findClosest(pred.x,pred.y,this.predList,obstructions,predatorSight,predatorSmell) //no pred in sight
                     if (target)
                     {
-                        pred.Seek(target);
-                        if (pred.distance2(target) < 5)
+                        pred.moveSeek(target, this.predatorStuff.maintainSpeed, this.predatorStuff.energyOut, obstructions);
+                        if (pred.distanceTo([pred.x,pred.y],target) < 5)
                         { 
                             if(pred.eat(target))
                             {
-                                this.predatorDeathList.push(target);
                                 this.predatorDeathList.push(target);
                             }
                         }
                     }
                     else 
                     {
-                        pred.Wander();
+                        pred.moveWander(this.predatorStuff.maxSpeed,this.predatorStuff.energyOut,obstructions);
                     }
                 } // end no grazer
             } // end "AA"
@@ -245,23 +230,25 @@ class Global {
                 target = findClosest(pred.x,pred.y,targets,obstructions,predatorSight,predatorSmell)
                 if (target)
                 {
-                    pred.Seek(target);
-                    if (pred.distance2(target) < 5)
-                       { 
+                    pred.moveSeek(target, this.predatorStuff.maintainSpeed, this.predatorStuff.energyOut, obstructions);
+                    if (pred.distanceTo([pred.x,pred.y],target) < 5)
+                    { 
                         if(pred.eat(target))
                         {
                             if (pred instanceof Predator)
+                            {
                                 this.predatorDeathList.push(target);
-                                this.predatorDeathList.push(target);
+                            }
                             else if (pred instanceof Grazer)
+                            {    
                                 this.predatorDeathList.push(target);
-                                this.predatorDeathList.push(target);
+                            }
                         }
                     }
                 }
                 else 
                 {
-                    pred.Wander();
+                    pred.moveWander(this.predatorStuff.maxSpeed,this.predatorStuff.energyOut,obstructions);
                 }
             } // end "AA"
         } // end not mating
@@ -293,13 +280,11 @@ class Global {
     }
     plantDecisionTree(plant)
     {
-        //This is a tempory holder for the plant dc 
-        if (plant.size != plantStuff.MAX_SIZE && plant.lifetime > 10) 
+        //This is a tempory holder for the plant dc  
         if (plant.size !== this.plantStuff.maxSize && plant.lifetime >= 10) 
         {
             plant.size = plant.size + (this.plantStuff.maxSize * 0.01); // grow by 1% max
         }
-        if (plant.size == plantStuff.MAX_SIZE)
         if (plant.size === this.plantStuff.maxSize)
         {
             plant.reproTimer += 1 
@@ -315,35 +300,26 @@ class Global {
 
         //when things die add to this list with append
         if (this.plantDeathList.length > 0)
-        if (this.plantDeathList.length > 0)
         {
-            for(i = 0; i < this.plantDeathList.length; i++)
-            for(i = 0; i < this.plantDeathList.length; i++)
+            for(let i = 0; i < this.plantDeathList.length; i++)
             {
-                x = this.plantDeathList.pop()
-                x = this.plantDeathList.pop()
+                let x = this.plantDeathList.pop()
                 this.plantList = this.plantList[x].splice(x,1)
             }
         }
         if (this.predatorDeathList.length > 0)
-        if (this.predatorDeathList.length > 0)
         {
-            for(i = 0; i < this.predatorDeathList.length; i++)
-            for(i = 0; i < this.predatorDeathList.length; i++)
+            for(let i = 0; i < this.predatorDeathList.length; i++)
             {
-                x = this.predatorDeathList.pop()
-                x = this.predatorDeathList.pop()
+                let x = this.predatorDeathList.pop()
                 this.predList = this.predList[x].splice(x,1)
             }
         }
         if (this.grazerDeathList.length > 0)
-        if (this.grazerDeathList.length > 0)
         {
-            for(i = 0; i < this.grazerDeathList.length; i++)
-            for(i = 0; i < this.grazerDeathList.length; i++)
+            for(let i = 0; i < this.grazerDeathList.length; i++)
             {
-                x = this.grazerDeathList.pop()
-                x = this.grazerDeathList.pop()
+                let x = this.grazerDeathList.pop()
                 this.grazerList = this.grazerList[x].splice(x,1)
             }
         }
@@ -351,18 +327,22 @@ class Global {
     update() {
         let bufferSize = 400;
         if (this.plantList && this.grazerList && this.predList){
-            for (let i = 0; i < bufferSize; i++){
-                for (let plant of this.plantList) {
+            for (let i = 0; i < bufferSize; i++)
+            {
+                for (let plant of this.plantList) 
+                {
                     this.plantDecisionTree(plant);
                 }
-                for (let grazer of this.grazerList) {
+                for (let grazer of this.grazerList) 
+                {
                     this.grazerDecisionTree(grazer)
                 }
-                for (let predator of this.predList) {
+                for (let predator of this.predList) 
+                {
                     this.predatorDecisionTree(predator);
                 }
                 this.tempDeathCheck();
-                this.bufferString += this.printEnts() + newline;
+                this.bufferString += this.printEnts() + "\n";
             }
             return this.bufferString;
         }

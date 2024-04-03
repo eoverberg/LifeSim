@@ -42,14 +42,15 @@ test('wander Test', () => {
   });
       
   test('flee Test', () => {
-    let steering = flee([40,40], [50,50], 5)
+    let steering = flee([40,40], [50,50], 7)
    // 45 degree angle both factors are the same. 
  // let sample = (5/Math.sqrt(2))
  //   console.log("Close to: " + sample);
  //   console.log(steering);
- let sample = 40 - ((7*.75)/Math.sqrt(2))
+ let sample = -((7)/Math.sqrt(2))
  //console.log("Close to: " + sample);
  console.log(steering[0] + "," + steering[1]);
  expect(steering[0]).toBeCloseTo(sample);
- expect(steering[0]).toBeCloseTo(sample);
+ expect(steering[1]).toBeCloseTo(sample);
    });
+

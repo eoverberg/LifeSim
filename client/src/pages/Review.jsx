@@ -1,7 +1,14 @@
+import { useLocalStorage } from "../components/useLocalStorage";
+import GetStats from "../components/GetStats";
 const Review = () => {
-
-    return<h><p>Put Top Scores Here</p></h>;
-
+    // const [statistics, setStatistics] = useLocalStorage("stats", "default");
+    //setStats = {setStats}
+    //<GetStats> </GetStats>
+    return<h>
+        <p>Top Scores:</p>
+        <p>THis is a tester</p>
+    </h>;
+    
 };
 
 export default Review;

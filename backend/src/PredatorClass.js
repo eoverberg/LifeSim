@@ -132,7 +132,7 @@ class Predator extends entity {
         this.xPos += newCoords[0];
         this.yPos += newCoords[1];
         this.Energy -= energyUsed;
-        this.sprintTime++;
+        // this.sprintTime++;
     }
 
 }

@@ -103,7 +103,7 @@ class Global {
                 if (target) {
                     thisGrazer.moveSeek(target, this.grazerStuff.maxSpeed, this.grazerStuff.energyOut, obstructions);
                     if (distanceTo([thisGrazer.x, thisGrazer.y], [target.x, target.y]) < 5) {
-                        if (thisGrazer.eat(target, this.grazerStuff.energyGain)) { this.plantDeathList.push(target); }
+                        if (thisGrazer.eat(target, this.grazerStuff.energyIn)) { this.plantDeathList.push(target); }
                     }
                 }
                 else {

@@ -63,6 +63,7 @@ router.post('/getBuffer/:fileName', (req, res) => {
     const fileName = req.params.fileName;
     try {
         console.log("in buffer getter");
+        console.log(`${fileName}`);
         fs.readFile(path.join("./assets/", `${fileName}.txt`), 'utf8', (error, buffer) => {
             res.send(buffer);
             //res.status(200).json({message: 'ok' });
@@ -82,15 +83,20 @@ router.post('/nextUpdate/:name/:userMod/', (req, res) => {
         //console.log(fileName);
         //const nam = userMod + fileName;
         //let pName = path.join('./assets',  );
-        const newFile = userName.concat(userMod);
+        const newFile = userName.concat(userMod,'.txt');
         // const zeroFile = userName.concat("0");
         console.log("Update Start");
         // simUpdate(userName, fs.readFileSync(`assets/${zeroFile}.txt`, "utf8"), newFile );
-        let bufferString = tempSim.update();
-        console.log(bufferString);
-        fs.writeFile(newFile, bufferString);
-        console.log("Update Done");
+        tempSim.update((bufferString)=>{
+        // console.log(bufferString);
+        fs.writeFile(path.join("./assets/", newFile), bufferString, (err) => {
+            if (err) throw err;
+            console.log("Update Done");
         res.status(200).json({ message: 'ok' });
+        });  
+        });
+        
+        
     } catch (e) {
         res.status(500).json({ message: e.message });
     }
@@ -101,7 +107,7 @@ router.post('/nextUpdate/:name/:userMod/', (req, res) => {
 router.post('/remove/:fileName', (req, res) => {
     const fileName = req.params.fileName;
     try {
-        console.log(fileName);
+       // console.log(fileName);
         fs.rmSync(`assets/${fileName}.txt`);
         res.status(200).json({ message: 'ok' });
     } catch (e) {

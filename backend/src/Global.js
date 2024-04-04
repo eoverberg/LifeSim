@@ -274,7 +274,7 @@ class Global {
             }
         }
     }
-    update() {
+    update(callback) {
         let bufferSize = 1;
         if (this.plantList && this.grazerList && this.predList) {
             for (let i = 0; i < bufferSize; i++) {
@@ -290,11 +290,12 @@ class Global {
                 // this.tempDeathCheck();
                 this.bufferString += this.printEnts() + "\n";
             }
-            return this.bufferString;
+            
         }
         else {
 
         }
+        callback(this.bufferString);
     }
 }
 

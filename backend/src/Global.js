@@ -275,7 +275,7 @@ class Global {
         }
     }
     update(callback) {
-        let bufferSize = 1;
+        let bufferSize = 20;
         if (this.plantList && this.grazerList && this.predList) {
             for (let i = 0; i < bufferSize; i++) {
                 for (let plant of this.plantList) {

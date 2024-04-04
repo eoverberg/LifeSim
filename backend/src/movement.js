@@ -8,6 +8,12 @@ function seek(entityVector, targetVector, speed) {
     desiredVelocity = normalize(desiredVelocity);
 
     // Multiply the normalized vector by the entity's maximum speed to get the maximum desired velocity.
+    if (Math.abs(distance(entityVector, targetVector)) < speed) { // Clip speed if going to overshoot
+        speed = Math.abs(distance(entityVector, targetVector));
+    }
+    if (Math.abs(distance(entityVector, targetVector)) <= 5) { // Clip speed if going to overshoot
+        speed = 0;
+    }
     desiredVelocity = multiplyVector(desiredVelocity, speed);
 
     // Calculate the steering force as the difference between the desired velocity and the entity's current velocity.
@@ -115,6 +121,10 @@ function localToWorld(position, orientation, localPoint) {
     let worldY = sinTheta * localPoint[0] + cosTheta * localPoint[1] + position[1];
 
     return [worldX, worldY]; // Return the transformed coordinates.
+}
+
+function distance(position1, position2) {
+    return Math.sqrt((position1[0] - position2[0]) ** 2 + (position1[1] - position2[1]) ** 2);
 }
 
 module.exports = { seek, flee, wander };

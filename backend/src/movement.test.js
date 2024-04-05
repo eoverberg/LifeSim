@@ -1,10 +1,10 @@
 const {seek,flee,wander} = require('./movement');
 const Predator = require('./PredatorClass');
-const {genes} = require ('./entity');
+const {Genes} = require ('./Entity');
 const Grazer = require('./GrazerClass');
 
 test('seek Test', () => {
-//   let gene = new genes("aa ss ff", 0,0,0);
+//   let gene = new Genes("aa ss ff", 0,0,0);
 //   let pred = new Predator(50,50,5,0,50,{...gene});
 //   let graz = new Grazer(40,40,5,0,40);
   let steering = seek([50,50], [40,40], 5)

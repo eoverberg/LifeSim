@@ -1,7 +1,7 @@
   
 const { checkPath } = require('./UtilitiesFunctions');
 const Predator = require('./PredatorClass');
-const {genes} = require ('./entity');
+const {Genes} = require ('./Entity');
 const Obstacle = require('./ObstacleClass');
 
 //___________________________________________

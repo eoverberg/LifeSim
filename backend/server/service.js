@@ -79,25 +79,22 @@ router.post('/getBuffer/:fileName', (req, res) => {
 router.post('/nextUpdate/:name/:userMod/', (req, res) => {
     const userName = req.params.name;
     const userMod = req.params.userMod;
-    try {
-        //console.log(fileName);
-        //const nam = userMod + fileName;
-        //let pName = path.join('./assets',  );
+    try 
+    {
         const newFile = userName.concat(userMod,'.txt');
-        // const zeroFile = userName.concat("0");
         console.log("Update Start");
-        // simUpdate(userName, fs.readFileSync(`assets/${zeroFile}.txt`, "utf8"), newFile );
-        tempSim.update((bufferString)=>{
-        // console.log(bufferString);
-        fs.writeFile(path.join("./assets/", newFile), bufferString, (err) => {
-            if (err) throw err;
-            console.log("Update Done");
-        res.status(200).json({ message: 'ok' });
-        });  
-        });
+        let bufferString = tempSim.update()
+        fs.writeFile(path.join("./assets/", newFile), bufferString, (err) => 
+            {
+                if (err) throw err;
+                console.log("Update Done");
+                res.status(200).json({ message: 'ok' });
+            }
+        );
         
         
-    } catch (e) {
+    } catch (e) 
+    {
         res.status(500).json({ message: e.message });
     }
 });
@@ -108,7 +105,7 @@ router.post('/remove/:fileName', (req, res) => {
     const fileName = req.params.fileName;
     try {
        // console.log(fileName);
-        fs.rmSync(`assets/${fileName}.txt`);
+        //fs.rmSync(`assets/${fileName}.txt`);
         res.status(200).json({ message: 'ok' });
     } catch (e) {
         res.status(500).json({ message: e.message });

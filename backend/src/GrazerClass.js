@@ -12,8 +12,6 @@ class Grazer extends Entity {
         this.m_eat_time = 0;
     }
 
-    get energy() { return this.m_energy };
-
     // Similates grazer eating plant and gaining energy
     /* 
         When food is available the Grazer is able to eat enough to gain a number of EU per minute of simulation time.  

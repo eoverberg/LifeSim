@@ -8,12 +8,12 @@ function seek(entity_vector_, target_vector_, speed) {
     desired_velocity = normalize(desired_velocity);
 
     // Multiply the normalized vector by the entity's maximum speed to get the maximum desired velocity.
-    if (Math.abs(distance(entity_vector_, target_vector_)) < speed) { // Clip speed if going to overshoot
-        speed = Math.abs(distance(entity_vector_, target_vector_));
-    }
-    if (Math.abs(distance(entity_vector_, target_vector_)) <= 5) { // Clip speed if going to overshoot
-        speed = 0;
-    }
+    // if (Math.abs(distance(entity_vector_, target_vector_)) < speed) { // Clip speed if going to overshoot
+    //     speed = Math.abs(distance(entity_vector_, target_vector_));
+    // }
+    // if (Math.abs(distance(entity_vector_, target_vector_)) <= 5) { // Clip speed if going to overshoot
+    //     speed = 0;
+    // }
     desired_velocity = multiplyVector(desired_velocity, speed);
 
     // Calculate the steering force as the difference between the desired velocity and the entity's current velocity.

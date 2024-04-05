@@ -11,13 +11,17 @@ class Plant extends Entity {
     //     this.m_radius += growth_rate_;
     // }
 
-    beConsumed() {
+    beConsumed() 
+    {
         this.m_radius = 0; //resets size of plant when plant is consumed
     }
 
-    reproduce(plants_array_) {
-            const offspring = new Plant(this.m_x_pos + Math.random(), this.m_y_pos + Math.random(), .1, 0);
-            plants_array_.push(offspring);
+    reproduce(plants_array_) 
+    {
+        let time = 0;
+        let size = .1;
+        const offspring = new Plant(this.m_x_pos + Math.random(), this.m_y_pos + Math.random(), size, time);
+        plants_array_.push(offspring);
     }
 }
 module.exports = Plant;

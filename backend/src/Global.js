@@ -95,15 +95,18 @@ class Global {
         { // no predator, search for food\
             if (grazer_.m_energy > this.m_grazer_stuff.m_energy_to_reproduce ) 
             { // check energy to reproduce
-                grazer_.reproduce();
+                grazer_.reproduce(this.m_grazer_list);
             }
             else 
             { // no predator, no reproduce, find food
                 let target = findClosest(grazer_.m_x_pos, grazer_.m_y_pos, this.m_plant_list, this.m_obs_list, grazer_food_sight, grazer_smell);
                 if (target) 
                 {
-                    grazer_.moveSeek(target, this.m_grazer_stuff.m_max_speed, this.m_grazer_stuff.m_energy_out, obstructions);
-                    if (distanceTo([grazer_.m_x_pos, grazer_.m_y_pos], [target.m_x_pos, target.m_y_pos]) < 5) 
+                    if (distanceTo([grazer_.m_x_pos, grazer_.m_y_pos], [target.m_x_pos, target.m_y_pos]) > (5 + target.m_radius)) 
+                    {
+                        grazer_.moveSeek(target, this.m_grazer_stuff.m_max_speed, this.m_grazer_stuff.m_energy_out, obstructions);
+                    }
+                    if (distanceTo([grazer_.m_x_pos, grazer_.m_y_pos], [target.m_x_pos, target.m_y_pos]) < (5 + target.m_radius)) 
                     {
                         if (grazer_.eat(target, this.m_grazer_stuff.m_energy_in)) 
                         { 
@@ -131,7 +134,7 @@ class Global {
         let target_x_y = [0, 0];
         let target;
 
-        if (pred_.energy >= this.m_predator_stuff.m_energy_to_reproduce ) 
+        if (pred_.m_energy >= this.m_predator_stuff.m_energy_to_reproduce ) 
         {  // mating conditions 
             target = findClosest(pred_.m_x_pos, pred_.m_y_pos, this.m_pred_list, obstructions, predator_sight, predator_smell)
             if (target != null) 
@@ -139,7 +142,7 @@ class Global {
                 pred_.moveSeek(target, this.m_predator_stuff.m_maintain_speed, this.m_predator_stuff.m_energy_out, obstructions);
                 if (distanceTo([pred_.m_x_pos, pred_.m_y_pos], [target.m_x_pos, target.m_y_pos]) < 5)
                     {
-                        pred_.reproduce(target);
+                        pred_.reproduce(this.m_pred_list, target);
                 }
             }
             else 
@@ -163,7 +166,7 @@ class Global {
             }
         }
         else { // not mating
-            if (pred_.m_aggro === "aa") {
+            if (pred_.m_genes_obj.m_aggro === "aa") {
                 target_x_y = findPredator(pred_.m_x_pos, pred_.m_y_pos, predator_sight, this.m_pred_list, obstructions)
                 if (target_x_y[0] !== 0 || target_x_y[1] !== 0) 
                 { // predator in sight
@@ -189,7 +192,7 @@ class Global {
                     }
                 } // end no predator
             } // end "aa"
-            else if (pred_.m_aggro === "Aa") 
+            else if (pred_.m_genes_obj.m_aggro === "Aa") 
             { // not mating just looking for food
                 target = findClosest(pred_.m_x_pos, pred_.m_y_pos, this.m_grazer_list, obstructions, predator_sight, predator_smell)
                 if (target) 
@@ -222,7 +225,7 @@ class Global {
                     }
                 } // end no grazer
             } // end "AA"
-            else if (pred_.m_aggro === "AA") 
+            else if (pred_.m_genes_obj.m_aggro === "AA") 
             { //not mating just looking for food
                 targets = targets.concat(this.m_grazer_list, this.m_pred_list)
                 target = findClosest(pred_.m_x_pos, pred_.m_y_pos, targets, obstructions, predator_sight, predator_smell)
@@ -290,8 +293,8 @@ class Global {
         }
         if (plant.m_radius === this.m_plant_stuff.m_max_size) 
         {
-            plant.reproTimer += 1
-            if (plant.reproTimer % 3600 === 0) 
+            plant.m_repro_timer += 1
+            if (plant.m_repro_timer % 3600 === 0) 
             {
                 plant.reproduce(this.m_plant_list)
             }
@@ -326,12 +329,13 @@ class Global {
             }
         }
     }
-    update(callback) 
+    update() 
     {
-        let bufferSize = 20;
+        this.m_buffer_string = "";
+        let buffer_size = 100;
         if (this.m_plant_list && this.m_grazer_list && this.m_pred_list) 
         {
-            for (let i = 0; i < bufferSize; i++) 
+            for (let i = 0; i < buffer_size; i++) 
             {
                 for (let plant of this.m_plant_list) 
                 {
@@ -352,7 +356,7 @@ class Global {
         else {
 
         }
-        callback(this.m_buffer_string);
+        return(this.m_buffer_string);
     }
 }
 

@@ -11,9 +11,14 @@ class Predator extends Entity {
 
     }
 
+    beConsumed(){
+        this.m_energy = 0;
+    }
+
     eat(entity_) {
         this.m_energy += entity_.m_energy*.9; //gain a fixed amount of energy
         entity_.beConsumed(); //consume the grazer
+        return true;
     }
 
     reproduce(predators_array_, target_) {

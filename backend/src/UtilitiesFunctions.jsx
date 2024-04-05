@@ -97,31 +97,31 @@ function checkLOS(s_x_, s_y_, x_diff_, y_Diff_, distance_, obstacles_) {
 }
 
 //returns summation of predators
-function findPredator(sX, sY, distance, ent2Find, obstructions) {
+function findPredator(s_x_, s_y_, distance_, ent_to_find_, obstructions_) {
     // distance squared so square root is never needed
-    let discheck = (distance) ** 2;
-    let targetX = 0;
-    let targetY = 0;
-    let sumX = 0;
-    let sumY = 0;
+    let dis_check = (distance_) ** 2;
+    let target_x = 0;
+    let target_y = 0;
+    let sum_x = 0;
+    let sum_y = 0;
     // loop through list of predators, list should never change
-    for (let pred of ent2Find) {
+    for (let pred of ent_to_find_) {
         // (x,y) difference is used a lot in checkLOS
-        let xDiff = pred.m_x_pos - sX;
-        let yDiff = pred.m_y_pos - sY;
+        let x_diff = pred.m_x_pos - s_x_;
+        let y_diff = pred.m_y_pos - s_y_;
         // check if predator is within LOS
-        let distance2 = (xDiff) ** 2 + (yDiff) ** 2;
-        if (distance2 < discheck && distance2 !== 0) {
-            if (checkLOS(sX, sY, xDiff, yDiff, distance2, obstructions)) {
+        let distance_2 = (x_diff) ** 2 + (y_diff) ** 2;
+        if ((distance_2 < dis_check) && (distance_2 !== 0)) {
+            if (checkLOS(s_x_, s_y_, x_diff, y_diff, distance_2, obstructions_)) {
                 continue; // next predator if blocking
             }
-            sumX += xDiff;
-            sumY += yDiff;
-            targetX = sumX + sX;
-            targetY = sumY + sY;
+            sum_x += x_diff;
+            sum_y += y_diff;
+            target_x = sum_x + s_x_;
+            target_y = sum_y + s_y_;
         }
     }
-    return [targetX, targetY];
+    return [target_x, target_y];
 }
 
 // source(x,y)
@@ -138,10 +138,10 @@ function findClosest(s_x_, s_y_, entities_, obstructions_, distance_, smell_dist
         let y_diff = ent.m_y_pos - s_y_;
         let distance_2 = (x_diff) ** 2 + (y_diff) ** 2;
         // check if closest
-
-        if (distance_2 < dis_check && distance_2 !== 0) {
-            // ent is closest then change distance to check and return (x,y) to ent
-            if ((distance_2 < smell_distance_) || !checkLOS(s_x_, s_y_, x_diff, y_diff, distance_2, obstructions_)) {
+        if (distance_2 < dis_check && distance_2 !== 0) 
+        {// ent is closest then change distance to check and return ent
+            if ((distance_2 < smell_distance_) || !checkLOS(s_x_, s_y_, x_diff, y_diff, distance_2, obstructions_)) 
+            {
                 dis_check = distance_2;
                 target = ent;
             }

@@ -1,10 +1,10 @@
 <LIFE_SIMULATION>
 	<LAND_BOUNDS>
 		<WIDTH>
-			500.0
+			-1
 		</WIDTH>
 		<HEIGHT>
-			600.0
+			-1
 		</HEIGHT>
 	</LAND_BOUNDS>
 	<PLANTS>

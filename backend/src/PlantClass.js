@@ -1,28 +1,23 @@
-const { entity } = require('./entity.js');
+const { Entity } = require('./Entity.js');
 
-class Plant extends entity {
-    constructor(xPos, yPos, zPos, lifeTime, growthRate) {
-        super(xPos, yPos, zPos, lifeTime);
-        this.growthRate = growthRate; //Growth rate for plant
-        this.size = 1; //Size of plant
-        this.reproTimer = 0;
+class Plant extends Entity {
+    constructor(x_pos_,y_pos_,radius_,lifetime_) {
+        super(x_pos_,y_pos_,radius_,lifetime_);
+        this.m_repro_timer = 0;
     }
 
     //simulates plant growth rate over time 
-    grow() {
-        this.size += this.growthRate;
-    }
+    // grow(growth_rate_) {
+    //     this.m_radius += growth_rate_;
+    // }
 
     beConsumed() {
-        this.size = 0; //resets size of plant when plant is consumed
+        this.m_radius = 0; //resets size of plant when plant is consumed
     }
 
-    reproduce(plantsArray) {
-        if (this.size > 10) { // if plant is large enough for consumption
-            const offspring = new Plant(this.xPos + Math.random(), this.yPos + Math.random(), this.zPos, this.lifeTime, this.growthRate);
-            plantsArray.push(offspring); // add new plant to plants array
-            this.size /= 2; // plant loses size while reproducing
-        }
+    reproduce(plants_array_) {
+            const offspring = new Plant(this.m_x_pos + Math.random(), this.m_y_pos + Math.random(), .1, 0);
+            plants_array_.push(offspring);
     }
 }
 module.exports = Plant;

@@ -31,8 +31,8 @@ function xmlimporter(global, xmlLocation, callback){
   console.log(`Student Data Valid: ${result1}`)// throws an error
 
   // saves information to the Global object passed in
-  global.height = studentJSON.LIFE_SIMULATION.LAND_BOUNDS.WIDTH;
-  global.width = studentJSON.LIFE_SIMULATION.LAND_BOUNDS.HEIGHT;
+  global.m_world_size_x = studentJSON.LIFE_SIMULATION.LAND_BOUNDS.WIDTH;
+  global.m_world_size_y = studentJSON.LIFE_SIMULATION.LAND_BOUNDS.HEIGHT;
 
   global.initializePlantInfo(studentJSON.LIFE_SIMULATION.PLANTS.MAX_SIZE, 
     studentJSON.LIFE_SIMULATION.PLANTS.MAX_SEED_NUMBER, 
@@ -75,7 +75,7 @@ function xmlimporter(global, xmlLocation, callback){
     global.newPredator(predator.X_POS,predator.Y_POS,predator.P_ENERGY_LEVEL,predator.GENOTYPE);
   }
   for (let obstacle of studentJSON.LIFE_SIMULATION.OBSTACLES.OBSTACLE){
-    global.newObs(obstacle.X_POS,obstacle.Y_POS,obstacle.O_HEIGHT,obstacle.O_DIAMETER);
+    global.newObs(obstacle.X_POS,obstacle.Y_POS,obstacle.O_DIAMETER,obstacle.O_HEIGHT);
   }
 
   callback();

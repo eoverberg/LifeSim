@@ -1,0 +1,28 @@
+SCREAMINGCASE
+SCREAMING_SNAKE_CASE
+snake_case
+camelCase
+UpperCamelCase
+
+Variable names should be snake_case.
+Constant and enumerator names should be SCREAMINGCASE.
+Function names should use lowerCamelCase.
+Class names and file names should be in UpperCamelCase.
+
+Parameter names will have a trailing underscore '_'.
+Member Attributes shall start with 'm_'.
+Accessor methods should start with 'get'.
+
+Mutator methods should start with 'set'.
+
+Identifiers will not differ by:
+	only a mixture of case
+	absence of underscores
+	interchanging character with characters that look similar, i.e. BOOKS and 800K5. 
+
+Statements forming the body of an if, while, or for statement shall always be enclosed in braces, even if it is empty
+Braces {} that enclose a block will be placed in the same column, on seperate line, directly before and after a block
+Braces {} that enclose a block will have nothing else on the line except comments.
+commas and semicolons should not be preceded by a space but should be followed by one
+All indentations will be at least two spaces and consistent
+Tabs should be avoided

@@ -1,7 +1,7 @@
-import {Genes} from './Entity';
+import {genes} from './entity';
 
 test('check gene', () => {
-    let gene = new Genes("aa ss ff",0,0,0);
+    let gene = new genes("aa ss ff",0,0,0);
     let char = "aa";
-     expect(gene.m_aggro).toStrictEqual(char);
+     expect(gene.aggro).toStrictEqual(char);
    });

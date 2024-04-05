@@ -1,18 +1,18 @@
 const { isColliding, checkLOS, findPredator, findClosest, checkPath, distanceTo, boundsCheck } = require('./UtilitiesFunctions.jsx');
-const { Entity } = require('./Entity.js');
+const { entity } = require('./entity.js');
 const { seek, flee, wander } = require('./movement.js');
 
 //import plant
-class Grazer extends Entity {
-    constructor(x_pos_,y_pos_,radius_,lifetime_, energy_) {
-        super(x_pos_,y_pos_,radius_,lifetime_); //inherits properties defined in Entity constructor
-        this.m_energy = energy_; // energy level of grazer
-        this.m_orientation = Math.random() * 2 * Math.PI; //initilizes orientation with random angle
-        this.m_sprint_time = 0;
-        this.m_eat_time = 0;
+class Grazer extends entity {
+    constructor(xPos, yPos, zPos, lifeTime, Energy) {
+        super(xPos, yPos, zPos, lifeTime); //inherits properties defined in entity constructor
+        this.Energy = Energy; // energy level of grazer
+        this.orientation = Math.random() * 2 * Math.PI; //initilizes orientation with random angle
+        this.sprintTime = 0;
+        this.eatTime = 0;
     }
 
-    get energy() { return this.m_energy };
+    get energy() { return this.Energy };
 
     // Similates grazer eating plant and gaining energy
     /* 
@@ -21,26 +21,26 @@ class Grazer extends Entity {
         After 10 minutes of simulation time the Grazer will have eaten all food with in its’ reach (5 DU) and will have to move.
     */
     // returns true if plant was eated
-    eat(plant_, energy_gain_) {
-        if (this.m_eat_time % 60 === 0) {
-            this.m_energy += energy_gain_
+    eat(plant, energyGained) {
+        if (this.eatTime % 60 === 0) {
+            this.Energy += energyGained
         }
-        if (this.m_eat_time >= 6000) {
-            plant_.beConsumed(); // plant is consumd and its size reset
-            this.m_eat_time = 0; // assuming one plant per ten minutes
+        if (this.eatTime >= 6000) {
+            plant.beConsumed(); // plant is consumd and its size reset
+            this.eatTime = 0; // assuming one plant per ten minutes
             return true;
         }
-        this.m_eat_time++;
+        this.eatTime++;
         return false;
     }
 
     beConsumed() {
-        this.m_energy = 0;
+        this.Energy = 0;
     }
 
-    reproduce(grazers_array_) {
-        const offspring = new Grazer(this.m_x_pos + Math.random(), this.m_y_pos + Math.random(), this.m_radius, this.m_lifetime, this.m_energy / 2);
-        grazers_array_.push(offspring); //add the new grazer to the grazers array
+    reproduce(grazersArray) {
+        const offspring = new Grazer(this.x + Math.random(), this.y + Math.random(), this.z, this.lifetime, this.Energy / 2);
+        grazersArray.push(offspring); //add the new grazer to the grazers array
     }
 
 
@@ -52,52 +52,49 @@ class Grazer extends Entity {
     but only for a given number of simulation minutes (<MAINTAIN_SPEED>), 
     it will then slow to 75% of its’ maximum speed <MAX_SPEED>.
         */
-    moveSeek(target_, speed_, energy_use_, obstructions_) {
+    moveSeek(target, speed, energyUse, obstructions) {
         //check distance to tarrget + reach
         //if greater than speed.
         //speed = same
         // else speed = distance to edge
-        speed_ = speed_ * .75;
+        speed = speed * .75;
 
-        let steering = seek([this.m_x_pos, this.m_y_pos], [target_.m_x_pos, target_.m_y_pos], speed_)
-        let distance_moved = Math.sqrt(steering[0] ** 2 + steering[1] ** 2);
+        let newCoords = seek([this.x, this.y], [target.x, target.y], speed)
+        let distanceMoved = Math.sqrt(newCoords[0] ** 2 + newCoords[1] ** 2);
         // (amount 5 DU was moved) * energy used
         // floor or exact? 
-        let energy_used = Math.floor(distance_moved / 5) * energy_use_;
-        this.m_x_pos += steering[0];
-        this.m_y_pos += steering[1];
-        this.m_energy -= energy_used;
+        let energyUsed = Math.floor(distanceMoved / 5) * energyUse;
+        this.xPos += newCoords[0];
+        this.yPos += newCoords[1];
+        this.Energy -= energyUsed;
 
     }
 
-    moveWander(speed_, energy_use_, obstructions_) {
-        speed_ = speed_ * .75;
+    moveWander(speed, energyUse, obstructions) {
+        speed = speed * .75;
 
-        let steering = wander(this, speed_)
-        let distance_moved = Math.sqrt(steering[0] ** 2 + steering[1] ** 2);
+        let newCoords = wander(this, speed)
+        let distanceMoved = Math.sqrt(newCoords[0] ** 2 + newCoords[1] ** 2);
         // (amount 5 DU was moved) * energy used
-        let energy_used = Math.floor(distance_moved / 5) * energy_use_;
-        this.m_x_pos += steering[0];
-        this.m_y_pos += steering[1];
-        this.m_energy -= energy_used;
+        let energyUsed = Math.floor(distanceMoved / 5) * energyUse;
+        this.xPos += newCoords[0];
+        this.yPos += newCoords[1];
+        this.Energy -= energyUsed;
     }
 
-    moveFlee(target_x_y_, speed_, energy_use_, obstructions_, stamina_) {
+    moveFlee(target, speed, energyUse, obstructions, stamina) {
         //time check for speed
-        if (this.m_sprint_time > stamina_) 
-        { 
-            speed_ = speed_ * .75 
-        }
-        // check if path is clear11
-        let steering = flee([this.m_x_pos, this.m_y_pos], [target_x_y_[0], target_x_y_[1]], speed_)
-        let distance_moved = Math.sqrt(steering[0] ** 2 + steering[1] ** 2);
+        if (this.sprintTime > stamina) { speed = speed * .75 }
+        // check if path is clear
+        let newCoords = flee([this.x, this.y], [target.x, target.y], speed)
+        let distanceMoved = Math.sqrt(newCoords[0] ** 2 + newCoords[1] ** 2);
         // (amount 5 DU was moved) * energy used
         // floor or exact? 
-        let energy_used = Math.floor(distance_moved / 5) * energy_use_;
-        this.m_x_pos += steering[0];
-        this.m_y_pos += steering[1];
-        this.m_energy -= energy_used;
-        this.m_sprint_time++;
+        let energyUsed = Math.floor(distanceMoved / 5) * energyUse;
+        this.xPos += newCoords[0];
+        this.yPos += newCoords[1];
+        this.Energy -= energyUsed;
+        this.sprintTime++;
     }
 }
 

@@ -4,26 +4,35 @@
 class Statistics{
     constructor()
     {
-        this.m_simulation_name="default_name";
-        this.m_time_played=0;
-        this.m_generation_counts=[0,0,0];
-        this.m_lifeform_counts=[0,0,0];
-        this.m_stats_delimiter = '\n';
+        this.simulation_name="default_name";
+        this.time_played=0;
+        this.generation_counts=[0,0,0];
+        this.lifeform_counts=[0,0,0];
+        this.stats_delimiter = '\n';
     }
 
+   
+    get name() {return this.simulation_name;};
+    set name(inName) {this.simulation_name=inName;};
+    get time() {return this.time_played;};
+    set time(inTime) {this.time_played=inTime;};
+    get generations() {return this.generation_counts;};
+    set generations(inGenerations) {this.generations=inGenerations;};
+    get counts() {return this.lifeform_counts;};
+    set counts(inLifeforms) {this.lifeform_counts=inLifeforms;};
 
     // might just add report as a line, if so create an initializer 
     // and print_report will add instead of replace
      
     print_report(){
-        let file_string=this.m_simulation_name + this.m_stats_delimiter;
-        file_string.concat(this.m_time_played,this.m_stats_delimiter);
-        file_string.concat(this.m_generation_counts[0], this.m_stats_delimiter);
-        file_string.concat(this.m_generation_counts[1], this.m_stats_delimiter);
-        file_string.concat(this.m_generation_counts[2], this.m_stats_delimiter);
-        file_string.concat(this.m_lifeform_counts[0], this.m_stats_delimiter);
-        file_string.concat(this.m_lifeform_counts[1], this.m_stats_delimiter);
-        file_string.concat(this.m_lifeform_counts[2], this.m_stats_delimiter);
+        let file_string=this.simulation_name + this.stats_delimiter;
+        file_string.concat(this.time_played,this.stats_delimiter);
+        file_string.concat(this.generation_counts[0], this.stats_delimiter);
+        file_string.concat(this.generation_counts[1], this.stats_delimiter);
+        file_string.concat(this.generation_counts[2], this.stats_delimiter);
+        file_string.concat(this.lifeform_counts[0], this.stats_delimiter);
+        file_string.concat(this.lifeform_counts[1], this.stats_delimiter);
+        file_string.concat(this.lifeform_counts[2], this.stats_delimiter);
         return file_string;
     }
 

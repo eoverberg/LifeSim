@@ -8,15 +8,12 @@ Variable names should be snake_case.
 Constant and enumerator names should be SCREAMINGCASE.
 Function names should use lowerCamelCase.
 Class names and file names should be in UpperCamelCase.
-Acronyms will be all uppercase.
+
 Parameter names will have a trailing underscore '_'.
 Member Attributes shall start with 'm_'.
 Accessor methods should start with 'get'.
 
 Mutator methods should start with 'set'.
-
-JS get and set will not be used.
-Use function getters and setters for private variables or complex assignment/retrieval.  
 
 Identifiers will not differ by:
 	only a mixture of case

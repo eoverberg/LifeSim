@@ -26,6 +26,7 @@ class Global {
         this.m_plant_stuff = new PlantInfo();
         this.m_predator_stuff = new PredatorInfo();
         this.m_grazer_stuff = new GrazerInfo();
+        this.m_pred_UID = 0;
     }
 
     newPlant(x_, y_, radius_) {
@@ -39,8 +40,9 @@ class Global {
     }
 
     newPredator(x_, y_, energy_, gene_string_) {
+        this.m_pred_UID++;
         this.m_template_gene.setGeneString(gene_string_);
-        let temp_predator = new Predator(x_, y_, 5, 0, energy_, { ...this.m_template_gene });
+        let temp_predator = new Predator(this.m_pred_UID, x_, y_, 5, 0, energy_, { ...this.m_template_gene });
         this.m_pred_list.push(temp_predator);
     }
 
@@ -87,12 +89,17 @@ class Global {
         //inside grazer for loop
         // find predator in sight.
         let target_x_y = findPredator(grazer_.m_x_pos, grazer_.m_y_pos, grazer_pred_sight, this.m_pred_list, obstructions);
-        if (target_x_y[0] !== 0 || target_x_y[1] !== 0) 
+        if (grazer_.m_energy < 1)
+        {
+                grazer_.beConsumed();
+        }
+        else if (target_x_y[0] !== 0 || target_x_y[1] !== 0) 
         { // if there is a predator
-            grazer_.moveFlee(target_x_y, this.m_grazer_stuff.m_max_speed, this.m_grazer_stuff.m_energy_out, obstructions, this.m_grazer_stuff.maintain_speed);
+            grazer_.moveFlee(target_x_y, this.m_grazer_stuff.m_max_speed, this.m_grazer_stuff.m_energy_out, obstructions,[this.m_world_size_x, this.m_world_size_y], this.m_grazer_stuff.maintain_speed);
         }
         else 
         { // no predator, search for food\
+            
             if (grazer_.m_energy > this.m_grazer_stuff.m_energy_to_reproduce ) 
             { // check energy to reproduce
                 grazer_.reproduce(this.m_grazer_list);
@@ -102,16 +109,16 @@ class Global {
                 let target = findClosest(grazer_.m_x_pos, grazer_.m_y_pos, this.m_plant_list, this.m_obs_list, grazer_food_sight, grazer_smell);
                 if (target) 
                 {
-                    if (distanceTo([grazer_.m_x_pos, grazer_.m_y_pos], [target.m_x_pos, target.m_y_pos]) > (5 + target.m_radius)) 
+                    let distance_to_food = distanceTo([grazer_.m_x_pos, grazer_.m_y_pos], [target.m_x_pos, target.m_y_pos])
+                    let speed = this.m_grazer_stuff.m_max_speed
+                    if (distance_to_food < (target.m_radius/2 + this.m_grazer_stuff.m_max_speed)) 
                     {
-                        grazer_.moveSeek(target, this.m_grazer_stuff.m_max_speed, this.m_grazer_stuff.m_energy_out, obstructions);
-                    }
-                    if (distanceTo([grazer_.m_x_pos, grazer_.m_y_pos], [target.m_x_pos, target.m_y_pos]) < (5 + target.m_radius)) 
+                        speed = distance_to_food - target.m_radius/2 
+                    }                       
+                    grazer_.moveSeek(target, speed, this.m_grazer_stuff.m_energy_out, [this.m_world_size_x, this.m_world_size_y],obstructions);
+                    if (distance_to_food < (5 + target.m_radius/2)) 
                     {
-                        if (grazer_.eat(target, this.m_grazer_stuff.m_energy_in)) 
-                        { 
-                            this.m_plant_death_list.push(target); 
-                        }
+                        grazer_.eat(target, this.m_grazer_stuff.m_energy_in)
                     }
                 }
                 else 
@@ -133,13 +140,28 @@ class Global {
         let targets = [];
         let target_x_y = [0, 0];
         let target;
-
-        if (pred_.m_energy >= this.m_predator_stuff.m_energy_to_reproduce ) 
+        target = findClosest(pred_.m_x_pos, pred_.m_y_pos, obstructions, [], predator_sight, predator_smell);
+        if (target)
+        {
+            let obs_distance = distanceTo([pred_.m_x_pos, pred_.m_y_pos], [target.m_x_pos, target.m_y_pos]);
+            if ( obs_distance < (target.m_radius/2 + pred_.m_radius))
+            {
+                console.log('inside obstacle' + pred_.m_UID)
+                let speed = obs_distance - target.m_radius/2;
+                // targeting center of obstacle but have negative speed so we want to poop out the opposite direction
+                pred_.moveSeek(target, speed, this.m_predator_stuff.m_energy_out, [this.m_world_size_x, this.m_world_size_y],[]);
+            }
+        }
+        if (pred_.m_energy < 1 || pred_.nan())
+        {
+                pred_.beConsumed();
+        }
+        else if (pred_.m_energy >= this.m_predator_stuff.m_energy_to_reproduce ) 
         {  // mating conditions 
             target = findClosest(pred_.m_x_pos, pred_.m_y_pos, this.m_pred_list, obstructions, predator_sight, predator_smell)
             if (target != null) 
             {   // predator in sight
-                pred_.moveSeek(target, this.m_predator_stuff.m_maintain_speed, this.m_predator_stuff.m_energy_out, obstructions);
+                pred_.moveSeek(target, this.m_predator_stuff.m_maintain_speed, this.m_predator_stuff.m_energy_out, [this.m_world_size_x, this.m_world_size_y],obstructions);
                 if (distanceTo([pred_.m_x_pos, pred_.m_y_pos], [target.m_x_pos, target.m_y_pos]) < 5)
                     {
                         pred_.reproduce(this.m_pred_list, target);
@@ -150,13 +172,10 @@ class Global {
                 target = findClosest(pred_.m_x_pos, pred_.m_y_pos, this.m_grazer_list, obstructions, predator_sight, predator_smell) //no pred in sight
                 if (target != null) 
                 {
-                    pred_.moveSeek(target, this.m_predator_stuff.m_maintain_speed, this.m_predator_stuff.m_energy_out, obstructions);
-                    if (distanceTo([pred_.m_x_pos, pred_.m_y_pos], [target.m_x_pos, target.m_y_pos]) < 5) 
+                    pred_.moveSeek(target, this.m_predator_stuff.m_maintain_speed, this.m_predator_stuff.m_energy_out, [this.m_world_size_x, this.m_world_size_y],obstructions);
+                    if (distanceTo([pred_.m_x_pos, pred_.m_y_pos], [target.m_x_pos, target.m_y_pos]) < 10) 
                     {
-                        if (pred_.eat(target)) 
-                        {
-                            this.m_grazer_death_list.push(target);
-                        }
+                        pred_.eat(target)
                     }
                 }
                 else 
@@ -177,18 +196,15 @@ class Global {
                     target = findClosest(pred_.m_x_pos, pred_.m_y_pos, this.m_grazer_list, obstructions, predator_sight, predator_smell) //no pred in sight
                     if (target)
                     {
-                        pred_.moveSeek(target, this.m_predator_stuff.m_maintain_speed, this.m_predator_stuff.m_energy_out, obstructions);
-                        if (distanceTo([pred_.m_x_pos, pred_.m_y_pos], [target.m_x_pos, target.m_y_pos]) < 5) 
+                        pred_.moveSeek(target, this.m_predator_stuff.m_maintain_speed, this.m_predator_stuff.m_energy_out, [this.m_world_size_x, this.m_world_size_y],obstructions);
+                        if (distanceTo([pred_.m_x_pos, pred_.m_y_pos], [target.m_x_pos, target.m_y_pos]) < 10) 
                         {
-                            if (pred_.eat(target)) 
-                            {
-                                this.m_grazer_death_list.push(target);
-                            }
+                            pred_.eat(target)
                         }
                     }
                     else 
                     {
-                        pred_.moveWander(this.m_predator_stuff.m_maintain_speed, this.m_predator_stuff.m_energy_out, obstructions);
+                        pred_.moveWander(this.m_predator_stuff.m_maintain_speed, this.m_predator_stuff.m_energy_out, [this.m_world_size_x, this.m_world_size_y],obstructions);
                     }
                 } // end no predator
             } // end "aa"
@@ -197,31 +213,25 @@ class Global {
                 target = findClosest(pred_.m_x_pos, pred_.m_y_pos, this.m_grazer_list, obstructions, predator_sight, predator_smell)
                 if (target) 
                 { // grazer in sight 
-                    pred_.moveSeek(target, this.m_predator_stuff.m_maintain_speed, this.m_predator_stuff.m_energy_out, obstructions);
-                    if (distanceTo([pred_.m_x_pos, pred_.m_y_pos], [target.m_x_pos, target.m_y_pos]) < 5) 
+                    pred_.moveSeek(target, this.m_predator_stuff.m_maintain_speed, this.m_predator_stuff.m_energy_out, [this.m_world_size_x, this.m_world_size_y],obstructions);
+                    if (distanceTo([pred_.m_x_pos, pred_.m_y_pos], [target.m_x_pos, target.m_y_pos]) < 10) 
                     {
-                        if (pred_.eat(target)) 
-                        {
-                            this.m_grazer_death_list.push(target);
-                        }
+                        pred_.eat(target)
                     }
                 }
                 else { // no grazer in sight   
                     target = findClosest(pred_.m_x_pos, pred_.m_y_pos, this.m_pred_list, obstructions, predator_sight, predator_smell) //no pred in sight
                     if (target) 
                     {
-                        pred_.moveSeek(target, this.m_predator_stuff.m_maintain_speed, this.m_predator_stuff.m_energy_out, obstructions);
-                        if (distanceTo([pred_.m_x_pos, pred_.m_y_pos], [target.m_x_pos, target.m_y_pos]) < 5) 
+                        pred_.moveSeek(target, this.m_predator_stuff.m_maintain_speed, this.m_predator_stuff.m_energy_out, [this.m_world_size_x, this.m_world_size_y],obstructions);
+                        if (distanceTo([pred_.m_x_pos, pred_.m_y_pos], [target.m_x_pos, target.m_y_pos]) < 10) 
                         {
-                            if (pred_.eat(target)) 
-                            {
-                                this.m_predator_death_list.push(target);
-                            }
+                            pred_.eat(target)
                         }
                     }
                     else 
                     {
-                        pred_.moveWander(this.m_predator_stuff.m_maintain_speed, this.m_predator_stuff.m_energy_out, obstructions);
+                        pred_.moveWander(this.m_predator_stuff.m_maintain_speed, this.m_predator_stuff.m_energy_out, [this.m_world_size_x, this.m_world_size_y],obstructions);
                     }
                 } // end no grazer
             } // end "AA"
@@ -231,25 +241,15 @@ class Global {
                 target = findClosest(pred_.m_x_pos, pred_.m_y_pos, targets, obstructions, predator_sight, predator_smell)
                 if (target) 
                 {
-                    pred_.moveSeek(target, this.m_predator_stuff.m_maintain_speed, this.m_predator_stuff.m_energy_out, obstructions);
-                    if (distanceTo([pred_.m_x_pos, pred_.m_y_pos], [target.m_x_pos, target.m_y_pos]) < 5) 
+                    pred_.moveSeek(target, this.m_predator_stuff.m_maintain_speed, this.m_predator_stuff.m_energy_out,[this.m_world_size_x, this.m_world_size_y], obstructions);
+                    if (distanceTo([pred_.m_x_pos, pred_.m_y_pos], [target.m_x_pos, target.m_y_pos]) < 10) 
                     {
-                        if (pred_.eat(target)) 
-                        {
-                            if (pred_ instanceof Predator) 
-                            {
-                                this.m_predator_death_list.push(target);
-                            }
-                            else if (pred_ instanceof Grazer) 
-                            {
-                                this.m_predator_death_list.push(target);
-                            }
-                        }
+                        pred_.eat(target)
                     }
                 }
                 else 
                 {
-                    pred_.moveWander(this.m_predator_stuff.m_maintain_speed, this.m_predator_stuff.m_energy_out, obstructions);
+                    pred_.moveWander(this.m_predator_stuff.m_maintain_speed, this.m_predator_stuff.m_energy_out, [this.m_world_size_x, this.m_world_size_y],obstructions);
                 }
             } // end "AA"
         } // end not mating
@@ -301,42 +301,69 @@ class Global {
         }
         plant.m_lifetime++
     }
+
+    
+
     tempDeathCheck() 
     {
+        let temp_list = [];
         //when things die add to this list with append
-        if (this.m_plant_death_list.length > 0) 
+        for (let plant of this.m_plant_list) 
         {
-            for (let i = 0; i < this.m_plant_death_list.length; i++) 
+            if(!plant.m_dead)
             {
-                let x = this.m_plant_death_list.pop()
-                this.m_plant_list = this.m_plant_list[x].splice(x, 1)
+                temp_list.push(plant)
             }
         }
-        if (this.m_predator_death_list.length > 0) 
+        //console.log("plants" + temp_list.length)
+        if (temp_list.length < 1)
         {
-            for (let i = 0; i < this.m_predator_death_list.length; i++)
+            console.log("endsim")
+        }
+        this.m_plant_list = temp_list;
+        temp_list = [];
+
+        for (let grazer of this.m_grazer_list) 
+        {
+            if(!grazer.m_dead)
             {
-                let x = this.m_predator_death_list.pop()
-                this.m_pred_list = this.m_pred_list[x].splice(x, 1)
+                temp_list.push(grazer)
             }
         }
-        if (this.m_grazer_death_list.length > 0) 
+        //console.log("grazers" + temp_list.length)
+        if (temp_list.length < 1)
         {
-            for (let i = 0; i < this.m_grazer_death_list.length; i++) 
+            console.log("endsim")
+        }
+        this.m_grazer_list = temp_list;
+        temp_list = [];
+
+        for (let predator of this.m_pred_list) 
+        {
+            if(!predator.m_dead)
             {
-                let x = this.m_grazer_death_list.pop()
-                this.m_grazer_list = this.m_grazer_list[x].splice(x, 1)
+                temp_list.push(predator)
             }
         }
+        //console.log("predators" + temp_list.length)
+        if (temp_list.length < 1)
+        {
+            console.log("endsim")
+        }
+        this.m_pred_list = [];
+        this.m_pred_list = temp_list;
+        temp_list = [];
     }
     update() 
     {
+        
         this.m_buffer_string = "";
         let buffer_size = 100;
         if (this.m_plant_list && this.m_grazer_list && this.m_pred_list) 
         {
             for (let i = 0; i < buffer_size; i++) 
             {
+                console.log("round: " + i)
                 for (let plant of this.m_plant_list) 
                 {
                     this.plantDecisionTree(plant);
@@ -349,7 +376,7 @@ class Global {
                 {
                     this.predatorDecisionTree(predator);
                 }
-                // this.tempDeathCheck();
+                this.tempDeathCheck();
                 this.m_buffer_string += this.printEnts() + "\n";
             }
         }

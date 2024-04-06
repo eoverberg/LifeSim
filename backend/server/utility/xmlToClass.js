@@ -41,9 +41,17 @@ function xmlimporter(global, xmlLocation, callback){
     studentJSON.LIFE_SIMULATION.PLANTS.GROWTH_RATE
   );
   
-  for (let plant of studentJSON.LIFE_SIMULATION.PLANTS.PLANT){
+  if ( studentJSON.LIFE_SIMULATION.PLANTS.INITIAL_PLANT_COUNT > 1)
+  {
+    for (let plant of studentJSON.LIFE_SIMULATION.PLANTS.PLANT){
+      global.newPlant(plant.X_POS,plant.Y_POS,plant.P_DIAMETER);
+    }  
+  }
+  else if (studentJSON.LIFE_SIMULATION.PLANTS.INITIAL_PLANT_COUNT===1)
+  {
+    let plant = studentJSON.LIFE_SIMULATION.PLANTS.PLANT;
     global.newPlant(plant.X_POS,plant.Y_POS,plant.P_DIAMETER);
-  }  
+  } 
   
   global.initializeGrazerInfo(
     studentJSON.LIFE_SIMULATION.GRAZERS.G_ENERGY_INPUT,
@@ -53,9 +61,17 @@ function xmlimporter(global, xmlLocation, callback){
     studentJSON.LIFE_SIMULATION.GRAZERS.G_MAX_SPEED
   );
   
-  for (let grazer of studentJSON.LIFE_SIMULATION.GRAZERS.GRAZER){
+  if (studentJSON.LIFE_SIMULATION.GRAZERS.INITIAL_GRAZER_COUNT > 1)
+  {
+    for (let grazer of studentJSON.LIFE_SIMULATION.GRAZERS.GRAZER){
+      global.newGrazer(grazer.X_POS,grazer.Y_POS,grazer.G_ENERGY_LEVEL);
+   }   
+  }
+  else if (studentJSON.LIFE_SIMULATION.GRAZERS.INITIAL_GRAZER_COUNT === 1)
+  {
+    let grazer = studentJSON.LIFE_SIMULATION.GRAZERS.GRAZER;
     global.newGrazer(grazer.X_POS,grazer.Y_POS,grazer.G_ENERGY_LEVEL);
-  }   
+  }  
   
   global.intializePredatorInfo(
     studentJSON.LIFE_SIMULATION.PREDATORS.P_MAINTAIN_SPEED,
@@ -70,13 +86,31 @@ function xmlimporter(global, xmlLocation, callback){
     studentJSON.LIFE_SIMULATION.PREDATORS.MAX_SPEED_HED,
     studentJSON.LIFE_SIMULATION.PREDATORS.MAX_SPEED_HOR
   );
-
-  for (let predator of studentJSON.LIFE_SIMULATION.PREDATORS.PREDATOR){
+  if (studentJSON.LIFE_SIMULATION.PREDATORS.INITIAL_PREDATOR_COUNT > 1)
+  {
+    for (let predator of studentJSON.LIFE_SIMULATION.PREDATORS.PREDATOR)
+    {
+      global.newPredator(predator.X_POS,predator.Y_POS,predator.P_ENERGY_LEVEL,predator.GENOTYPE);
+    }
+  }
+  else if (studentJSON.LIFE_SIMULATION.PREDATORS.INITIAL_PREDATOR_COUNT === 1)
+  {
+    let predator = studentJSON.LIFE_SIMULATION.PREDATORS.PREDATOR;
     global.newPredator(predator.X_POS,predator.Y_POS,predator.P_ENERGY_LEVEL,predator.GENOTYPE);
   }
-  for (let obstacle of studentJSON.LIFE_SIMULATION.OBSTACLES.OBSTACLE){
-    global.newObs(obstacle.X_POS,obstacle.Y_POS,obstacle.O_DIAMETER,obstacle.O_HEIGHT);
+  if (studentJSON.LIFE_SIMULATION.OBSTACLES.INITIAL_OBSTACLE_COUNT > 1)
+  {
+    for (let obstacle of studentJSON.LIFE_SIMULATION.OBSTACLES.OBSTACLE)
+    {
+      global.newObs(obstacle.X_POS,obstacle.Y_POS,obstacle.O_DIAMETER,obstacle.O_HEIGHT);
+    }
   }
+  else if (studentJSON.LIFE_SIMULATION.OBSTACLES.INITIAL_OBSTACLE_COUNT === 1)
+  {   
+    let obstacle = studentJSON.LIFE_SIMULATION.LIFE_SIMULATION.OBSTACLES.OBSTACLE;
+    global.newPredator(obstacle.X_POS,obstacle.Y_POS,obstacle.O_DIAMETER,obstacle.O_HEIGHT);
+  }
+  
 
   callback();
 }

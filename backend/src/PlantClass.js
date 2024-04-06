@@ -4,6 +4,8 @@ class Plant extends Entity {
     constructor(x_pos_,y_pos_,radius_,lifetime_) {
         super(x_pos_,y_pos_,radius_,lifetime_);
         this.m_repro_timer = 0;
+        this.m_dead = false;
+        this.m_eat_time = 0;
     }
 
     //simulates plant growth rate over time 
@@ -14,6 +16,7 @@ class Plant extends Entity {
     beConsumed() 
     {
         this.m_radius = 0; //resets size of plant when plant is consumed
+        this.m_dead = true;
     }
 
     reproduce(plants_array_) 

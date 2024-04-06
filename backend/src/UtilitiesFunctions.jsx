@@ -9,13 +9,111 @@ function distanceTo(position_1_, position_2_) {
     return Math.sqrt((position_1_[0] - position_2_[0]) ** 2 + (position_1_[1] - position_2_[1]) ** 2);
 }
 
+function changePosition(entity_, steering_, energy_use_, world_size_, obstructions_)
+{
+    // position with steering
+    let new_position = [entity_.m_x_pos + steering_[0], entity_.m_y_pos + steering_[1]];
+    let half_x = world_size_[0] / 2
+    let half_y = world_size_[1] / 2
+    let x_bound = 5;
+    let x_adjust = -1;
+    let y_bound = 5;
+    let y_adjust = -1;
+    let vertical_direction = true;
+    // check if going more left and right or up and down
+    if(Math.abs(steering_[0]) > Math.abs(steering_[1]))
+    {
+        vertical_direction = false
+    }
+    // find boundary likely to encounter 
+    if (new_position[0] > half_x) 
+    {
+        x_bound = world_size_[0] -5;
+        x_adjust = 1
+    }
+    if (new_position[1] > half_y)
+    {
+        y_bound = world_size_[1]-5;
+        y_adjust = 1;
+    }
+    let change_flag = true; 
+    let change_count = 0;
+    while(change_flag && change_count < 4)
+    {
+        change_flag = false;
+        //get distance destination is from bounds
+        //positive is out of bounds, negative inside 
+        let x_over = new_position[0] * x_adjust - x_bound;
+        let y_over = new_position[1] * y_adjust - y_bound;
+        // is both are out of bounds  
+        if (x_over > 0 && y_over > 0)
+        {
+        // more y movement so flip steering along x-axis
+            if (vertical_direction)
+            {
+                steering_[0] *= -1; 
+            }
+            else 
+            {
+                steering_[1] *= -1;
+            }
+            change_flag = true;
+        
+        }
+        else if (x_over > 0)
+        {
+            steering_[0] -= x_over*x_adjust
+            if (steering_[1] > 0)
+            {
+                steering_[1] += x_over
+            }
+            else 
+            {    
+                steering_[1] -= x_over
+            }  
+            change_flag = true;  
+        }
+        else if (y_over > 0)
+        {
+            steering_[1] -= y_over*y_adjust;
+            if (steering_[0] > 0)
+            {
+                steering_[0] += y_over
+            }
+            else 
+            {    
+                steering_[0] -= y_over
+            }    
+            change_flag = true;
+        }
+        change_count++;
+        if(change_count===4){
+            steering_ = [0,0];
+        }
+    }
+    if (isNaN(steering_[1]))
+    {
+        steering_[1] = 0;
+    }
+    if (isNaN(steering_[1]))
+    {
+        steering_[0] = 0;
+    }
+    entity_.m_orientation = Math.atan(steering_[1],steering_[0]);
+    let distance_moved =  Math.sqrt(steering_[0] ** 2 + steering_[1] ** 2);
+    let energy_used = distance_moved / 5 * energy_use_;
+    entity_.m_x_pos += steering_[0];
+    entity_.m_y_pos += steering_[1];
+    entity_.m_energy -= energy_used;
+}
+
 // parameters: 
 //      source (x,y) 
 //      difference in source and target(x,y)
 //      distance betweeen source and target
 //      list of entities that could block LOS
 // returns true if an obstacle is between target and source
-function checkPath(source_, target_, obstacles_) {
+function checkPath(source_,radius_, target_, obstacles_) {
     // check if any obstacles
     if (obstacles_.length === 0) {
         return target_;
@@ -28,13 +126,18 @@ function checkPath(source_, target_, obstacles_) {
     let distance = (x_diff) ** 2 + (y_diff) ** 2;
     // iterate through obstacles and check if it is blocking path
     for (let obstacle of obstacles_) {
-        // find closest point on path to obstacle     
-        let position = ((obstacle.m_x_pos - s_x) * (x_diff) + (obstacle.m_y_pos - s_y) * (y_diff)) / distance;
-        // if 0 or 1 obstacle is closest to target or source and not blocking los;
-        if (position < 1 && position > 0) {
-            // find closest (x,y) on line to obstacle  
-            let line_x = s_x + (position * (x_diff));
-            let line_y = s_y + (position * (y_diff));
+        // find closest point on path to obstacle
+        if (distanceTo(target_,[obstacle.m_x_pos, obstacle.m_y_pos]) < (radius_ ** 2 + obstacle.m_radius ** 2))
+        {
+            let line_x;
+            let line_y;
+            let position = ((obstacle.m_x_pos - s_x) * (x_diff) + (obstacle.m_y_pos - s_y) * (y_diff)) / distance;
+            // if 0 or 1 obstacle is closest to target or source and not blocking los;
+            if (position < 1 && position > 0) {
+                // find closest (x,y) on line to obstacle  
+                let line_x = s_x + (position * (x_diff));
+                let line_y = s_y + (position * (y_diff));
+            }
             // find distance from obstacle to line
             let x_diff_2 = line_x - obstacle.m_x_pos;
             let y_diff_2 = line_y - obstacle.m_y_pos;
@@ -145,6 +248,7 @@ function findClosest(s_x_, s_y_, entities_, obstructions_, distance_, smell_dist
                 dis_check = distance_2;
                 target = ent;
             }
+            
         }
     }
     return target;
@@ -187,4 +291,4 @@ function boundsCheck(world_x_, world_y_, pos_x_, pos_y_) {
     }
 }
 
-module.exports = { isColliding, checkLOS, findPredator, findClosest, checkPath, distanceTo, boundsCheck };
+module.exports = { isColliding, checkLOS, findPredator, findClosest, checkPath, distanceTo, boundsCheck, changePosition };

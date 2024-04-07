@@ -183,7 +183,7 @@ class Global {
                 pred_.moveSeek(target, this.m_predator_stuff.m_maintain_speed, this.m_predator_stuff.m_energy_out, [this.m_world_size_x, this.m_world_size_y],obstructions);
                 if (distanceTo([pred_.m_x_pos, pred_.m_y_pos], [target.m_x_pos, target.m_y_pos]) < 5)
                     {
-                        pred_.reproduce(this.m_pred_list, target);
+                        pred_.reproduce(this.m_pred_list, target, this.m_predator_generation);
                 }
             }
             else 
@@ -275,22 +275,22 @@ class Global {
         pred_.m_lifetime++;
     } // end predatorDecisionTree
 
-    plantDecisionTree(plant) 
+    plantDecisionTree(plant_) 
     {
         //This is a tempory holder for the plant dc  
-        if ((plant.m_radius*2 <= this.m_plant_stuff.m_max_size) && (plant.m_lifetime >= 10)) 
+        if ((plant_.m_radius*2 <= this.m_plant_stuff.m_max_size) && (plant_.m_lifetime >= 10)) 
         {
-            plant.m_radius = plant.m_radius + (this.m_plant_stuff.m_max_size * (this.m_plant_stuff.m_growth_rate/100)); // grow by 1% max
+            plant_.m_radius = plant_.m_radius + (this.m_plant_stuff.m_max_size * (this.m_plant_stuff.m_growth_rate/100)); // grow by 1% max
         }
-        if (plant.m_radius*2 >= this.m_plant_stuff.m_max_size) 
+        if (plant_.m_radius*2 >= this.m_plant_stuff.m_max_size) 
         {
-            plant.m_repro_timer += 1
-            if (plant.m_repro_timer % 3600 === 0) 
+            plant_.m_repro_timer += 1
+            if (plant_.m_repro_timer % 3600 === 0) 
             {
-                plant.reproduce(this.m_plant_list)
+                plant_.reproduce(this.m_plant_list, this.m_plant_generation)
             }
         }
-        plant.m_lifetime++
+        plant_.m_lifetime++
     }
     // outputs string of all entities' information needed to display.
     printEnts() 

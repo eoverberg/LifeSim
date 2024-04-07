@@ -21,11 +21,19 @@ class Plant extends Entity {
         this.m_dead = true;
     }
 
-    reproduce(plants_array_) 
+    reproduce(plants_array_, generation_array_) 
     {
+        if(this.m_generation >= generation_array_.length)
+        {
+            generation_array_.push(0);
+        }
+        const next_generation = this.m_generation + 1;
+        generation_array_[next_generation-1] = generation_array_[next_generation-1]+1;
+        let next_entity = generation_array_[next_generation-1];
+
         let time = 0;
         let size = .1;
-        const offspring = new Plant(this.m_x_pos + Math.random(), this.m_y_pos + Math.random(), size, time);
+        const offspring = new Plant(next_generation, next_entity, this.m_x_pos + Math.random(), this.m_y_pos + Math.random(), size, time);
         plants_array_.push(offspring);
     }
 }

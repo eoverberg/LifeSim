@@ -69,7 +69,15 @@ class Predator extends Entity {
         return true;
     }
 
-    reproduce(predators_array_, target_) {
+    reproduce(predators_array_, target_, generation_array_) {
+
+        if(this.m_generation >= generation_array_.length)
+        {
+            generation_array_.push(0);
+        }
+        const next_generation = this.m_generation + 1;
+        generation_array_[next_generation-1] = generation_array_[next_generation-1]+1;
+        let next_entity = generation_array_[next_generation-1];
 
         var g_string = "";
         var temp = "";
@@ -93,7 +101,7 @@ class Predator extends Entity {
         g_string = g_string.concat(temp);
         let gene_copy = {...this.m_genes_obj};
         gene_copy.setGeneString(g_string);
-        const offspring = new Predator(this.m_x_pos + Math.random(), this.m_y_pos + Math.random(), this.m_radius, 0, Math.floor(this.energy / 2), gene_copy);
+        const offspring = new Predator(next_generation, next_entity, this.m_x_pos + Math.random(), this.m_y_pos + Math.random(), this.m_radius, 0, Math.floor(this.energy / 2), gene_copy);
         predators_array_.push(offspring);
     }
 

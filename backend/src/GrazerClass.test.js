@@ -86,6 +86,7 @@ test('flee Test border test', () => {
 
 
      //expect(graz.m_energy).toBeCloseTo(35);
+     //expect(graz.m_energy).toBeCloseTo(35);
 
     //   expect(steering[0]).toBeGreaterThanOrEqual(-5);
     //   expect(steering[0]).toBeLessThanOrEqual(0);

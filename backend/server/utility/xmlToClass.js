@@ -33,6 +33,8 @@ function xmlimporter(global, xmlLocation, callback){
   // saves information to the Global object passed in
   global.m_world_size_x = studentJSON.LIFE_SIMULATION.LAND_BOUNDS.WIDTH;
   global.m_world_size_y = studentJSON.LIFE_SIMULATION.LAND_BOUNDS.HEIGHT;
+  global.m_world_size_x = studentJSON.LIFE_SIMULATION.LAND_BOUNDS.WIDTH;
+  global.m_world_size_y = studentJSON.LIFE_SIMULATION.LAND_BOUNDS.HEIGHT;
 
   global.initializePlantInfo(studentJSON.LIFE_SIMULATION.PLANTS.MAX_SIZE, 
     studentJSON.LIFE_SIMULATION.PLANTS.MAX_SEED_NUMBER, 

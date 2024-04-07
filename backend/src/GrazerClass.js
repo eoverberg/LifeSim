@@ -76,7 +76,7 @@ class Grazer extends Entity {
         speed_ = (speed_/60) * .75;
 
         let steering = seek([this.m_x_pos, this.m_y_pos], [target_.m_x_pos, target_.m_y_pos], speed_)
-        console.log("steering " + steering)
+        //console.log("steering " + steering)
         changePosition(this, steering, energy_use_, world_size_, obstructions_, speed_);
 
     }

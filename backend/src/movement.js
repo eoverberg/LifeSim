@@ -44,42 +44,42 @@ function flee(entity_vector_, target_, speed_) {
 
 function wander(entity_, speed_) {
     // Parameters for wander behavior
-    let wander_radius = 20; // Radius of the wander circle
+    //let wander_radius = 20; // Radius of the wander circle
     let wander_distance = 2*speed_; // Distance the wander circle is in front of the entity
-    let wander_jitter = .5; // How much the target point can change each tick
-
+    //let wander_jitter = .5; // How much the target point can change each tick
+    // random amount of radians to offset the entities orientation.
+    // radians = degrees, 0.26 = 15, .52 = 30, .78 = 45, 1.04 = 60, 1.56 = 90, 2.08 = 110, 2.6 = 135, 3.12 = 180]
+    let max_radian_offset =0.52;
+    // double radians and multiple by random number then subtract radians to get a number between -radian;s and +radians 
+    let wander_offset =  ((2*max_radian_offset) * Math.random() - max_radian_offset);
+    //console.log("wander_offset: " + wander_offset)
+    // add offset to current orientation and ensure it is with 3.14 and -3.14
+    let temp_orientaton = (wander_offset + entity_.m_orientation); 
+    //console.log("temp_orientaton: " + temp_orientaton)
+    if (temp_orientaton> 3.14)
+    {
+        let leftover = temp_orientaton - 3.14;
+        temp_orientaton = -3.14 + leftover;
+    }
+    if (temp_orientaton < -3.14)
+    {
+        let leftover = temp_orientaton + 3.14;
+        temp_orientaton = 3.14 - leftover;
+    }
+    //console.log("temp orient: " + temp_orientaton)
     // Initialize entity.target to the entity's current position if it doesn't exist
     // Creates a shallow copy of entity.position & assigns to entity.target so target won't affect position
     //entity.target = entity.target || [...entity.position]; 
     let entity_vector = [entity_.m_x_pos, entity_.m_y_pos];
-    let target = [entity_.m_x_pos, entity_.m_y_pos]
-    // Add a small random vector to the target's position
-    // let random_displacement = [
-    //     target[0] += Math.random() * wander_jitter - wander_jitter * 0.5,
-    //     target[1] += Math.random() * wander_jitter - wander_jitter * 0.5
-    // ];
-    // random_displacement = normalize(random_displacement);
-    // random_displacement = multiplyVector(random_displacement, wander_radius);
-
-    // Calculate the forward vector based on the entity's m_orientation
-    let orient_vector = [Math.cos(((entity_.m_orientation)/Math.PI)*180), Math.sin(((entity_.m_orientation )/Math.PI)*180)]
-    //  let random_displacement = [
-    //     orient_vector[0] += Math.random() * wander_jitter - wander_jitter * 0.5,
-    //     orient_vector[1] += Math.random() * wander_jitter - wander_jitter * 0.5
-    // ];
-    // console.log("orient: " + entity_.m_orientation)
-    // console.log("x: " + orient_vector[0])
-    // console.log("x: " + orient_vector[1])
-
-    let forward_vector = multiplyVector(orient_vector, wander_distance);
-    // Combine the forward vector and random displacement to get the target in local space
-    //let target_local = addVectors(forward_vector, random_displacement);
-
+    let target_vector = [Math.cos(temp_orientaton), Math.sin(temp_orientaton)];
+    target_vector = multiplyVector(target_vector, wander_distance);
+    let target_local = addVectors(entity_vector, target_vector);
+   // console.log("target_local" + target_local)
     // Convert the local target to world space using the entity's current position
-    target = addVectors(entity_vector, forward_vector);
+    //target_vector = addVectors(entity_vector, target_local);
    
     // Seek towards the target
-    return seek([entity_.m_x_pos, entity_.m_y_pos], target, speed_);
+    return seek([entity_.m_x_pos, entity_.m_y_pos], target_local, speed_);
 }
 
 function directMovement(entity_, direction_, speed_) {

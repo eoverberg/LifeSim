@@ -1,11 +1,13 @@
 const { Entity } = require('./Entity.js');
 
 class Plant extends Entity {
-    constructor(x_pos_,y_pos_,radius_,lifetime_) {
+    constructor(generation_, UID_, x_pos_,y_pos_,radius_,lifetime_) {
         super(x_pos_,y_pos_,radius_,lifetime_);
         this.m_repro_timer = 0;
         this.m_dead = false;
         this.m_eat_time = 0;
+        this.m_generation = generation_;
+        this.m_UID = UID_; 
     }
 
     //simulates plant growth rate over time 

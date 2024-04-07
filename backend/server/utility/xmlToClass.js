@@ -44,13 +44,13 @@ function xmlimporter(global, xmlLocation, callback){
   if ( studentJSON.LIFE_SIMULATION.PLANTS.INITIAL_PLANT_COUNT > 1)
   {
     for (let plant of studentJSON.LIFE_SIMULATION.PLANTS.PLANT){
-      global.newPlant(plant.X_POS,plant.Y_POS,plant.P_DIAMETER);
+      global.newPlant(plant.X_POS,plant.Y_POS,plant.P_DIAMETER/2);
     }  
   }
   else if (studentJSON.LIFE_SIMULATION.PLANTS.INITIAL_PLANT_COUNT===1)
   {
     let plant = studentJSON.LIFE_SIMULATION.PLANTS.PLANT;
-    global.newPlant(plant.X_POS,plant.Y_POS,plant.P_DIAMETER);
+    global.newPlant(plant.X_POS,plant.Y_POS,plant.P_DIAMETER/2);
   } 
   
   global.initializeGrazerInfo(
@@ -102,13 +102,13 @@ function xmlimporter(global, xmlLocation, callback){
   {
     for (let obstacle of studentJSON.LIFE_SIMULATION.OBSTACLES.OBSTACLE)
     {
-      global.newObs(obstacle.X_POS,obstacle.Y_POS,obstacle.O_DIAMETER,obstacle.O_HEIGHT);
+      global.newObs(obstacle.X_POS,obstacle.Y_POS,obstacle.O_DIAMETER/2,obstacle.O_HEIGHT);
     }
   }
   else if (studentJSON.LIFE_SIMULATION.OBSTACLES.INITIAL_OBSTACLE_COUNT === 1)
   {   
     let obstacle = studentJSON.LIFE_SIMULATION.LIFE_SIMULATION.OBSTACLES.OBSTACLE;
-    global.newPredator(obstacle.X_POS,obstacle.Y_POS,obstacle.O_DIAMETER,obstacle.O_HEIGHT);
+    global.newPredator(obstacle.X_POS,obstacle.Y_POS,obstacle.O_DIAMETER/2,obstacle.O_HEIGHT);
   }
   
 

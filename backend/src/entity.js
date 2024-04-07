@@ -18,9 +18,9 @@
         if (gene_string_)
         {
             let g_array = gene_string_.split(' ');
-            this.m_speed = g_array[1];
+            this.m_speed = g_array[2];
             this.m_aggro = g_array[0];
-            this.m_strength = g_array[2];
+            this.m_strength = g_array[1];
         }
     }
     setGeneString(g_string_) 
@@ -28,9 +28,9 @@
         if (g_string_)
         {
             let g_array = g_string_.split(' ');
-            this.m_speed = g_array[1];
+            this.m_speed = g_array[2];
             this.m_aggro = g_array[0];
-            this.m_strength = g_array[2];
+            this.m_strength = g_array[1];
         }
         this.m_gene_string = g_string_; 
     } 

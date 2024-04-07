@@ -1,4 +1,4 @@
-const {seek,flee,wander} = require('./movement');
+const {seek,flee,wander} = require('./Movement');
 const Predator = require('./PredatorClass');
 const {Genes} = require ('./Entity');
 const Grazer = require('./GrazerClass');
@@ -31,12 +31,13 @@ const Grazer = require('./GrazerClass');
 //  });
     
 test('wander Test', () => {
-   let graz = new Grazer(40,40,5,0,40);
-   let steering = wander(graz, 5) 
+   let graz = new Grazer(1, 40, 40, 5, 0, 40);
    graz.m_orientation = -0.5;
+   let steering = wander(graz, 1) 
    //let sample = (5/Math.sqrt(2))
    //console.log("Close to: " + sample);
-   console.log(steering);    expect(steering[0]).toBeGreaterThanOrEqual(-5);
+      
+   expect(steering[0]).toBeGreaterThanOrEqual(-5);
    expect(steering[0]).toBeLessThanOrEqual(5);
    expect(steering[1]).toBeGreaterThanOrEqual(-5);
    expect(steering[1]).toBeLessThanOrEqual(5);

@@ -9,102 +9,161 @@ function distanceTo(position_1_, position_2_) {
     return Math.sqrt((position_1_[0] - position_2_[0]) ** 2 + (position_1_[1] - position_2_[1]) ** 2);
 }
 
-function changePosition(entity_, steering_, energy_use_, world_size_, obstructions_)
+function changePosition(entity_, steering_, energy_use_, world_size_, obstructions_, speed_)
 {
-    // position with steering
-    let new_position = [entity_.m_x_pos + steering_[0], entity_.m_y_pos + steering_[1]];
-    let half_x = world_size_[0] / 2
-    let half_y = world_size_[1] / 2
-    let x_bound = 5;
-    let x_adjust = -1;
-    let y_bound = 5;
-    let y_adjust = -1;
-    let vertical_direction = true;
-    // check if going more left and right or up and down
-    if(Math.abs(steering_[0]) > Math.abs(steering_[1]))
+    // find orientation from coordinates
+    entity_.m_orientation = Math.atan2(steering_[1],steering_[0]);
+
+    const radian_array = [0, 0.26, -0.26,  .52, -.52, .78, -.78, 1.04, -1.04, 1.56, -1.56, 2.08, -2.08, 2.6, -2.6, 3.12]
+    let needsChange = false;
+    // rotate orientation by xx radians, if it works update target
+    // update by 15 on either side of original orientation until 90 degrees, then 30 on either side to 180.   
+    for( let radian of radian_array)
     {
-        vertical_direction = false
-    }
-    // find boundary likely to encounter 
-    if (new_position[0] > half_x) 
-    {
-        x_bound = world_size_[0] -5;
-        x_adjust = 1
-    }
-    if (new_position[1] > half_y)
-    {
-        y_bound = world_size_[1]-5;
-        y_adjust = 1;
-    }
-    let change_flag = true; 
-    let change_count = 0;
-    while(change_flag && change_count < 4)
-    {
-        change_flag = false;
-        //get distance destination is from bounds
-        //positive is out of bounds, negative inside 
-        let x_over = new_position[0] * x_adjust - x_bound;
-        let y_over = new_position[1] * y_adjust - y_bound;
-        // is both are out of bounds  
-        if (x_over > 0 && y_over > 0)
+        let temp_orientaton  = entity_.m_orientation;
+        //console.log("orientation1:" + temp_orientaton);
+        needsChange = false;
+        temp_orientaton += radian; 
+        //console.log("orientation2:" + temp_orientaton);
+        if (temp_orientaton> 3.14){
+            let leftover = temp_orientaton - 3.14;
+            temp_orientaton = -3.14 + leftover;
+        }
+        if (temp_orientaton < -3.14){
+            let leftover = temp_orientaton + 3.14;
+            temp_orientaton = 3.14 - leftover;
+        }
+       // console.log("orientation3:" + temp_orientaton);
+        // get coordinates from orientation
+        steering_[0] = speed_* Math.cos(temp_orientaton);
+        steering_[1] = speed_* Math.sin(temp_orientaton);
+        //console.log("sc steering: " + steering_[0] +","+ steering_[1])
+        let new_position = [entity_.m_x_pos + steering_[0], entity_.m_y_pos + steering_[1]];
+        // console.log("position:" + new_position[0] +","+ new_position[1])
+        // if target is outside of world try the next one
+        if (new_position[0] > world_size_[0] || new_position[1] > world_size_[1] || new_position[0] < 0 || new_position[1] < 0) 
         {
-        // more y movement so flip steering along x-axis
-            if (vertical_direction)
-            {
-                steering_[0] *= -1; 
-            }
-            else 
-            {
-                steering_[1] *= -1;
-            }
-            change_flag = true;
-        
-        }
-        else if (x_over > 0)
+            needsChange = true;
+            continue;
+        } 
+        // target is inside an obstacle or plant, try next one
+        if (obstructions_)
         {
-            steering_[0] -= x_over*x_adjust
-            if (steering_[1] > 0)
+            for( let obstruction of obstructions_)
             {
-                steering_[1] += x_over
+                let distance_to_target = distanceTo(new_position, [ obstruction.m_x_pos, obstruction.m_y_pos])
+                if(distance_to_target < ( obstruction.m_radius))
+                {
+                    //console.log("in obstruction: ent: " + entity_.m_UID + " distance: " + distance_to_target)
+                    needsChange = true;
+                    break;
+                } 
             }
-            else 
-            {    
-                steering_[1] -= x_over
-            }  
-            change_flag = true;  
         }
-        else if (y_over > 0)
+        if (!needsChange)
         {
-            steering_[1] -= y_over*y_adjust;
-            if (steering_[0] > 0)
-            {
-                steering_[0] += y_over
-            }
-            else 
-            {    
-                steering_[0] -= y_over
-            }    
-            change_flag = true;
+            break;
         }
-        change_count++;
-        if(change_count===4){
-            steering_ = [0,0];
-        }
+    }
+    // if for loop ends after all checks and still isn't right
+    if (needsChange)
+    {
+        steering_[0] = 0;
+        steering_[1] = 0;
     }
     if (isNaN(steering_[1]))
     {
         steering_[1] = 0;
     }
-    if (isNaN(steering_[1]))
+    if (isNaN(steering_[0]))
     {
         steering_[0] = 0;
     }
-    entity_.m_orientation = Math.atan(steering_[1],steering_[0]);
+    //Math.atan2(y,x)
+    entity_.m_orientation = Math.atan2(steering_[1],steering_[0]);
     let distance_moved =  Math.sqrt(steering_[0] ** 2 + steering_[1] ** 2);
     let energy_used = distance_moved / 5 * energy_use_;
     entity_.m_x_pos += steering_[0];
     entity_.m_y_pos += steering_[1];
     entity_.m_energy -= energy_used;
+}
+// not concerned about speed, just transporting entity to outside object.
+// parameters two entitys and 2 int array
+function escapeObstacle(entity_, target_, world_size_, obstructions_)
+{
+    // find orientation from obstacles pov
+    let diff_x = entity_.m_x_pos - target_.m_x_pos;
+    let diff_y = entity_.m_y_pos - target_.m_y_pos;
+    let target_orientation = Math.atan2(diff_y,diff_x);
+    //console.log("orientation:" + entity_.m_orientation);
+    let steering = [0,0];
+    let new_position = [0,0];
+    const radian_array = [0, 0.26, -0.26,  .52, -.52, .78, -.78, 1.04, -1.04, 1.56, -1.56, 2.08, -2.08, 2.6, -2.6, 3.12]
+    let needsChange = false;
+
+    // rotate orientation by xx radians, if it works update entity
+    // update by 15 on either side of original orientation until 90 degrees, then 30 on either side to 180.   
+    for( let radian of radian_array)
+    {
+        let temp_orientaton  = target_orientation;
+        needsChange = false;
+        temp_orientaton += radian; 
+        if (temp_orientaton> 3.14){
+            let leftover = temp_orientaton - 3.14;
+            temp_orientaton = -3.14 + leftover;
+        }
+        if (temp_orientaton < -3.14){
+            let leftover = temp_orientaton + 3.14;
+            temp_orientaton = 3.14 - leftover;
+        }
+        // get coordinates from orientation
+        steering[0] = (target_.m_radius + entity_.m_radius)* Math.cos(temp_orientaton);
+        steering[1] = (target_.m_radius + entity_.m_radius)* Math.sin(temp_orientaton);
+        // console.log("sc steering: " + steering[0] +","+ steering[1])
+        // still looking at obstruction pov
+        new_position = [target_.m_x_pos + steering[0], target_.m_y_pos + steering[1]];
+        // console.log("position:" + new_position[0] +","+ new_position[1])
+        // if target is outside of world try the next one
+        if (new_position[0] > world_size_[0] || new_position[1] > world_size_[1] || new_position[0] < 0 || new_position[1] < 0) 
+        {
+            //console.log("break World")
+            needsChange = true;
+            continue;
+        } 
+        // target is inside an obstacle or plant, try next one
+        if (obstructions_)
+        {
+            for( let obstruction of obstructions_)
+            {
+                let distance_to_target = distanceTo(new_position, [ obstruction.m_x_pos, obstruction.m_y_pos])
+                if(distance_to_target < ( obstruction.m_radius))
+                {
+                    //console.log("in obstruction: ent: " + entity_.m_UID + " distance: " + distance_to_target)
+                    needsChange = true;
+                    break;
+                } 
+            }
+        }
+        if (!needsChange)
+        {
+            break;
+        }
+    }
+    // if for loop ends after all checks and still isn't right
+    // kill entity
+    if (needsChange || isNaN(new_position[1]) || isNaN(new_position[0]))
+    {
+        entity_.beConsumed();
+    }
+    else 
+    {
+         //Math.atan2(y,x)
+        // entity looking away form target
+        entity_.m_orientation = Math.atan2(steering[1],steering[0]);
+        // entity is where goal was
+        entity_.m_x_pos = new_position[0];
+        entity_.m_y_pos = new_position[1];
+    }
 }
 
 // parameters: 
@@ -291,4 +350,4 @@ function boundsCheck(world_x_, world_y_, pos_x_, pos_y_) {
     }
 }
 
-module.exports = { isColliding, checkLOS, findPredator, findClosest, checkPath, distanceTo, boundsCheck, changePosition };
+module.exports = { isColliding, checkLOS, findPredator, findClosest, checkPath, distanceTo, boundsCheck, changePosition, escapeObstacle };

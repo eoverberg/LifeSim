@@ -1,10 +1,9 @@
-const {entity} =require('./entity.js');
+const {Entity} =require('./Entity');
 
-class Obstacle extends entity {
-    constructor(xPos,yPos,zPos,lifeTime, diameter) {
-        super(xPos,yPos,zPos,lifeTime);
-        this.diameter = diameter; // Obstacle size, could allow entities to go around it
-        this.height = zPos;
+class Obstacle extends Entity {
+    constructor(x_pos_,y_pos_,radius_,lifetime_, diameter_) {
+        super(x_pos_,y_pos_,radius_,lifetime_);
+        this.diameter = diameter_; // Obstacle size, could allow entities to go around it
     }
 }
 

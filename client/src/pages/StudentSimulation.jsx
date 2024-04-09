@@ -4,6 +4,7 @@ import { useLocalStorage } from "../components/useLocalStorage";
 import IntervalControl from "../components/IntervalControl";
 import GetBuffer from "../components/GetBuffer";
 import RunBuffer from "../components/RunBuffer";
+import InitStats from "../components/InitStats";
 
 const StudentSimulation = () => {
     const [name, setName] = useLocalStorage("student_name", "");
@@ -57,9 +58,13 @@ const StudentSimulation = () => {
         <IntervalControl
         setIntervalTime={setIntervalTime}
         />
+        <InitStats 
+        displayData = {displayData} 
+        />
         <Canvas 
         displayData={displayData}
         />
+
         </>
     );
 };

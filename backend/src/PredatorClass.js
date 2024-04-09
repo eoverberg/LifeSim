@@ -64,9 +64,197 @@ class Predator extends Entity {
     }
 
     eat(entity_) {
-        this.m_energy += entity_.m_energy*.9; //gain a fixed amount of energy
-        entity_.beConsumed(); //consume the grazer
-        return true;
+        let strength = this.m_genes_obj.m_strength;
+        let target_strength = entity_.m_genes_obj.m_strength;
+        let success_rate = Math.random();
+        if (strength === "ss")
+        {
+            // Predators with ss genotype are weakest and will succeed in killing and eating Grazers 50% of the time if they are caught.  
+            // If they attack another Predator they will succeed in killing and eating that Predator 5% of the time if its’ strength is SS and 25% of the time if its strength is Ss.  If two Predators with genotype ss fight there is a 50% chance one or the other will kill and eat and 50% chance they will disengage and go their own way.  
+            // If one does kill and eat the other there is an even chance as to which will succeed.
+            if (entity_ instanceof Grazer)
+            {
+                if (success_rate > .50)
+                {
+                    this.m_energy += entity_.m_energy*.9; //gain a fixed amount of energy
+                    entity_.beConsumed(); //consume the grazer
+                    return true;
+                }   
+            }
+            if (entity_ instanceof Predator)
+            {
+                
+                if (target_strength === "SS")
+                {
+                    if (success_rate > .95)
+                    {
+                        this.m_energy += entity_.m_energy*.9; 
+                        entity_.beConsumed(); 
+                        return true;
+                    }
+                }
+                else if (target_strength === "Ss")
+                {
+                    if (success_rate > .75)
+                    {
+                        this.m_energy += entity_.m_energy*.9; 
+                        entity_.beConsumed();
+                        return true;
+                    }
+                }
+                else if (target_strength === "ss")
+                {
+                    if (success_rate > .50)
+                    {
+                        let second_success_rate = Math.random();
+                        if (second_success_rate > .50)
+                        {
+                            this.m_energy += entity_.m_energy*.9; 
+                            entity_.beConsumed(); 
+                            return true;
+                        }
+                        else 
+                        {
+                            entity_.m_energy += this.m_energy*.9; 
+                            entity_.ate = true;
+                            this.beConsumed(); 
+                            return true;
+                        }
+                    }
+                    else
+                    {
+                        this.m_ignore_list.push([entity_.m_generation,entity_.m_UID]);
+                        entity_.m_ignore_list.push([this.m_generation,entity_.m_UID]);
+                    }
+                }
+            }
+        }
+        if (strength === "Ss")
+        {
+        //Predators with Ss genotype are moderately strong and will succeed in killing and eating Grazers 75% of the time if they are caught.  
+        //If they attack another Predator they will succeed in killing and eating that Predator 25% of the time if its’ strength is SS and 75% of the time if its strength is ss.  
+        //If two Predators with genotype Ss fight there is a 50% chance one or the other will kill and eat and 50% chance they will disengage and go their own way.  
+        //If one does kill and eat the other there is an even chance as to which will succeed.
+            if (entity_ instanceof Grazer)
+            {
+                if (success_rate > .75)
+                {
+                    this.m_energy += entity_.m_energy*.9; //gain a fixed amount of energy
+                    entity_.beConsumed(); //consume the grazer
+                    return true;
+                }   
+            }
+            if (entity_ instanceof Predator)
+            {
+                
+                if (target_strength === "SS")
+                {
+                    if (success_rate > .75)
+                    {
+                        this.m_energy += entity_.m_energy*.9; 
+                        entity_.beConsumed(); 
+                        return true;
+                    }
+                }
+                else if (target_strength === "ss")
+                {
+                    if (success_rate > .25)
+                    {
+                        this.m_energy += entity_.m_energy*.9; 
+                        entity_.beConsumed();
+                        return true;
+                    }
+                }
+                else if (target_strength === "Ss")
+                {
+                    if (success_rate > .50)
+                    {
+                        let second_success_rate = Math.random();
+                        if (second_success_rate > .50)
+                        {
+                            this.m_energy += entity_.m_energy*.9; 
+                            entity_.beConsumed(); 
+                            return true;
+                        }
+                        else 
+                        {
+                            entity_.m_energy += this.m_energy*.9; 
+                            entity_.ate = true;
+                            this.beConsumed(); 
+                            return true;
+                        }
+                    }
+                    else
+                    {
+                        this.m_ignore_list.push([entity_.m_generation,entity_.m_UID]);
+                        entity_.m_ignore_list.push([this.m_generation,entity_.m_UID]);
+                    }
+                }
+            }
+        }
+        if (strength === "Ss")
+        {
+        // Predators with SS genotype are the strongest and will succeed in killing and eating Grazers 95% of the time if they are caught.  
+        // If they attack another Predator they will succeed in killing and eating that Predator 75% of the time if its’ strength is Ss and 95% of the time if its’ strength is ss. 
+        // If two Predators with genotype SS fight there is a 50% chance one or the other will kill and eat and 50% chance they will disengage and go their own way.  
+        // If one does kill and eat the other there is an even chance as to which will succeed.
+            if (entity_ instanceof Grazer)
+            {
+                if (success_rate > .05)
+                {
+                    this.m_energy += entity_.m_energy*.9; //gain a fixed amount of energy
+                    entity_.beConsumed(); //consume the grazer
+                    return true;
+                }   
+            }
+            if (entity_ instanceof Predator)
+            {
+                
+                if (target_strength === "ss")
+                {
+                    if (success_rate > .05)
+                    {
+                        this.m_energy += entity_.m_energy*.9; 
+                        entity_.beConsumed(); 
+                        return true;
+                    }
+                }
+                else if (target_strength === "Ss")
+                {
+                    if (success_rate > .25)
+                    {
+                        this.m_energy += entity_.m_energy*.9; 
+                        entity_.beConsumed();
+                        return true;
+                    }
+                }
+                else if (target_strength === "SS")
+                {
+                    if (success_rate > .50)
+                    {
+                        let second_success_rate = Math.random();
+                        if (second_success_rate > .50)
+                        {
+                            this.m_energy += entity_.m_energy*.9; 
+                            entity_.beConsumed(); 
+                            return true;
+                        }
+                        else 
+                        {
+                            entity_.m_energy += this.m_energy*.9; 
+                            entity_.ate = true;
+                            this.beConsumed(); 
+                            return true;
+                        }
+                    }
+                    else
+                    {
+                        this.m_ignore_list.push([entity_.m_generation,entity_.m_UID]);
+                        entity_.m_ignore_list.push([this.m_generation,entity_.m_UID]);
+                    }
+                }
+            }
+        }
     }
 
     reproduce(predators_array_, target_, generation_array_) {

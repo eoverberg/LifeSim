@@ -108,7 +108,7 @@ function xmlimporter(global, xmlLocation, callback){
   else if (studentJSON.LIFE_SIMULATION.OBSTACLES.INITIAL_OBSTACLE_COUNT === 1)
   {   
     let obstacle = studentJSON.LIFE_SIMULATION.LIFE_SIMULATION.OBSTACLES.OBSTACLE;
-    global.newPredator(obstacle.X_POS,obstacle.Y_POS,obstacle.O_DIAMETER/2,obstacle.O_HEIGHT);
+    global.newObs(obstacle.X_POS,obstacle.Y_POS,obstacle.O_DIAMETER/2,obstacle.O_HEIGHT);
   }
   
 

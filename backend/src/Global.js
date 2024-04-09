@@ -120,7 +120,7 @@ class Global {
             }
             else 
             { // no predator, no reproduce, find food
-                let target = findClosest(grazer_.m_x_pos, grazer_.m_y_pos, this.m_plant_list, this.m_obs_list, grazer_food_sight, grazer_smell);
+                let target = findClosest(grazer_.m_x_pos, grazer_.m_y_pos, [], this.m_plant_list, this.m_obs_list, grazer_food_sight, grazer_smell);
                 if (target) 
                 {
                     
@@ -177,18 +177,18 @@ class Global {
         }
         else if (pred_.m_energy >= this.m_predator_stuff.m_energy_to_reproduce ) 
         {  // mating conditions 
-            target = findClosest(pred_.m_x_pos, pred_.m_y_pos, this.m_pred_list, obstructions, predator_sight, predator_smell)
+            target = findClosest(pred_.m_x_pos, pred_.m_y_pos, pred_.m_ignore_list, this.m_pred_list, obstructions, predator_sight, predator_smell)
             if (target != null) 
             {   // predator in sight
                 pred_.moveSeek(target, this.m_predator_stuff.m_maintain_speed, this.m_predator_stuff.m_energy_out, [this.m_world_size_x, this.m_world_size_y],obstructions);
                 if (distanceTo([pred_.m_x_pos, pred_.m_y_pos], [target.m_x_pos, target.m_y_pos]) < 5)
-                    {
-                        pred_.reproduce(this.m_pred_list, target, this.m_predator_generation);
+                {
+                    pred_.reproduce(this.m_pred_list, target, this.m_predator_generation);
                 }
             }
             else 
             {   // no predators in sight, find food
-                target = findClosest(pred_.m_x_pos, pred_.m_y_pos, this.m_grazer_list, obstructions, predator_sight, predator_smell) //no pred in sight
+                target = findClosest(pred_.m_x_pos, pred_.m_y_pos, pred_.m_ignore_list, this.m_grazer_list, obstructions, predator_sight, predator_smell) //no pred in sight
                 if (target != null) 
                 {
                     pred_.moveSeek(target, this.m_predator_stuff.m_maintain_speed, this.m_predator_stuff.m_energy_out, [this.m_world_size_x, this.m_world_size_y],obstructions);
@@ -212,7 +212,7 @@ class Global {
                 }
                 else 
                 { //no predator in sight   
-                    target = findClosest(pred_.m_x_pos, pred_.m_y_pos, this.m_grazer_list, obstructions, predator_sight, predator_smell) //no pred in sight
+                    target = findClosest(pred_.m_x_pos, pred_.m_y_pos, pred_.m_ignore_list, this.m_grazer_list, obstructions, predator_sight, predator_smell) //no pred in sight
                     if (target)
                     {
                         pred_.moveSeek(target, this.m_predator_stuff.m_maintain_speed, this.m_predator_stuff.m_energy_out, [this.m_world_size_x, this.m_world_size_y],obstructions);
@@ -229,7 +229,7 @@ class Global {
             } // end "aa"
             else if (pred_.m_genes_obj.m_aggro === "Aa") 
             { // not mating just looking for food
-                target = findClosest(pred_.m_x_pos, pred_.m_y_pos, this.m_grazer_list, obstructions, predator_sight, predator_smell)
+                target = findClosest(pred_.m_x_pos, pred_.m_y_pos, pred_.m_ignore_list, this.m_grazer_list, obstructions, predator_sight, predator_smell)
                 if (target) 
                 { // grazer in sight 
                     pred_.moveSeek(target, this.m_predator_stuff.m_maintain_speed, this.m_predator_stuff.m_energy_out, [this.m_world_size_x, this.m_world_size_y],obstructions);
@@ -239,7 +239,7 @@ class Global {
                     }
                 }
                 else { // no grazer in sight   
-                    target = findClosest(pred_.m_x_pos, pred_.m_y_pos, this.m_pred_list, obstructions, predator_sight, predator_smell) //no pred in sight
+                    target = findClosest(pred_.m_x_pos, pred_.m_y_pos, pred_.m_ignore_list, this.m_pred_list, obstructions, predator_sight, predator_smell) //no pred in sight
                     if (target) 
                     {
                         pred_.moveSeek(target, this.m_predator_stuff.m_maintain_speed, this.m_predator_stuff.m_energy_out, [this.m_world_size_x, this.m_world_size_y],obstructions);
@@ -257,7 +257,7 @@ class Global {
             else if (pred_.m_genes_obj.m_aggro === "AA") 
             { //not mating just looking for food
                 targets = targets.concat(this.m_grazer_list, this.m_pred_list)
-                target = findClosest(pred_.m_x_pos, pred_.m_y_pos, targets, obstructions, predator_sight, predator_smell)
+                target = findClosest(pred_.m_x_pos, pred_.m_y_pos, pred_.m_ignore_list, targets, obstructions, predator_sight, predator_smell)
                 if (target) 
                 {
                     pred_.moveSeek(target, this.m_predator_stuff.m_maintain_speed, this.m_predator_stuff.m_energy_out,[this.m_world_size_x, this.m_world_size_y], obstructions);
@@ -272,7 +272,6 @@ class Global {
                 }
             } // end "AA"
         } // end not mating
-        pred_.m_lifetime++;
     } // end predatorDecisionTree
 
     plantDecisionTree(plant_) 
@@ -384,23 +383,18 @@ class Global {
         {
             for (let i = 0; i < buffer_size; i++) 
             {
-                let j = 0;
                 for (let plant of this.m_plant_list) 
                 {
                     this.plantDecisionTree(plant);
-                    j++;
                 }
-                j=0;
                 for (let grazer of this.m_grazer_list) 
                 {
                     this.grazerDecisionTree(grazer)
-                    j++;
                 }
-                j=0;
                 for (let predator of this.m_pred_list) 
                 {
                     this.predatorDecisionTree(predator);
-                    j++;
+                    predator.updateTimes();
                 }
                 this.tempDeathCheck();
                 this.m_buffer_string += this.printEnts() + "\n";

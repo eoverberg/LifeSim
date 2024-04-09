@@ -1,3 +1,5 @@
+const Predator = require("./PredatorClass");
+
 function isColliding(entity_1_, entity_2_) {
     const d_x = entity_1_.m_x_pos - entity_2_.m_x_pos;
     const d_y = entity_1_.m_y_pos - entity_2_.m_y_pos;
@@ -291,7 +293,7 @@ function findPredator(s_x_, s_y_, distance_, ent_to_find_, obstructions_) {
 // list of possible obstacle blocking LOS
 // distance to check
 // returns closest entity in entities list
-function findClosest(s_x_, s_y_, entities_, obstructions_, distance_, smell_distance_) {
+function findClosest(s_x_, s_y_, ignore_list_, entities_, obstructions_, distance_, smell_distance_) {
     let target;
     // closest distance to source, starts at LOS
     let dis_check = (distance_) ** 2;
@@ -299,13 +301,27 @@ function findClosest(s_x_, s_y_, entities_, obstructions_, distance_, smell_dist
         let x_diff = ent.m_x_pos - s_x_;
         let y_diff = ent.m_y_pos - s_y_;
         let distance_2 = (x_diff) ** 2 + (y_diff) ** 2;
+        let ignore_flag = false;
         // check if closest
         if (distance_2 < dis_check && distance_2 !== 0) 
         {// ent is closest then change distance to check and return ent
             if ((distance_2 < smell_distance_) || !checkLOS(s_x_, s_y_, x_diff, y_diff, distance_2, obstructions_)) 
             {
-                dis_check = distance_2;
-                target = ent;
+                if(ignore_list_.length > 0 && ent instanceof Predator)
+                {
+                    for(let pred of ignore_list_)
+                    {
+                        if (pred[0] === ent.m_generation && pred[1] === ent.m_UID)
+                        {
+                            ignore_flag = true;
+                        }
+                    }
+                }
+                if (ignore_flag === false)
+                {
+                    dis_check = distance_2;
+                    target = ent;
+                }
             }
             
         }

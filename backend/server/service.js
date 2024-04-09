@@ -190,6 +190,31 @@ router.post('/getData/:fileName', (req, res) => {
     }
 
 });
+router.post('/getStatistics', (req, res) => {
+    try {
+        fs.readFile(path.join("./assets/", "stats.txt"), 'utf8', (error, students) => {
+            res.send(students);
+            //res.status(200).json({message: 'ok' });
+        });
+    } catch (e) {
+        //res.status(500).json({message: e.message });
+    }
+
+});
+router.post('/setStatistics/:statstics', (req, res) => {
+    const statstics = req.params.statstics;
+    try {
+        fs.writeFile("./assets/stats.txt", statstics, (err) => {
+            if (err) throw err;
+            console.log(`${statstics}`);
+        });
+    } catch (e) {
+        //res.status(500).json({message: e.message });
+    }
+
+});
+
+
 
 
 

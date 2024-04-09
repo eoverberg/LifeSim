@@ -1,6 +1,6 @@
 import { useLocalStorage } from "../components/useLocalStorage";
-import GetStatistic from "../components/getStatistics";
-import DisplayStatistics from "../components/displayStatistics";
+import GetStatistic from "../components/GetStats";
+import DisplayStatistics from "../components/DisplayStats";
 const Review = () => {
      const [statistics, setStatistics] = useLocalStorage("stats", "default");
     //setStatistics = {setStats}

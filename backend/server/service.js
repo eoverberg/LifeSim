@@ -190,7 +190,7 @@ router.post('/getData/:fileName', (req, res) => {
     }
 
 });
-router.post('/getStatistics', (req, res) => {
+router.post('/GetStats', (req, res) => {
     try {
         fs.readFile(path.join("./assets/", "stats.txt"), 'utf8', (error, students) => {
             res.send(students);

@@ -55,13 +55,6 @@ body {
   -webkit-background-clip: text;
   color: transparent; 
 }
-.obstaclesCounter {
-  font-size: 15px;
-  background: gray;
-  background-clip: text ;
-  -webkit-background-clip: text;
-  color: transparent; 
-}
 .bordered-component {
 
   background-color: #ffffff;

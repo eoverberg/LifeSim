@@ -3,7 +3,7 @@ const Obstacle = require("./ObstacleClass.js");
 const Grazer = require("./GrazerClass.js");
 const Predator = require("./PredatorClass.js");
 const Plant = require("./PlantClass.js");
-const { findPredator, findClosest, distanceTo, escapeObstacle } = require("./UtilitiesFunctions.jsx");
+const { findPredator, findClosest, distanceTo, escapeObstacle } = require("./UtilitiesFunctions.js");
 class Global {
     constructor() {
         this.m_int_grazer_count = 0;
@@ -171,11 +171,11 @@ class Global {
                 escapeObstacle(pred_, obstruction, [this.m_world_size_x, this.m_world_size_y], obstructions);
             }
         }
-        if (pred_.m_energy < 1 || pred_.nan())
+        if (pred_.m_energy < 1 )
         {
                 pred_.beConsumed();
         }
-        else if (pred_.m_energy >= this.m_predator_stuff.m_energy_to_reproduce ) 
+        else if (pred_.m_energy >= this.m_predator_stuff.m_energy_to_reproduce && pred_.m_gestation_timer === 0) 
         {  // mating conditions 
             target = findClosest(pred_.m_x_pos, pred_.m_y_pos, pred_.m_ignore_list, this.m_pred_list, obstructions, predator_sight, predator_smell)
             if (target != null) 
@@ -183,7 +183,7 @@ class Global {
                 pred_.moveSeek(target, this.m_predator_stuff.m_maintain_speed, this.m_predator_stuff.m_energy_out, [this.m_world_size_x, this.m_world_size_y],obstructions);
                 if (distanceTo([pred_.m_x_pos, pred_.m_y_pos], [target.m_x_pos, target.m_y_pos]) < 5)
                 {
-                    pred_.reproduce(this.m_pred_list, target, this.m_predator_generation);
+                    pred_.mate(target);
                 }
             }
             else 
@@ -204,6 +204,14 @@ class Global {
             }
         }
         else { // not mating
+            if (pred_.m_gestation_timer === 3600)
+            {
+                pred_.reproduce(this.m_pred_list, target, this.m_predator_generation, this.m_predator_stuff.m_max_offsprings);
+            }
+            if (pred_.m_gestation_timer > 3600)
+            {
+                pred_.m_gestation_timer = 0;
+            }
             if (pred_.m_genes_obj.m_aggro === "aa") {
                 target_x_y = findPredator(pred_.m_x_pos, pred_.m_y_pos, predator_sight, this.m_pred_list, obstructions)
                 if (target_x_y[0] !== 0 || target_x_y[1] !== 0) 
@@ -379,10 +387,9 @@ class Global {
         
         this.m_buffer_string = "";
         let buffer_size = 500;
-        if (this.m_plant_list && this.m_grazer_list && this.m_pred_list) 
+        
+        for (let i = 0; i < buffer_size &&  (this.m_plant_list.length>0 && this.m_grazer_list.length>0 && this.m_pred_list.length>0) ; i++) 
         {
-            for (let i = 0; i < buffer_size; i++) 
-            {
                 for (let plant of this.m_plant_list) 
                 {
                     this.plantDecisionTree(plant);
@@ -399,11 +406,8 @@ class Global {
                 this.tempDeathCheck();
                 this.m_buffer_string += this.printEnts() + "\n";
                 this.m_world_time++;
-            }
         }
-        else {
-
-        }
+        
         return(this.m_buffer_string);
     }
 }

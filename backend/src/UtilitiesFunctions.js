@@ -11,84 +11,6 @@ function distanceTo(position_1_, position_2_) {
     return Math.sqrt((position_1_[0] - position_2_[0]) ** 2 + (position_1_[1] - position_2_[1]) ** 2);
 }
 
-function changePosition(entity_, steering_, energy_use_, world_size_, obstructions_, speed_)
-{
-    // find orientation from coordinates
-    entity_.m_orientation = Math.atan2(steering_[1],steering_[0]);
-
-    const radian_array = [0, 0.26, -0.26,  .52, -.52, .78, -.78, 1.04, -1.04, 1.56, -1.56, 2.08, -2.08, 2.6, -2.6, 3.12]
-    let needsChange = false;
-    // rotate orientation by xx radians, if it works update target
-    // update by 15 on either side of original orientation until 90 degrees, then 30 on either side to 180.   
-    for( let radian of radian_array)
-    {
-        let temp_orientaton  = entity_.m_orientation;
-        //console.log("orientation1:" + temp_orientaton);
-        needsChange = false;
-        temp_orientaton += radian; 
-        //console.log("orientation2:" + temp_orientaton);
-        if (temp_orientaton> 3.14){
-            let leftover = temp_orientaton - 3.14;
-            temp_orientaton = -3.14 + leftover;
-        }
-        if (temp_orientaton < -3.14){
-            let leftover = temp_orientaton + 3.14;
-            temp_orientaton = 3.14 - leftover;
-        }
-       // console.log("orientation3:" + temp_orientaton);
-        // get coordinates from orientation
-        steering_[0] = speed_* Math.cos(temp_orientaton);
-        steering_[1] = speed_* Math.sin(temp_orientaton);
-        //console.log("sc steering: " + steering_[0] +","+ steering_[1])
-        let new_position = [entity_.m_x_pos + steering_[0], entity_.m_y_pos + steering_[1]];
-        // console.log("position:" + new_position[0] +","+ new_position[1])
-        // if target is outside of world try the next one
-        if (new_position[0] > world_size_[0] || new_position[1] > world_size_[1] || new_position[0] < 0 || new_position[1] < 0) 
-        {
-            needsChange = true;
-            continue;
-        } 
-        // target is inside an obstacle or plant, try next one
-        if (obstructions_)
-        {
-            for( let obstruction of obstructions_)
-            {
-                let distance_to_target = distanceTo(new_position, [ obstruction.m_x_pos, obstruction.m_y_pos])
-                if(distance_to_target < ( obstruction.m_radius))
-                {
-                    //console.log("in obstruction: ent: " + entity_.m_UID + " distance: " + distance_to_target)
-                    needsChange = true;
-                    break;
-                } 
-            }
-        }
-        if (!needsChange)
-        {
-            break;
-        }
-    }
-    // if for loop ends after all checks and still isn't right
-    if (needsChange)
-    {
-        steering_[0] = 0;
-        steering_[1] = 0;
-    }
-    if (isNaN(steering_[1]))
-    {
-        steering_[1] = 0;
-    }
-    if (isNaN(steering_[0]))
-    {
-        steering_[0] = 0;
-    }
-    //Math.atan2(y,x)
-    entity_.m_orientation = Math.atan2(steering_[1],steering_[0]);
-    let distance_moved =  Math.sqrt(steering_[0] ** 2 + steering_[1] ** 2);
-    let energy_used = distance_moved / 5 * energy_use_;
-    entity_.m_x_pos += steering_[0];
-    entity_.m_y_pos += steering_[1];
-    entity_.m_energy -= energy_used;
-}
 // not concerned about speed, just transporting entity to outside object.
 // parameters two entitys and 2 int array
 function escapeObstacle(entity_, target_, world_size_, obstructions_)
@@ -133,7 +55,7 @@ function escapeObstacle(entity_, target_, world_size_, obstructions_)
             continue;
         } 
         // target is inside an obstacle or plant, try next one
-        if (obstructions_)
+        if (obstructions_.length>0)
         {
             for( let obstruction of obstructions_)
             {
@@ -168,64 +90,6 @@ function escapeObstacle(entity_, target_, world_size_, obstructions_)
     }
 }
 
-// parameters: 
-//      source (x,y) 
-//      difference in source and target(x,y)
-//      distance betweeen source and target
-//      list of entities that could block LOS
-// returns true if an obstacle is between target and source
-function checkPath(source_,radius_, target_, obstacles_) {
-    // check if any obstacles
-    if (obstacles_.length === 0) {
-        return target_;
-    }
-    let s_x = source_[0];
-    let s_y = source_[1];
-    let coords = [target_[0], target_[1]]
-    let x_diff = target_[0] - s_x;
-    let y_diff = target_[1] - s_y;
-    let distance = (x_diff) ** 2 + (y_diff) ** 2;
-    // iterate through obstacles and check if it is blocking path
-    for (let obstacle of obstacles_) {
-        // find closest point on path to obstacle
-        if (distanceTo(target_,[obstacle.m_x_pos, obstacle.m_y_pos]) < (radius_ ** 2 + obstacle.m_radius ** 2))
-        {
-            let line_x;
-            let line_y;
-            let position = ((obstacle.m_x_pos - s_x) * (x_diff) + (obstacle.m_y_pos - s_y) * (y_diff)) / distance;
-            // if 0 or 1 obstacle is closest to target or source and not blocking los;
-            if (position < 1 && position > 0) {
-                // find closest (x,y) on line to obstacle  
-                let line_x = s_x + (position * (x_diff));
-                let line_y = s_y + (position * (y_diff));
-            }
-            // find distance from obstacle to line
-            let x_diff_2 = line_x - obstacle.m_x_pos;
-            let y_diff_2 = line_y - obstacle.m_y_pos;
-            let dis_to_line = (x_diff_2) ** 2 + (y_diff_2) ** 2;
-            // if distance is less than obstacle radius, it is blocking path 
-            if (dis_to_line <= obstacle.m_radius) {
-                //if point is on line, take recipical of original slope for 90  
-                if (dis_to_line === 0) {
-                    x_diff_2 = -y_diff;
-                    y_diff_2 = x_diff;
-                }
-                //normalize distance line then multiply by .m_radius
-                //use diff2 for direction if not on line
-                //change path to beside obstactle
-                let norm_dis = normalize([x_diff_2, y_diff_2]);
-                let edgeDist = multiplyVector(norm_dis, obstacle.m_radius);
-
-                let obs_edge = [obstacle.m_x_pos + edgeDist[0], obstacle.m_y_pos + edgeDist[1]]
-                if (distanceTo(source_, coords) > distanceTo(source_, obs_edge)) {
-                    coords = obs_edge
-                }
-
-            }
-        }
-    }
-    return coords
-}
 
 // parameters: 
 //      source (x,y) 
@@ -237,7 +101,9 @@ function checkLOS(s_x_, s_y_, x_diff_, y_Diff_, distance_, obstacles_) {
     // flag if LOS is blocked
     let blocked = false;
     // iterate through obstacles and check if it is blocking LOS
-    for (let obstacle of obstacles_) {
+    if (obstacles_.length > 0)
+    { 
+        for (let obstacle of obstacles_) {
         // find closest point on line of sight to obstacle     
         let position = ((obstacle.m_x_pos - s_x_) * (x_diff_) + (obstacle.m_y_pos - s_y_) * (y_Diff_)) / distance_;
         // if 0 or 1 obstacle is closest to target or source and not blocking los
@@ -256,6 +122,7 @@ function checkLOS(s_x_, s_y_, x_diff_, y_Diff_, distance_, obstacles_) {
         if (blocked) {
             break;
         }
+    }
     } // for loop 
     return blocked;
 }
@@ -329,27 +196,27 @@ function findClosest(s_x_, s_y_, ignore_list_, entities_, obstructions_, distanc
     return target;
 }
 
-// Subtracts one vector from another and returns the resulting vector.
-function subtractVectors(vector_1_, vector_2_) {
-    return [vector_1_[0] - vector_2_[0], vector_1_[1] - vector_2_[1]];
-}
+// // Subtracts one vector from another and returns the resulting vector.
+// function subtractVectors(vector_1_, vector_2_) {
+//     return [vector_1_[0] - vector_2_[0], vector_1_[1] - vector_2_[1]];
+// }
 
-// Normalizes a vector to a unit vector (length of 1), maintaining its direction.
-function normalize(vector_) {
-    const length = Math.sqrt(vector_[0] ** 2 + vector_[1] ** 2); // Calculate the vector's length.
-    if (length === 0) return [0, 0]; // Handle the zero-length case to avoid division by zero.
-    return [vector_[0] / length, vector_[1] / length]; // Scale the vector components to normalize it.
-}
+// // Normalizes a vector to a unit vector (length of 1), maintaining its direction.
+// function normalize(vector_) {
+//     const length = Math.sqrt(vector_[0] ** 2 + vector_[1] ** 2); // Calculate the vector's length.
+//     if (length === 0) return [0, 0]; // Handle the zero-length case to avoid division by zero.
+//     return [vector_[0] / length, vector_[1] / length]; // Scale the vector components to normalize it.
+// }
 
-// Multiplies a vector by a scalar and returns the resulting scaled vector.
-function multiplyVector(vector_, scalar_) {
-    return [vector_[0] * scalar_, vector_[1] * scalar_]; // Scale both components of the vector.
-}
+// // Multiplies a vector by a scalar and returns the resulting scaled vector.
+// function multiplyVector(vector_, scalar_) {
+//     return [vector_[0] * scalar_, vector_[1] * scalar_]; // Scale both components of the vector.
+// }
 
-// Adds two vectors together and returns the resulting vector.
-function addVectors(vector_1_, vector_2_) {
-    return [vector_1_[0] + vector_2_[0], vector_1_[1] + vector_2_[1]]; // Add corresponding components.
-}
+// // Adds two vectors together and returns the resulting vector.
+// function addVectors(vector_1_, vector_2_) {
+//     return [vector_1_[0] + vector_2_[0], vector_1_[1] + vector_2_[1]]; // Add corresponding components.
+// }
 
 function boundsCheck(world_x_, world_y_, pos_x_, pos_y_) {
     if (pos_x_ > world_x_) {
@@ -366,4 +233,4 @@ function boundsCheck(world_x_, world_y_, pos_x_, pos_y_) {
     }
 }
 
-module.exports = { isColliding, checkLOS, findPredator, findClosest, checkPath, distanceTo, boundsCheck, changePosition, escapeObstacle };
+module.exports = { isColliding, checkLOS, findPredator, findClosest, distanceTo, boundsCheck, escapeObstacle };

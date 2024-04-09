@@ -34,6 +34,6 @@ import {Genes} from './Entity';
   //Math.atan2(1, 1) = .7853981
   let sample = Math.atan2(1, 1) 
   pred.moveWander( 5, 5, [100, 100],obsL);
-  expect(pred.m_orientation).toBeGreaterThan(sample-.52);
-  expect(pred.m_orientation).toBeLessThan(sample+.52);
+  expect(pred.m_orientation).toBeGreaterThan(sample-.26);
+  expect(pred.m_orientation).toBeLessThan(sample+.26);
  });

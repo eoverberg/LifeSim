@@ -1,7 +1,6 @@
-const { Entity, Genes } = require('./Entity.js');
-const {Grazer} = require('./GrazerClass.js');
-const { isColliding, checkLOS, findPredator, findClosest, checkPath, distanceTo, changePosition } = require('./UtilitiesFunctions.jsx');
-const { seek, flee, wander } = require('./Movement.js');
+const { Entity} = require('./Entity.js');
+const Grazer = require('./GrazerClass.js');
+const { seek, flee, wander, changePosition } = require('./Movement.js');
 class Predator extends Entity {
     constructor(generation_, UID_, x_pos_,y_pos_,radius_,lifetime_, energy_, { ...gene_obj_ }) {
         super(x_pos_,y_pos_,radius_,lifetime_);
@@ -15,6 +14,22 @@ class Predator extends Entity {
         this.m_sprint_time = 0;
         this.m_speed = this.getSpeed();
         this.m_ignore_list = [];
+        this.m_ate = [];
+        this.m_gestation_timer = 0;
+    }
+
+    mate(target_){
+        if (this.m_gestation_timer ===0)
+        {
+            this.m_gestation_timer++;
+            this.m_ignore_list.push([this.m_generation,this.m_UID,0]);
+        }
+        if (target_.m_gestation_timer ===0)
+        {
+            target_.m_gestation_timer++;
+            target_.m_ignore_list.push([this.m_generation,this.m_UID,0]);
+        }
+
     }
 
     getSpeed()
@@ -50,18 +65,12 @@ class Predator extends Entity {
         }
     }
 
-    nan(){
-        let check = false;
-        if ( isNaN(this.m_x_pos))
-        {
-            check = true;
-            this.m_dead = true;
-        }
-        return check;
-    }
-
     updateTimes(){
         this.m_lifetime++;
+        if(this.m_gestation_timer !== 0)
+        {
+            this.m_gestation_timer++;
+        }
         let temp_list = [];
         for(let pred of this.m_ignore_list)
         {
@@ -163,7 +172,7 @@ class Predator extends Entity {
             {
                 // add each other to ignore list
                 this.m_ignore_list.push([entity_.m_generation,entity_.m_UID, 0]);
-                entity_.m_ignore_list.push([this.m_generation,entity_.m_UID, 0]);
+                entity_.m_ignore_list.push([this.m_generation,this.m_UID, 0]);
             }
         }
             // Predators with ss genotype are weakest and will succeed in killing and eating Grazers 50% of the time if they are caught.  
@@ -181,16 +190,7 @@ class Predator extends Entity {
         // If one does kill and eat the other there is an even chance as to which will succeed.
     }
 
-    reproduce(predators_array_, target_, generation_array_) {
-
-        if(this.m_generation >= generation_array_.length)
-        {
-            generation_array_.push(0);
-        }
-        const next_generation = this.m_generation + 1;
-        generation_array_[next_generation-1] = generation_array_[next_generation-1]+1;
-        let next_entity = generation_array_[next_generation-1];
-
+    reproduce(predators_array_, target_, generation_array_, max_offspring_) {
         var g_string = "";
         var temp = "";
         temp = temp.concat(this.m_genes_obj.m_aggro[Math.floor(Math.random * 2)], target_.m_genes_obj.m_aggro[Math.floor(Math.random * 2)]);
@@ -210,11 +210,33 @@ class Predator extends Entity {
         if (temp === "fF") {
             temp = "Ff";
         }
+        
+        if(this.m_generation >= generation_array_.length)
+        {
+            generation_array_.push(0);
+        }
+        const next_generation = this.m_generation + 1;
+        let offspring_array = [];
+        for(let i = 0; i < max_offspring_; i++)
+        {
+        generation_array_[next_generation-1] = generation_array_[next_generation-1]+1;
+        let next_entity = generation_array_[next_generation-1];
         g_string = g_string.concat(temp);
         let gene_copy = {...this.m_genes_obj};
         gene_copy.setGeneString(g_string);
-        const offspring = new Predator(next_generation, next_entity, this.m_x_pos + Math.random(), this.m_y_pos + Math.random(), this.m_radius, 0, Math.floor(this.energy / 2), gene_copy);
+        const offspring = new Predator(next_generation, next_entity, this.m_x_pos, this.m_y_pos, this.m_radius, 0, Math.floor(this.energy / 2), gene_copy);
         predators_array_.push(offspring);
+        this.m_ignore_list.push([next_generation,next_entity,0]);
+        offspring_array.push(offspring);
+        }
+        for (let baby of offspring_array)
+        {
+            for (let sibling of offspring_array)
+            {
+                baby.m_ignore_list.push([sibling.m_generation, sibling.m_UID, 0])
+            }
+        }
+        this.m_gestation_timer = 0;
     }
 
     //utility function to move towards another entity 

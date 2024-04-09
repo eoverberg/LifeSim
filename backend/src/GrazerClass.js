@@ -1,6 +1,6 @@
-const { isColliding, checkLOS, findPredator, findClosest, checkPath, distanceTo, boundsCheck, changePosition } = require('./UtilitiesFunctions.jsx');
+
 const { Entity } = require('./Entity.js');
-const { seek, flee, wander } = require('./Movement.js');
+const { seek, flee, wander, changePosition} = require('./Movement.js');
 
 //import plant
 class Grazer extends Entity {

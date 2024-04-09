@@ -7,8 +7,8 @@ function InitStats({displayData}){
         
         let lines = displayData.split(',')
         let num_plants = parseInt(lines[2]);
-        let num_grazers = parseInt(lines[3]);
-        let num_predators = parseInt(lines[4]);
+        let num_grazers = parseInt(lines[4]);
+        let num_predators = parseInt(lines[3]);
         let num_obstacles = parseInt(lines[5]);
 
 

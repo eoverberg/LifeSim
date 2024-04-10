@@ -21,20 +21,68 @@ class Plant extends Entity {
         this.m_dead = true;
     }
 
-    reproduce(plants_array_, generation_array_) 
+    reproduce(plants_array_, generation_array_, plant_stuff_,world_size_, obstacles_) 
     {
-        if(this.m_generation >= generation_array_.length)
+        let viability = plant_stuff_.m_seed_chance;
+        let seed_amount = plant_stuff_.m_max_seeds;
+        let throw_distance = plant_stuff_.m_max_reproduction_dis;
+        let parent_size = plant_stuff_.m_max_size;
+        let range = throw_distance - parent_size;
+        let seeds = [];
+        for (let i = 0; i<seed_amount; i++ )
         {
-            generation_array_.push(0);
+            let num = Math.random() * range + parent_size;
+            let orient = (Math.random() * 2 * Math.PI) - Math.PI;
+            let position = [
+                Math.cos(orient)*num,
+                Math.sin(orient)*num
+            ];
+            if (position[0] < world_size_[0] && position[1] < world_size_[1] && position[0] > 0 && position[1] > 0) 
+            {
+                seeds.push(position); 
+            }
         }
+        let seeds_on_ground = [];
+        
+        
+        if(obstacles_.length > 0)
+        {
+            for (let obs of obstacles_)
+            {
+                for(let seed of seeds)
+                {
+                    let distance = (obs.m_x_pos - seed[0]) ** 2 + (obs.m_y_pos - seed[1]) ** 2
+                    if (distance > obs.m_radius)
+                    {
+                        seeds_on_ground.push(seed);
+                    }
+                }
+            }
+        }
+        else
+        {
+           seeds_on_ground = seeds;
+        } 
+       
         const next_generation = this.m_generation + 1;
-        generation_array_[next_generation-1] = generation_array_[next_generation-1]+1;
-        let next_entity = generation_array_[next_generation-1];
-
-        let time = 0;
-        let size = .1;
-        const offspring = new Plant(next_generation, next_entity, this.m_x_pos + Math.random(), this.m_y_pos + Math.random(), size, time);
-        plants_array_.push(offspring);
+        for(let seed of seeds_on_ground)
+        {
+            let survival_roll = Math.random();
+            if (survival_roll < viability)
+            {
+                if(this.m_generation >= generation_array_.length)
+                {
+                    generation_array_.push(0);
+                }
+                
+                generation_array_[next_generation-1] = generation_array_[next_generation-1]+1;
+                let next_entity = generation_array_[next_generation-1];
+                let time = 0;
+                let size = .1;
+                const offspring = new Plant(next_generation, next_entity, seed[0], seed[1], size, time);
+                plants_array_.push(offspring); 
+            }
+        }
     }
 }
 module.exports = Plant;

@@ -294,7 +294,7 @@ class Global {
             plant_.m_repro_timer += 1
             if (plant_.m_repro_timer % 3600 === 0) 
             {
-                plant_.reproduce(this.m_plant_list, this.m_plant_generation)
+                plant_.reproduce(this.m_plant_list, this.m_plant_generation, this.m_plant_stuff, [this.m_world_size_x, this.m_world_size_y], this.m_obs_list)
             }
         }
         plant_.m_lifetime++

@@ -58,7 +58,11 @@ class Predator extends Entity {
         let maintain_seconds = maintain_time_ * 60;
         if(this.m_sprint_time > maintain_seconds)
         {   // slows at a rate of 1 du per 15 seconds of simulation time. 
-            if ((this.m_sprint_time - maintain_seconds)%15 === 0)
+            if (this.m_speed <= 0)
+            {
+                this.m_speed = 0;
+            }
+            else if ((this.m_sprint_time - maintain_seconds)%15 === 0)
             {// assuming 1 du mean 1 du/minute
                 this.m_speed -= .0167;
             }

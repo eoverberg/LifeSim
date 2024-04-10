@@ -14,7 +14,7 @@ class Predator extends Entity {
         this.m_sprint_time = 0;
         this.m_speed = this.getSpeed();
         this.m_ignore_list = [];
-        this.m_ate = [];
+        this.m_ate = false;
         this.m_gestation_timer = 0;
     }
 
@@ -61,6 +61,7 @@ class Predator extends Entity {
             if (this.m_speed <= 0)
             {
                 this.m_speed = 0;
+                this.beConsumed();
             }
             else if ((this.m_sprint_time - maintain_seconds)%15 === 0)
             {// assuming 1 du mean 1 du/minute

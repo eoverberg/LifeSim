@@ -1049,7 +1049,7 @@
 				498
 			</Y_POS>
 			<O_DIAMETER>
-				70			
+				100		
 			</O_DIAMETER>			
 			<O_HEIGHT>
 				15
@@ -1063,7 +1063,7 @@
 				600
 			</Y_POS>
 			<O_DIAMETER>
-				25			
+				100		
 			</O_DIAMETER>			
 			<O_HEIGHT>
 				10
@@ -1091,7 +1091,7 @@
 				250
 			</Y_POS>
 			<O_DIAMETER>
-				25			
+				150		
 			</O_DIAMETER>			
 			<O_HEIGHT>
 				15
@@ -1099,13 +1099,13 @@
 		</OBSTACLE>
 		<OBSTACLE>
 			<X_POS>
-				700
+				734
 			</X_POS>
 			<Y_POS>
 				200
 			</Y_POS>
 			<O_DIAMETER>
-				60			
+				200		
 			</O_DIAMETER>			
 			<O_HEIGHT>
 				15
@@ -1119,7 +1119,7 @@
 				450
 			</Y_POS>
 			<O_DIAMETER>
-				85			
+				150			
 			</O_DIAMETER>			
 			<O_HEIGHT>
 				15
@@ -1127,13 +1127,13 @@
 		</OBSTACLE>
 		<OBSTACLE>
 			<X_POS>
-				300
+				234
 			</X_POS>
 			<Y_POS>
-				300
+				350
 			</Y_POS>
 			<O_DIAMETER>
-				40			
+				400		
 			</O_DIAMETER>			
 			<O_HEIGHT>
 				15
@@ -1147,7 +1147,7 @@
 				200
 			</Y_POS>
 			<O_DIAMETER>
-				60			
+				500		
 			</O_DIAMETER>			
 			<O_HEIGHT>
 				15
@@ -1161,7 +1161,7 @@
 				260
 			</Y_POS>
 			<O_DIAMETER>
-				25			
+				100			
 			</O_DIAMETER>			
 			<O_HEIGHT>
 				15
@@ -1175,7 +1175,7 @@
 				350
 			</Y_POS>
 			<O_DIAMETER>
-				40			
+				89		
 			</O_DIAMETER>			
 			<O_HEIGHT>
 				15
@@ -1183,13 +1183,13 @@
 		</OBSTACLE>
 		<OBSTACLE>
 			<X_POS>
-				100
+				786
 			</X_POS>
 			<Y_POS>
-				50
+				55
 			</Y_POS>
 			<O_DIAMETER>
-				65			
+				200	
 			</O_DIAMETER>			
 			<O_HEIGHT>
 				15
@@ -1203,7 +1203,7 @@
 				600
 			</Y_POS>
 			<O_DIAMETER>
-				70			
+				150	
 			</O_DIAMETER>			
 			<O_HEIGHT>
 				15
@@ -1217,7 +1217,7 @@
 				43
 			</Y_POS>
 			<O_DIAMETER>
-				50			
+				200		
 			</O_DIAMETER>			
 			<O_HEIGHT>
 				15

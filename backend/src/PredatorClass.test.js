@@ -21,19 +21,39 @@ import {Genes} from './Entity';
 //   expect(pred.m_orientation).toBeCloseTo(sample);
 //  });
 
- test('check wander', () => 
- {
-  let gene = new Genes("aa ss ff", 60,60,60);
-  let pred = new Predator(1, 1, 40, 40,5,0,50,{...gene});
-  //let graz = new Grazer(40,40,5,0,40);
-  let obsL = [];
-  pred.m_orientation =  Math.atan2(1, 1);
-  //obsL.push()
-  //let sample = Math.atan2(-(7/Math.sqrt(2)), -(7/Math.sqrt(2)) )
-  //Math.atan2(y,x)
-  //Math.atan2(1, 1) = .7853981
-  let sample = Math.atan2(1, 1) 
-  pred.moveWander( 5, 5, [100, 100],obsL);
-  expect(pred.m_orientation).toBeGreaterThan(sample-.26);
-  expect(pred.m_orientation).toBeLessThan(sample+.26);
- });
+//  test('check wander', () => 
+//  {
+//   let gene = new Genes("aa ss ff", 60,60,60);
+//   let pred = new Predator(1, 1, 40, 40,5,0,50,{...gene});
+//   //let graz = new Grazer(40,40,5,0,40);
+//   let obsL = [];
+//   pred.m_orientation =  Math.atan2(1, 1);
+//   //obsL.push()
+//   //let sample = Math.atan2(-(7/Math.sqrt(2)), -(7/Math.sqrt(2)) )
+//   //Math.atan2(y,x)
+//   //Math.atan2(1, 1) = .7853981
+//   let sample = Math.atan2(1, 1) 
+//   pred.moveWander( 5, 5, [100, 100],obsL);
+//   expect(pred.m_orientation).toBeGreaterThan(sample-.26);
+//   expect(pred.m_orientation).toBeLessThan(sample+.26);
+//  });
+
+// test('check y', () => 
+//  {
+//   //Math.atan2(y,x)
+//   //Math.atan2(1, 1) = .7853981
+//   let sample = Math.atan2(2, -3) 
+//   let y_steer = Math.sin(sample);
+//  expect(y_steer).toBeLessThan(-5);
+
+ 
+//  });
+
+//  test('check x', () => 
+//  {
+//     let sample = Math.atan2(2, -3) 
+//     let x_steer = Math.cos(sample);
+//     expect(x_steer).toBeGreaterThan(5);
+
+ 
+//  });

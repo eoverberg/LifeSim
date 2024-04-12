@@ -236,11 +236,15 @@ class Predator extends Entity {
             this.m_ignore_list.push([next_generation,next_entity,0]);
             offspring_array.push(offspring);
         }
-        for (let baby of offspring_array)
+
+        for (let i = 0; i < offspring_array.length; i++)
         {
-            for (let sibling of offspring_array)
+            for (let j = 0; j < offspring_array.length; j++)
             {
-                baby.m_ignore_list.push([sibling.m_generation, sibling.m_UID, 0])
+                if (j!==i)
+                {
+                    offspring_array[i].m_ignore_list.push([offspring_array[j].m_generation, offspring_array[j].m_UID, 0])
+                }
             }
         }
         this.m_gestation_timer = 0;

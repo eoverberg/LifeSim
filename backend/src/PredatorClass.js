@@ -195,7 +195,7 @@ class Predator extends Entity {
         // If one does kill and eat the other there is an even chance as to which will succeed.
     }
 
-    reproduce(predators_array_, target_, generation_array_, max_offspring_) {
+    reproduce(predators_array_, target_, generation_array_, max_offspring_, offspring_energy_) {
         var g_string = "";
         var temp = "";
         temp = temp.concat(this.m_genes_obj.m_aggro[Math.floor(Math.random * 2)], target_.m_genes_obj.m_aggro[Math.floor(Math.random * 2)]);
@@ -224,15 +224,15 @@ class Predator extends Entity {
         let offspring_array = [];
         for(let i = 0; i < max_offspring_; i++)
         {
-        generation_array_[next_generation-1] = generation_array_[next_generation-1]+1;
-        let next_entity = generation_array_[next_generation-1];
-        g_string = g_string.concat(temp);
-        let gene_copy = {...this.m_genes_obj};
-        gene_copy.setGeneString(g_string);
-        const offspring = new Predator(next_generation, next_entity, this.m_x_pos, this.m_y_pos, this.m_radius, 0, Math.floor(this.energy / 2), gene_copy);
-        predators_array_.push(offspring);
-        this.m_ignore_list.push([next_generation,next_entity,0]);
-        offspring_array.push(offspring);
+            generation_array_[next_generation-1] = generation_array_[next_generation-1]+1;
+            let next_entity = generation_array_[next_generation-1];
+            g_string = g_string.concat(temp);
+            let gene_copy = {...this.m_genes_obj};
+            gene_copy.setGeneString(g_string);
+            const offspring = new Predator(next_generation, next_entity, this.m_x_pos, this.m_y_pos, this.m_radius, 0, offspring_energy_, gene_copy);
+            predators_array_.push(offspring);
+            this.m_ignore_list.push([next_generation,next_entity,0]);
+            offspring_array.push(offspring);
         }
         for (let baby of offspring_array)
         {

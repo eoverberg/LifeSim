@@ -206,7 +206,7 @@ class Global {
         else { // not mating
             if (pred_.m_gestation_timer === 3600)
             {
-                pred_.reproduce(this.m_pred_list, target, this.m_predator_generation, this.m_predator_stuff.m_max_offsprings);
+                pred_.reproduce(this.m_pred_list, target, this.m_predator_generation, this.m_predator_stuff.m_max_offsprings, this.m_predator_stuff.m_off_spring_energy);
             }
             if (pred_.m_gestation_timer > 3600)
             {

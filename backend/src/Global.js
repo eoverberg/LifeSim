@@ -204,11 +204,11 @@ class Global {
             }
         }
         else { // not mating
-            if (pred_.m_gestation_timer === 3600)
+            if (pred_.m_gestation_timer === (this.m_predator_stuff.m_gestation_time*60))
             {
-                pred_.reproduce(this.m_pred_list, target, this.m_predator_generation, this.m_predator_stuff.m_max_offsprings, this.m_predator_stuff.m_off_spring_energy);
+                pred_.reproduce(this.m_pred_list, this.m_predator_generation, this.m_predator_stuff.m_max_offsprings, this.m_predator_stuff.m_off_spring_energy);
             }
-            if (pred_.m_gestation_timer > 3600)
+            if (pred_.m_gestation_timer > (this.m_predator_stuff.m_gestation_time*60))
             {
                 pred_.m_gestation_timer = 0;
             }

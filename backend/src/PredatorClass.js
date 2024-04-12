@@ -1,4 +1,4 @@
-const { Entity} = require('./Entity.js');
+const { Entity, Genes} = require('./Entity.js');
 const Grazer = require('./GrazerClass.js');
 const { seek, flee, wander, changePosition } = require('./Movement.js');
 class Predator extends Entity {
@@ -16,17 +16,20 @@ class Predator extends Entity {
         this.m_ignore_list = [];
         this.m_ate = false;
         this.m_gestation_timer = 0;
+        this.m_mate_genes = [];// aggro, strength, speed
     }
 
     mate(target_){
         if (this.m_gestation_timer ===0)
         {
             this.m_gestation_timer++;
-            this.m_ignore_list.push([this.m_generation,this.m_UID,0]);
+            this.m_mate_genes = [target_.m_genes_obj.m_aggro, target_.m_genes_obj.m_strength, target_.m_genes_obj.m_speed];
+            this.m_ignore_list.push([target_.m_generation,target_.m_UID,0]);
         }
         if (target_.m_gestation_timer ===0)
         {
             target_.m_gestation_timer++;
+            target_.m_mate_genes = [this.m_genes_obj.m_aggro, this.m_genes_obj.m_strength, this.m_genes_obj.m_speed];
             target_.m_ignore_list.push([this.m_generation,this.m_UID,0]);
         }
 
@@ -195,27 +198,28 @@ class Predator extends Entity {
         // If one does kill and eat the other there is an even chance as to which will succeed.
     }
 
-    reproduce(predators_array_, target_, generation_array_, max_offspring_, offspring_energy_) {
+    reproduce(predators_array_, generation_array_, max_offspring_, offspring_energy_) {
         var g_string = "";
         var temp = "";
-        temp = temp.concat(this.m_genes_obj.m_aggro[Math.floor(Math.random * 2)], target_.m_genes_obj.m_aggro[Math.floor(Math.random * 2)]);
+        temp = temp.concat(this.m_genes_obj.m_aggro[Math.floor(Math.random() * 2)], this.m_mate_genes[0][Math.floor(Math.random() * 2)]);
         if (temp === "aA") {
             temp = "Aa";
         }
         g_string = g_string.concat(temp, " ");
         temp = "";
-        temp = temp.concat(this.m_genes_obj.m_speed[Math.floor(Math.random * 2)], target_.m_genes_obj.m_speed[Math.floor(Math.random * 2)]);
+        temp = temp.concat(this.m_genes_obj.m_strength[Math.floor(Math.random() * 2)], this.m_mate_genes[1][Math.floor(Math.random() * 2)]);
         if (temp === "sS") {
             temp = "Ss";
         }
+        
         g_string = g_string.concat(temp, " ");
         temp = "";
-
-        temp = temp.concat(this.m_genes_obj.m_strength[Math.floor(Math.random * 2)], target_.m_genes_obj.m_strength[Math.floor(Math.random * 2)]);
+        temp = temp.concat(this.m_genes_obj.m_speed[Math.floor(Math.random() * 2)], this.m_mate_genes[2][Math.floor(Math.random() * 2)]);
         if (temp === "fF") {
             temp = "Ff";
         }
         
+        g_string = g_string.concat(temp);
         if(this.m_generation >= generation_array_.length)
         {
             generation_array_.push(0);
@@ -226,9 +230,7 @@ class Predator extends Entity {
         {
             generation_array_[next_generation-1] = generation_array_[next_generation-1]+1;
             let next_entity = generation_array_[next_generation-1];
-            g_string = g_string.concat(temp);
-            let gene_copy = {...this.m_genes_obj};
-            gene_copy.setGeneString(g_string);
+            let gene_copy = new Genes(g_string, this.m_genes_obj.m_init_max_HOD, this.m_genes_obj.m_init_max_HED, this.m_genes_obj.m_init_max_HOR);
             const offspring = new Predator(next_generation, next_entity, this.m_x_pos, this.m_y_pos, this.m_radius, 0, offspring_energy_, gene_copy);
             predators_array_.push(offspring);
             this.m_ignore_list.push([next_generation,next_entity,0]);
@@ -304,7 +306,7 @@ class Predator extends Entity {
 
     moveFlee(target_x_y_, speed_time_, energy_use_, world_size_, obstructions_) {
         // check if path is clear
-        let steering = flee([this.x, this.y], [target_x_y_[0], target_x_y_[1]], this.m_speed)
+        let steering = flee([this.m_x_pos, this.m_y_pos], [target_x_y_[0], target_x_y_[1]], this.m_speed)
         changePosition(this, steering, energy_use_, world_size_, obstructions_, this.m_speed);
         this.updateSpeed(speed_time_);
     }

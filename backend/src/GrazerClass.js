@@ -101,6 +101,10 @@ class Grazer extends Entity {
         { 
             speed_ = (speed_/60) * .75 
         }
+        else
+        {
+            speed_ = (speed_/60)
+        }
         // check if path is clear11
         let steering = flee([this.m_x_pos, this.m_y_pos], [target_x_y_[0], target_x_y_[1]], speed_)
         changePosition(this, steering, energy_use_, world_size_, obstructions_, speed_);

@@ -44,18 +44,24 @@ class Plant extends Entity {
         }
         let seeds_on_ground = [];
         
-        
+    
         if(obstacles_.length > 0)
         {
-            for (let obs of obstacles_)
+            for(let seed of seeds)
             {
-                for(let seed of seeds)
+                let blocked_flag = false
+                for (let obs of obstacles_)
                 {
+                
                     let distance = (obs.m_x_pos - seed[0]) ** 2 + (obs.m_y_pos - seed[1]) ** 2
-                    if (distance > obs.m_radius)
+                    if (distance < obs.m_radius)
                     {
-                        seeds_on_ground.push(seed);
+                        blocked_flag = true;
                     }
+                }
+                if (!blocked_flag)
+                {
+                    seeds_on_ground.push(seed);
                 }
             }
         }

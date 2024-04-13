@@ -231,7 +231,7 @@ class Predator extends Entity {
             generation_array_[next_generation-1] = generation_array_[next_generation-1]+1;
             let next_entity = generation_array_[next_generation-1];
             let gene_copy = new Genes(g_string, this.m_genes_obj.m_init_max_HOD, this.m_genes_obj.m_init_max_HED, this.m_genes_obj.m_init_max_HOR);
-            const offspring = new Predator(next_generation, next_entity, this.m_x_pos, this.m_y_pos, this.m_radius, 0, offspring_energy_, gene_copy);
+            let offspring = new Predator(next_generation, next_entity, this.m_x_pos, this.m_y_pos, this.m_radius, 0, offspring_energy_, gene_copy);
             predators_array_.push(offspring);
             this.m_ignore_list.push([next_generation,next_entity,0]);
             offspring_array.push(offspring);

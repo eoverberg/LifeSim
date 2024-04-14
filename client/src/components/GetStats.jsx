@@ -2,7 +2,7 @@ import React from "react";
 
  function GetStatistics ({setStatistics}){
 
-    fetch('/service/getStatistics',{
+    fetch('/service/getStats',{
         method: "POST",
         headers: {Accept: "text"},
     }).then(r=>r.text())

@@ -64,11 +64,14 @@ class Predator extends Entity {
             if (this.m_speed <= 0)
             {
                 this.m_speed = 0;
-                this.beConsumed();
             }
             else if ((this.m_sprint_time - maintain_seconds)%15 === 0)
             {// assuming 1 du mean 1 du/minute
                 this.m_speed -= .0167;
+            }
+            if (this.m_sprint_time >= maintain_seconds + 300)
+            {
+                this.m_speed = this.getSpeed();
             }
         }
     }
@@ -98,7 +101,12 @@ class Predator extends Entity {
 
     eat(entity_) {
         let strength = this.m_genes_obj.m_strength;
-        let target_strength = entity_.m_genes_obj.m_strength;
+        let target_strength = "";
+        if (entity_ instanceof Predator)
+        {
+            target_strength = entity_.m_genes_obj.m_strength;
+        }
+        
         let success_num = Math.random();
         let success_rate = 0.5;
         if (strength === "ss")

@@ -34,8 +34,8 @@ class Plant extends Entity {
             let num = Math.random() * range + parent_size;
             let orient = (Math.random() * 2 * Math.PI) - Math.PI;
             let position = [
-                Math.cos(orient)*num,
-                Math.sin(orient)*num
+                Math.cos(orient)*num + this.m_x_pos,
+                Math.sin(orient)*num + this.m_y_pos
             ];
             if (position[0] < world_size_[0] && position[1] < world_size_[1] && position[0] > 0 && position[1] > 0) 
             {
@@ -53,7 +53,7 @@ class Plant extends Entity {
                 for (let obs of obstacles_)
                 {
                 
-                    let distance = (obs.m_x_pos - seed[0]) ** 2 + (obs.m_y_pos - seed[1]) ** 2
+                    let distance = Math.sqrt((obs.m_x_pos - seed[0]) ** 2 + (obs.m_y_pos - seed[1]) ** 2)
                     if (distance < obs.m_radius)
                     {
                         blocked_flag = true;
@@ -85,7 +85,7 @@ class Plant extends Entity {
                 let next_entity = generation_array_[next_generation-1];
                 let time = 0;
                 let size = .1;
-                const offspring = new Plant(next_generation, next_entity, seed[0], seed[1], size, time);
+                let offspring = new Plant(next_generation, next_entity, seed[0], seed[1], size, time);
                 plants_array_.push(offspring); 
             }
         }

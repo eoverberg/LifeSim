@@ -167,7 +167,7 @@ function changePosition(entity_, steering_, energy_use_, world_size_, obstructio
         let new_position = [entity_.m_x_pos + steering_[0], entity_.m_y_pos + steering_[1]];
         // console.log("position:" + new_position[0] +","+ new_position[1])
         // if target is outside of world try the next one
-        if (new_position[0] > world_size_[0] || new_position[1] > world_size_[1] || new_position[0] < 0 || new_position[1] < 0) 
+        if (new_position[0]+10 > world_size_[0] || new_position[1]+10 > world_size_[1] || new_position[0]-5 < 0 || new_position[1]-5 < 0) 
         {
             needsChange = true;
             continue;

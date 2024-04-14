@@ -305,25 +305,25 @@ class Global {
         let return_string = this.m_world_size_x + "," + this.m_world_size_y + "," + this.m_plant_list.length + "," + this.m_grazer_list.length + "," + this.m_pred_list.length + "," + this.m_obs_list.length + ",";
         for (let p of this.m_plant_list) 
         {
-            return_string += `${p.m_x_pos},`;
-            return_string += `${p.m_y_pos},`;
-            return_string += `${(p.m_radius*2)},`;
+            return_string += `${p.m_x_pos.toFixed(1)},`;
+            return_string += `${p.m_y_pos.toFixed(1)},`;
+            return_string += `${(p.m_radius*2).toFixed(1)},`;
         }
         for (let g of this.m_grazer_list) 
         {
-            return_string += `${g.m_x_pos},`;
-            return_string += `${g.m_y_pos},`;
+            return_string += `${g.m_x_pos.toFixed(1)},`;
+            return_string += `${g.m_y_pos.toFixed(1)},`;
         }
         for (let p of this.m_pred_list) 
         {
-            return_string += `${p.m_x_pos},`;
-            return_string += `${p.m_y_pos},`;
+            return_string += `${p.m_x_pos.toFixed(1)},`;
+            return_string += `${p.m_y_pos.toFixed(1)},`;
         }
         for (let o of this.m_obs_list) 
         {
-            return_string += `${o.m_x_pos},`;
-            return_string += `${o.m_y_pos},`;
-            return_string += `${(o.m_radius*2)},`;
+            return_string += `${o.m_x_pos.toFixed(1)},`;
+            return_string += `${o.m_y_pos.toFixed(1)},`;
+            return_string += `${(o.m_radius*2).toFixed(1)},`;
         }
 
         return return_string;

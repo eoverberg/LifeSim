@@ -104,26 +104,26 @@ function checkLOS(s_x_, s_y_, x_diff_, y_Diff_, distance_, obstacles_) {
     if (obstacles_.length > 0)
     { 
         for (let obstacle of obstacles_) {
-        // find closest point on line of sight to obstacle     
-        let position = ((obstacle.m_x_pos - s_x_) * (x_diff_) + (obstacle.m_y_pos - s_y_) * (y_Diff_)) / distance_;
-        // if 0 or 1 obstacle is closest to target or source and not blocking los
-        if (position < 1 && position > 0) {
-            // find closest (x,y) on line to obstacle  
-            let line_x = s_x_ + (position * (x_diff_));
-            let line_y = s_y_ + (position * (y_Diff_));
-            // find distance from obstacle to line
-            let dis_to_line = (obstacle.m_x_pos - line_x) ** 2 + (obstacle.m_y_pos - line_y) ** 2;
-            // if distance is less than obstacle radius, it is blocking line of sight 
-            if (dis_to_line <= obstacle.m_radius) {
-                blocked = true;
+            // find closest point on line of sight to obstacle     
+            let position = ((obstacle.m_x_pos - s_x_) * (x_diff_) + (obstacle.m_y_pos - s_y_) * (y_Diff_)) / distance_;
+            // if 0 or 1 obstacle is closest to target or source and not blocking los
+            if (position < 1 && position > 0) {
+                // find closest (x,y) on line to obstacle  
+                let line_x = s_x_ + (position * (x_diff_));
+                let line_y = s_y_ + (position * (y_Diff_));
+                // find distance from obstacle to line
+                let dis_to_line = (obstacle.m_x_pos - line_x) ** 2 + (obstacle.m_y_pos - line_y) ** 2;
+                // if distance is less than obstacle radius, it is blocking line of sight 
+                if (dis_to_line <= obstacle.m_radius) {
+                    blocked = true;
+                }
             }
-        }
-        // if any obstacle is blocking LOS, exit for loop
-        if (blocked) {
-            break;
-        }
-    }
-    } // for loop 
+            // if any obstacle is blocking LOS, exit for loop
+            if (blocked) {
+                break;
+            }
+        }// for loop 
+    } // if loop
     return blocked;
 }
 

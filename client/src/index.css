@@ -34,6 +34,27 @@ body {
             -webkit-background-clip: text;
             color: transparent; 
 }
+.grazerCounter {
+  font-size: 15px;
+  background: blue;
+  background-clip: text ;
+  -webkit-background-clip: text;
+  color: transparent; 
+}
+.predatorCounter {
+  font-size: 15px;
+  background: red ;
+  background-clip: text ;
+  -webkit-background-clip: text;
+  color: transparent; 
+}
+.plantCounter {
+  font-size: 15px;
+  background: green;
+  background-clip: text ;
+  -webkit-background-clip: text;
+  color: transparent; 
+}
 .bordered-component {
 
   background-color: #ffffff;

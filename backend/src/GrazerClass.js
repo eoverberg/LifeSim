@@ -1,6 +1,6 @@
-const { isColliding, checkLOS, findPredator, findClosest, checkPath, distanceTo, boundsCheck, changePosition } = require('./UtilitiesFunctions.jsx');
+
 const { Entity } = require('./Entity.js');
-const { seek, flee, wander } = require('./Movement.js');
+const { seek, flee, wander, changePosition} = require('./Movement.js');
 
 //import plant
 class Grazer extends Entity {
@@ -100,6 +100,10 @@ class Grazer extends Entity {
         if (this.m_sprint_time > stamina_) 
         { 
             speed_ = (speed_/60) * .75 
+        }
+        else
+        {
+            speed_ = (speed_/60)
         }
         // check if path is clear11
         let steering = flee([this.m_x_pos, this.m_y_pos], [target_x_y_[0], target_x_y_[1]], speed_)

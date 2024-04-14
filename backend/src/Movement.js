@@ -49,7 +49,7 @@ function wander(entity_, speed_) {
     //let wander_jitter = .5; // How much the target point can change each tick
     // random amount of radians to offset the entities orientation.
     // radians = degrees, 0.26 = 15, .52 = 30, .78 = 45, 1.04 = 60, 1.56 = 90, 2.08 = 110, 2.6 = 135, 3.12 = 180]
-    let max_radian_offset =0.52;
+    let max_radian_offset =0.26;
     // double radians and multiple by random number then subtract radians to get a number between -radian;s and +radians 
     let wander_offset =  ((2*max_radian_offset) * Math.random() - max_radian_offset);
     //console.log("wander_offset: " + wander_offset)
@@ -135,7 +135,88 @@ function localToWorld(position_, orientation_, local_point_) {
 function distance(position_1_, position_2_) {
     return Math.sqrt((position_1_[0] - position_2_[0]) ** 2 + (position_1_[1] - position_2_[1]) ** 2);
 }
+function changePosition(entity_, steering_, energy_use_, world_size_, obstructions_, speed_)
+{
+    // find orientation from coordinates
+    entity_.m_orientation = Math.atan2(steering_[1],steering_[0]);
 
-module.exports = { seek, flee, wander };
+    const radian_array = [0, 0.26, -0.26,  .52, -.52, .78, -.78, 1.04, -1.04, 1.56, -1.56, 2.08, -2.08, 2.6, -2.6, 3.12]
+    let needsChange = false;
+    // rotate orientation by xx radians, if it works update target
+    // update by 15 on either side of original orientation until 90 degrees, then 30 on either side to 180.   
+    for( let radian of radian_array)
+    {
+        let temp_orientaton  = entity_.m_orientation;
+        //console.log("orientation1:" + temp_orientaton);
+        needsChange = false;
+        temp_orientaton += radian; 
+        //console.log("orientation2:" + temp_orientaton);
+        if (temp_orientaton> 3.14){
+            let leftover = temp_orientaton - 3.14;
+            temp_orientaton = -3.14 + leftover;
+        }
+        if (temp_orientaton < -3.14){
+            let leftover = temp_orientaton + 3.14;
+            temp_orientaton = 3.14 - leftover;
+        }
+       // console.log("orientation3:" + temp_orientaton);
+        // get coordinates from orientation
+        steering_[0] = speed_* Math.cos(temp_orientaton);
+        steering_[1] = speed_* Math.sin(temp_orientaton);
+        //console.log("sc steering: " + steering_[0] +","+ steering_[1])
+        let new_position = [entity_.m_x_pos + steering_[0], entity_.m_y_pos + steering_[1]];
+        // console.log("position:" + new_position[0] +","+ new_position[1])
+        // if target is outside of world try the next one
+        if (new_position[0]+10 > world_size_[0] || new_position[1]+10 > world_size_[1] || new_position[0]-5 < 0 || new_position[1]-5 < 0) 
+        {
+            needsChange = true;
+            continue;
+        } 
+        // target is inside an obstacle or plant, try next one
+        if (obstructions_)
+        {
+            for( let obstruction of obstructions_)
+            {
+                let distance_to_target = distanceTo(new_position, [ obstruction.m_x_pos, obstruction.m_y_pos])
+                if(distance_to_target < ( obstruction.m_radius))
+                {
+                    //console.log("in obstruction: ent: " + entity_.m_UID + " distance: " + distance_to_target)
+                    needsChange = true;
+                    break;
+                } 
+            }
+        }
+        if (!needsChange)
+        {
+            break;
+        }
+    }
+    // if for loop ends after all checks and still isn't right
+    if (needsChange)
+    {
+        steering_[0] = 0;
+        steering_[1] = 0;
+    }
+    if (isNaN(steering_[1]))
+    {
+        steering_[1] = 0;
+    }
+    if (isNaN(steering_[0]))
+    {
+        steering_[0] = 0;
+    }
+    //Math.atan2(y,x)
+    entity_.m_orientation = Math.atan2(steering_[1],steering_[0]);
+    let distance_moved =  Math.sqrt(steering_[0] ** 2 + steering_[1] ** 2);
+    let energy_used = distance_moved / 5 * energy_use_;
+    entity_.m_x_pos += steering_[0];
+    entity_.m_y_pos += steering_[1];
+    entity_.m_energy -= energy_used;
+}
+
+function distanceTo(position_1_, position_2_) {
+    return Math.sqrt((position_1_[0] - position_2_[0]) ** 2 + (position_1_[1] - position_2_[1]) ** 2);
+}
+module.exports = { seek, flee, wander, changePosition };
 
 

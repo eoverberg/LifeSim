@@ -8,7 +8,7 @@ const combineXML = require('./utility/combinator');
 const xmlimporter = require('./utility/xmlToClass');
 const Global = require('../src/Global');
 let tempSim = new Global();
-
+const Manager = require('../src/Manager');
 
 
 const router = express.Router();

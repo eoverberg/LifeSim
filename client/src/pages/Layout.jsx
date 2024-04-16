@@ -1,15 +1,25 @@
 
 import {Outlet, Link} from "react-router-dom";
+import { Button, ButtonGroup } from '@mui/material';
 
 
 const Layout = () => {
     return (
         <>
-        
-        <Link to ="Home">Home | </Link>
-        <Link to ="Instructor"> Instructor | </Link>
-        <Link to ="Review"> Top Scores | </Link>
-        <Link to ="Student"> Student | </Link>     
+        <ButtonGroup variant="text" aria-label="Small button group">
+        <Button component={Link} to="/Home" >
+        Home
+        </Button>
+        <Button component={Link} to="/Instructor">
+        Instructor
+        </Button>
+        <Button  component={Link} to="/Review">
+        Score Review
+        </Button>
+        <Button component={Link} to="/Student">
+        Student
+        </Button>  
+        </ButtonGroup>
         <Outlet/>
         </>
     )

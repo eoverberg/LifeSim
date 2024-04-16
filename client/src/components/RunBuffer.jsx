@@ -1,9 +1,19 @@
 // run button that start the interval of parsing the display data
 
 import React,{ useEffect } from "react";
+import Switch from '@mui/material/Switch';
 import {Navigate} from "react-router-dom";
 function RunBuffer({runFlag,setRunFlag, buffer, setBuffer, bufferA, bufferLine, setBufferLine, setData, setBufferFlag, bufferFlag, intervalTime, simEnd, setSimEnd}){
 
+  const [checked, setChecked] = React.useState(true);
+
+  const handleChange = (event) => {
+    setChecked(event.target.checked);
+    if (buffer!=="")
+    {
+      setRunFlag(!runFlag);
+    }
+  }
     function clickHandle(){
       if (buffer!=="")
       {
@@ -50,8 +60,13 @@ function RunBuffer({runFlag,setRunFlag, buffer, setBuffer, bufferA, bufferLine, 
 
     return(
       <>
-        <h4>Run Simulation</h4>
-        <button onClick={clickHandle}>Start/Stop</button>
+        <h3>Simulation Options</h3>
+        <b>Start/Stop</b>
+        <Switch
+          checked={runFlag}
+          onChange={handleChange}
+          inputProps={{ 'aria-label': 'controlled' }}
+        />
         {simEnd && (<Navigate to="/Review" replace={true}/>)}
       </>
     );

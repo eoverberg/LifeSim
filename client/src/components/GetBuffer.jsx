@@ -16,6 +16,7 @@ import React, {useEffect} from "react";
       await response.json();
       if (response.ok) 
       {   
+        setMod(nameMod+1);
         await fetch(`/service/getBuffer/${name}`,
           { 
             method: "POST",

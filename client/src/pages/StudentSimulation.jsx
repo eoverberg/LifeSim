@@ -17,6 +17,7 @@ const StudentSimulation = () => {
     const [bufferLine, setBufferLine] = useLocalStorage("buffer_line", 0);
     const [bufferA, setBufferA] = useLocalStorage("buffer_a", "")
     const [intervalTime, setIntervalTime] = useLocalStorage("interval_time", 1000)
+    const [simEnd, setSimEnd] =   useLocalStorage("sim_end", false);
     return (
         <>
         <h1>{name} </h1>
@@ -28,6 +29,9 @@ const StudentSimulation = () => {
         setFileName={setFileName}
         setMod={setMod}
         setBufferFlag={setBufferFlag}
+        setBufferLine={setBufferLine}
+        setBufferA={setBufferA}
+        setBuffer = {setBuffer}
         />
         <RunBuffer
         buffer={buffer}
@@ -41,6 +45,8 @@ const StudentSimulation = () => {
         setData={setData}
         bufferA={bufferA}
         intervalTime={intervalTime}
+        simEnd={simEnd}
+        setSimEnd = {setSimEnd}
         />
         <GetBuffer
         fileName={fileName}
@@ -63,6 +69,7 @@ const StudentSimulation = () => {
         />
         <Canvas 
         displayData={displayData}
+        setSimEnd = {setSimEnd}
         />
 
         </>

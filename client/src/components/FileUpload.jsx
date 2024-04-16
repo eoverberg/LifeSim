@@ -9,6 +9,7 @@ function FileUpload({name, nameMod, setFileName, setMod, setBufferFlag, setBuffe
         setBufferA("");
         setBufferLine(0);
         setBufferFlag(false);
+        setMod(1);
 
         const file_name = `${name}${nameMod}`;
        

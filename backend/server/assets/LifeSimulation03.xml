@@ -413,7 +413,7 @@
 			15.0
 		</MAX_SPEED_HOR>
 		<P_MAINTAIN_SPEED>
-			4.0
+			20.0
 		</P_MAINTAIN_SPEED>
 		<P_ENERGY_OUTPUT>
 			10
@@ -438,7 +438,7 @@
 				400
 			</Y_POS>
 			<P_ENERGY_LEVEL>
-				800
+				111800
 			</P_ENERGY_LEVEL>
 			<GENOTYPE>
 				Aa Ss Ff
@@ -452,7 +452,7 @@
 				400
 			</Y_POS>
 			<P_ENERGY_LEVEL>
-				800
+				111800
 			</P_ENERGY_LEVEL>
 			<GENOTYPE>
 				Aa Ss Ff
@@ -466,7 +466,7 @@
 				400
 			</Y_POS>
 			<P_ENERGY_LEVEL>
-				800
+				111800
 			</P_ENERGY_LEVEL>
 			<GENOTYPE>
 				aa ss ff

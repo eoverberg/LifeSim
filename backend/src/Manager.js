@@ -1,4 +1,6 @@
 const xmlimporter = require('../server/utility/xmlToClass');
+const CombineXML = require('../server/utility/CombineXML');
+const JSONToClass = require('../server/utility/JSONToClass');
 const Global = require('../src/Global');
 const fs = require('fs');
 class Student{
@@ -9,8 +11,23 @@ class Student{
         this.m_buffers = [];
         this.m_current_index = 0;
         this.m_xml_file_location = "";
+        this.m_combined_file_location = "";
         this.m_log_file_locaton = "";
         this.m_top_score = "";
+        this.m_xml_data = "";// do I need this?
+        this.m_combined_JSON =""; // probably need this
+        this.m_combined_XML =""; // probably need this
+    }
+    getStats(){
+        let time_seconds = this.m_sim.m_world_time;
+        let plant_gen = this.m_sim.m_plant_generation;
+        let grazer_gen = this.m_sim.m_grazer_generation;
+        let predator_gen = this.m_sim.m_predator_generation;
+        let total_generations = plant_gen.length+grazer_gen.length+predator_gen.length;
+        let time_hours = time_seconds/3600;
+        let time_days = time_hours/24;
+        let score = total_generations+time_days;
+        return score;
     }
 }
 
@@ -24,10 +41,12 @@ class Manager{
         // file locations
         this.m_instructor_file_location = "../server/assets/InstructorFile.xml";
         this.m_roster_file_location = "../server/assets/roster.txt";
-
+        // change to a hash map and undo stupid for loops
         this.m_roster = [];  // array of Student objects
+        this.m_roster_string = "";
         this.m_instructor_file = ""; // string of xml content
-        this.m_top_scores = ""; // string of top five sim information
+        this.m_top_scores = [];
+        this.m_top_scores_string = ""; // string of top five sim information
         
         // retrieves previous saved files and sets fields
         this.getRoster(); 
@@ -35,9 +54,20 @@ class Manager{
         this.getTopScores();
 
         // starts interval
-        this.m_interval = setInterval(this.updateLoop, 100);
+        this.startLoop();
+        
     }
 
+    findStudent(name_){
+        for(let student of this.m_roster)
+        {
+            if (student.m_name === name_)
+            {
+                return student;
+            }
+        }
+        return null;
+    }
     // possibly save the students as json at a later date
     // fetches string of students
     // sets roster as array of Student object
@@ -68,6 +98,7 @@ class Manager{
                             this.m_roster.push(new Student(name));
                         }
                     }
+                    this.m_roster_string = students;
                 }
                 catch(err)
                 {
@@ -86,7 +117,7 @@ class Manager{
         {
             fs.readFile("../server/assets/TopScores.txt", 'utf8', (error, students) => 
             {
-                this.m_top_scores = "";
+                this.m_top_scores_string = "";
             });
         } catch (err) 
         {
@@ -99,10 +130,12 @@ class Manager{
     getInstructorFile(){
         try 
         {
-            fs.readFile("../server/assets/InstructorFile.xml", 'utf8', (error, students) => 
-            {
-                this.m_top_scores = "";
-            });
+           this.m_instructor_file = fs.readFileSync("../server/assets/InstructorFile.xml", 'utf-8', (error, data) => {
+            if (error) {
+              console.error('Failed to read XML file:', error);
+              return;
+            }
+          })
         } catch (err) 
         {
             // if zero roster or unaccessible file, what to do
@@ -169,60 +202,106 @@ class Manager{
        
     }
 
-
-    studentNewSimFile(file, callback){
-    // delete current file
-    // create new file
-    // 
-    try {
-        fs.rmSync(`assets/${file}.txt`);
-     } catch (e) {
-     }
-        xmlimporter(this.simList[0], file, ()=>{callback();});
-    }
-// how to track student name 
-startSim(name_){
-    // take in student name parameter
-    // check if simulation is already runnin 
-    for(let student of this.m_roster)
+    getXMLFileName(name_)
     {
-        if (student.m_name === name_)
+        for(let student of this.m_roster)
         {
-            if(student.m_sim_started)
+            if (student.m_name === name_)
             {
-                this.endSim(student);
+                return student.m_xml_file_location;
             }
-            student.buffers = [];
-            student.m_current_index = 0;
-            student.m_sim = new Global(); // delete old object?
-            student.m_sim_started = true;
-            break;
         }
     }
-}
 
-updateLoop(){
-    for(let student of this.m_roster)
-    {
-        if (student.m_sim_started)
+    // Parameters
+    // name_: name of student
+    // file_: the actual file from file express
+    // callback: might not be needed.
+    // combine with what its combbinator
+    // set json to class
+    studentNewSimFile(name_, file_, callback_){
+        // find current student
+        let current_student = this.findStudent(name_); 
+        current_student.m_buffers = [];
+        current_student.m_current_index = 0;
+        if (current_student)
         {
-            student.m_buffers.push(student.m_sim.update());
+            let [data_JSON, data_XML] = CombineXML(file_.data, this.m_instructor_file);
+            JSONToClass(current_student.m_sim, data_JSON);
+            current_student.m_combined_XML = data_XML;
+            current_student.m_combined_JSON = data_JSON;
+            current_student.m_sim_started = true;
+        }
+        callback_();
+    }
+    // // how to track student name 
+    //     startSim(name_){
+    //     // take in student name parameter
+        //     // check if simulation is already runnin 
+    //         for(let student of this.m_roster)
+    //     {
+    //         if (student.m_name === name_)
+        //         {
+    //             if(student.m_sim_started)
+    //             {
+    //                 this.endSim(student);
+    //             }
+    //             student.buffers = [];
+    //            student.m_current_index = 0;
+    //             student.m_sim = new Global(); // delete old object?
+    //             student.m_sim_started = true;
+    //             break;
+    //         }
+    //     }
+    // }
+    
+    startLoop(){
+        this.m_interval = setInterval(()=>{
+            if(this.m_roster.length > 0)
+            {
+                for(let student of this.m_roster)
+                {
+                    if (student.m_sim_started)
+                    {
+                        let buffer = 500;
+                        let [buffer_size, buffer_string] = student.m_sim.update(buffer);
+                        if(buffer_size > 0)
+                        {
+                            student.m_buffers.push(buffer_string);
+                        }
+                        // check if sim ended
+                        if(buffer_size !== buffer)
+                        {
+                            student.m_sim_started = false;
+                            this.endSim(student);
+                        }   
+                    }
+                }
+            }
+        }, 100);
+    }
+    
+    checkBuffers(name_){
+        let current_student = this.findStudent(name_);
+        if(current_student.m_buffers.length > current_student.m_current_index )
+        {
+            return true;
+        }
+        else
+        {
+            return false;
         }
     }
-}
-
-update(){
-    if (this.m_SimEnded)
-    {
-        return "0"
+    getBuffer(name_){
+        let current_student = this.findStudent(name_); 
+        let buffer = current_student.m_buffers[current_student.m_current_index];
+        current_student.m_current_index++;
+        return buffer;
     }
-    this.buff = "";
-    return this.buff;
-}
 
-instructorFileUpload(){
+    instructorFileUpload(){
 
-}
+    }
 
 
 
@@ -230,18 +309,38 @@ getCurrent(){
     this.simList[0].printEnts();
 }
 
+
+scoreUpdate(score_){
+    if(this.m_top_scores.length < 5)
+    {
+        this.m_top_scores.push(score_);
+    }
+    else
+    {
+        let temp_list = [];
+        let score_to_insert = score_;
+        for(let current_score of this.m_top_scores)
+        {
+            if(score_to_insert > current_score)
+            {
+                temp_list.push(score_to_insert);
+                score_to_insert = current_score;
+            }    
+            else
+            {
+                temp_list.push(current_score);
+            }
+        }
+    }
+}
+
 endSim(student){
     // time played, generations, total lifeforms, 
-    let stats = student.m_sim.getStats();
-    let score = student.m_sim.getScore(stats);
-    student.m_buffers = [];
+    //let stats = student.m_sim.getStats();
+    //let score = student.m_sim.getScore(stats);
+    let score = student.getStats();
     student.m_sim_started=false;
-    student.m_current_index = 0;
     this.scoreUpdate(score);
-    // get stats
-    // make score
-    // check the score for the best
-    // 
 } 
 
 }

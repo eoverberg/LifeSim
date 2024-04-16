@@ -7,7 +7,7 @@ import React, {useEffect} from "react";
   { 
     async function one() 
     {
-      const response = await fetch(`/service/nextUpdate/${name}/${nameMod}`,
+      const response = await fetch(`/service/nextUpdate/${name}`,
         { 
               method: "POST",
               headers: {Accept: "json"}
@@ -16,10 +16,9 @@ import React, {useEffect} from "react";
       await response.json();
       if (response.ok) 
       {   
-        setMod(nameMod + 1);
-        let newFileName = name.concat(nameMod);
-        setFileName(newFileName); 
-        await fetch(`/service/getBuffer/${newFileName}`,
+        setMod(nameMod+1);
+
+        await fetch(`/service/getBuffer/${name}`,
           { 
             method: "POST",
             headers: {Accept: "text"}
@@ -27,7 +26,6 @@ import React, {useEffect} from "react";
           .then(text=>{
             setBufferA(text); 
             if (buffer===""){setBuffer(text)};
-            fetch(`/service/remove/${newFileName}`, {method: "POST",})
           })
       }
     }

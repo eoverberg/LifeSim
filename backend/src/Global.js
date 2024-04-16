@@ -382,13 +382,12 @@ class Global {
         this.m_pred_list = temp_list;
         temp_list = [];
     }
-    update() 
+    update(buffer_size_) 
     {
         
         this.m_buffer_string = "";
-        let buffer_size = 500;
-        
-        for (let i = 0; i < buffer_size &&  (this.m_plant_list.length>0 && this.m_grazer_list.length>0 && this.m_pred_list.length>0) ; i++) 
+        let i = 0;
+        for (i; i < buffer_size_ &&  (this.m_plant_list.length>0 && this.m_grazer_list.length>0 && this.m_pred_list.length>0) ; i++) 
         {
                 for (let plant of this.m_plant_list) 
                 {
@@ -408,7 +407,7 @@ class Global {
                 this.m_world_time++;
         }
         
-        return(this.m_buffer_string);
+        return([i, this.m_buffer_string]);
     }
 }
 

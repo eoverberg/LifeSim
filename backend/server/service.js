@@ -3,11 +3,6 @@ const fileUpload = require('express-fileupload');
 const fs = require('fs');
 const path = require('path');
 const initialFileParser = require('./utility/initialFileParser');
-const simUpdate = require('./utility/simUpdate');
-const combineXML = require('./utility/combinator');
-const xmlimporter = require('./utility/xmlToClass');
-const Global = require('../src/Global');
-let tempSim = new Global();
 const Manager = require('../src/Manager');
 let simManager = new Manager();
 
@@ -152,10 +147,7 @@ router.post('/getData/:fileName', (req, res) => {
 });
 router.post('/GetStats', (req, res) => {
     try {
-        fs.readFile(path.join("./assets/", "stats.txt"), 'utf8', (error, students) => {
-            res.send(students);
-            //res.status(200).json({message: 'ok' });
-        });
+        res.send(simManager.m_top_scores_string);
     } catch (e) {
         //res.status(500).json({message: e.message });
     }

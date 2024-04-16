@@ -1,16 +1,18 @@
 // allows student to upload a file to server
 import React, {createRef} from "react";
 
-function FileUpload({name, nameMod, setFileName, setMod, setBufferFlag}){
+function FileUpload({name, nameMod, setFileName, setMod, setBufferFlag, setBufferLine, setBufferA, setBuffer}){
     const fileInput = createRef();
     const onSubmit = async(e) => {
         e.preventDefault();
-        
-        setMod(nameMod+1);
+        setBuffer("");
+        setBufferA("");
+        setBufferLine(0);
+        setBufferFlag(false);
 
         const file_name = `${name}${nameMod}`;
        
-
+        
         const formData = new FormData();
         formData.set("avatar", fileInput.current.files[0]);
 

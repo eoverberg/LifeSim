@@ -1,4 +1,3 @@
-const xmlimporter = require('../server/utility/xmlToClass');
 const CombineXML = require('../server/utility/CombineXML');
 const JSONToClass = require('../server/utility/JSONToClass');
 const Global = require('../src/Global');
@@ -115,9 +114,16 @@ class Manager{
     //retrieves top scores from file
         try 
         {
-            fs.readFile("../server/assets/TopScores.txt", 'utf8', (error, students) => 
+            fs.readFile("../server/assets/TopScores.txt", 'utf8', (error, scores) => 
             {
-                this.m_top_scores_string = "";
+                this.m_top_scores_string = scores;
+                let temp_list = [];
+                let arr = scores.split(",");
+                for(let score of arr)
+                {
+                    temp_list.push(score);
+                }
+                this.m_top_scores = temp_list;
             });
         } catch (err) 
         {

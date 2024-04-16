@@ -38,7 +38,7 @@ function drawCircle(ctx, x1, y1, d1, bColor)
   ctx.stroke();
 };
     
-function Canvas({displayData}) {
+function Canvas({displayData, setSimEnd}) {
 
   const canvasRef = useRef(null); 
 
@@ -89,12 +89,16 @@ function Canvas({displayData}) {
     {
       drawCircle(context, parseInt(lines[obstacles_start+3*i]), parseInt(lines[obstacles_start+1+3*i]), parseFloat(lines[obstacles_start+2+3*i]),"grey");
     }
+    if (num_grazers === 0 || num_plants === 0 || num_predators ===0)
+    {
+      setSimEnd(true);
+    }
     } 
     catch(error)
     {
       alert("Cannot display due to error");
     }
-  }, [displayData]);
+  }, [displayData, setSimEnd]);
 
   return (<>
     <canvas ref={canvasRef} class = "bordered-component"  />

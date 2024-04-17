@@ -2,7 +2,7 @@
 
 import React, {useEffect} from "react";
 
- function GetBuffer ({name, nameMod, setMod, fileName, setFileName, buffer, setBuffer, bufferA, setBufferA, bufferFlag, setBufferFlag}){
+ function GetBuffer ({name, nameMod, setMod, fileName, setFileName, buffer, setBuffer, bufferA, setBufferA, bufferFlag, setBufferFlag, setSimEnd}){
   useEffect(()=>
   { 
     async function one() 
@@ -24,8 +24,13 @@ import React, {useEffect} from "react";
             headers: {Accept: "text"}
           }).then(r=>r.text())
           .then(text=>{
-            setBufferA(text); 
-            if (buffer===""){setBuffer(text)};
+            try{
+              setBufferA(text); 
+              if (buffer===""){setBuffer(text)};
+            }
+            catch(e){
+              setSimEnd(true);
+            }
           })
       }
     }

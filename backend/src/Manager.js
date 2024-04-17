@@ -16,12 +16,19 @@ class Student{
         this.m_xml_data = "";// do I need this?
         this.m_combined_JSON =""; // probably need this
         this.m_combined_XML =""; // probably need this
+        this.m_end_stats_string = '{"end_stats": {"plant_gen":[], "grazer_gen":[],"predator_gen":[],"time_seconds":0}}';
+        this.m_end_stats = JSON.parse(this.m_end_stats_string);
     }
     getStats(){
         let time_seconds = this.m_sim.m_world_time;
+        this.m_end_stats.end_stats.time_seconds = time_seconds;
         let plant_gen = this.m_sim.m_plant_generation;
+        this.m_end_stats.end_stats.plant_gen = plant_gen;
         let grazer_gen = this.m_sim.m_grazer_generation;
+        this.m_end_stats.end_stats.grazer_gen = grazer_gen;
         let predator_gen = this.m_sim.m_predator_generation;
+        this.m_end_stats.end_stats.predator_gen = predator_gen;
+        this.m_end_stats_string = JSON.stringify(this.m_end_stats);
         let total_generations = plant_gen.length+grazer_gen.length+predator_gen.length;
         let time_hours = time_seconds/3600;
         let time_days = time_hours/24;
@@ -44,7 +51,7 @@ class Manager{
         this.m_roster = [];  // array of Student objects
         this.m_roster_string = "";
         this.m_instructor_file = ""; // string of xml content
-        this.m_top_scores = [];
+        this.m_top_scores = new Map();
         this.m_top_scores_string = ""; // string of top five sim information
         
         // retrieves previous saved files and sets fields
@@ -55,6 +62,24 @@ class Manager{
         // starts interval
         this.startLoop();
         
+    }
+    fetchScores(){
+        let top = this.m_top_scores;
+        let return_JSON = {"top":top,"stats":0};
+        return JSON.stringify(return_JSON);
+
+    }
+    fetchReview(name_){
+        let stats = "";
+        let student = this.findStudent(name_);
+        if (student)
+        {
+            stats = student.m_end_stats;
+        }
+        let top = this.m_top_scores;
+        let return_JSON = {"top":top,"stats":stats};
+        return JSON.stringify(return_JSON);
+
     }
 
     findStudent(name_){
@@ -117,13 +142,10 @@ class Manager{
             fs.readFile("../server/assets/TopScores.txt", 'utf8', (error, scores) => 
             {
                 this.m_top_scores_string = scores;
-                let temp_list = [];
-                let arr = scores.split(",");
-                for(let score of arr)
-                {
-                    temp_list.push(score);
-                }
-                this.m_top_scores = temp_list;
+                let top = JSON.parse(scores);
+                
+               
+                this.m_top_scores = top;
             });
         } catch (err) 
         {
@@ -191,6 +213,7 @@ class Manager{
             }
             // throw change in file write try in order to keep from have different rosters?
             this.m_roster = temp_roster;
+            this.m_roster_string = roster_string_;
             try 
             {
                 fs.writeFile("../server/assets/roster.txt", roster_string_, (err) => {
@@ -240,26 +263,14 @@ class Manager{
         }
         callback_();
     }
-    // // how to track student name 
-    //     startSim(name_){
-    //     // take in student name parameter
-        //     // check if simulation is already runnin 
-    //         for(let student of this.m_roster)
-    //     {
-    //         if (student.m_name === name_)
-        //         {
-    //             if(student.m_sim_started)
-    //             {
-    //                 this.endSim(student);
-    //             }
-    //             student.buffers = [];
-    //            student.m_current_index = 0;
-    //             student.m_sim = new Global(); // delete old object?
-    //             student.m_sim_started = true;
-    //             break;
-    //         }
-    //     }
-    // }
+
+    instructorNewSimFile(file_, callback_){
+        // find current student
+        fs.writeFile("../server/assets/InstructorFile.xml", file_.data.toString(), (err) => {
+            if (err) throw err;
+        });
+        callback_();
+    }
     
     startLoop(){
         this.m_interval = setInterval(()=>{
@@ -269,7 +280,7 @@ class Manager{
                 {
                     if (student.m_sim_started)
                     {
-                        let buffer = 500;
+                        let buffer = 200;
                         let [buffer_size, buffer_string] = student.m_sim.update(buffer);
                         if(buffer_size > 0)
                         {
@@ -316,28 +327,47 @@ getCurrent(){
 }
 
 
-scoreUpdate(score_){
+scoreUpdate(name_, score_){
+    let change_flag = false;
     if(this.m_top_scores.length < 5)
     {
-        this.m_top_scores.push(score_);
+        change_flag = true;
+        this.m_top_scores.top_scores.push({name: name_, score: Math.round(score_)});
     }
     else
     {
+        let list = this.m_top_scores.top_scores;
         let temp_list = [];
-        let score_to_insert = score_;
-        for(let current_score of this.m_top_scores)
+        
+        let name_to_insert = name_;
+        let score_to_insert = Math.round(score_);
+        for(let pair of list)
         {
-            if(score_to_insert > current_score)
-            {
-                temp_list.push(score_to_insert);
-                score_to_insert = current_score;
+            if(score_to_insert > pair.score)
+            {   
+                change_flag = true;
+                let temp_name = name_to_insert;
+                let temp_score = score_to_insert;
+                score_to_insert = pair.score;
+                name_to_insert = pair.name;
+                pair.name = temp_name;
+                pair.score = temp_score;
+                
+                
             }    
-            else
-            {
-                temp_list.push(current_score);
-            }
+            temp_list.push(pair);
+        }
+        this.m_top_scores.top_scores = temp_list;
+        this.m_top_scores_string = JSON.stringify(this.m_top_scores);
+        if(change_flag)
+        {
+            fs.writeFile("../server/assets/TopScores.txt", this.m_top_scores_string, (err) => {
+                if (err) throw err;
+                console.log(`${this.m_top_scores_string}`);
+            });
         }
     }
+
 }
 
 endSim(student){
@@ -346,7 +376,7 @@ endSim(student){
     //let score = student.m_sim.getScore(stats);
     let score = student.getStats();
     student.m_sim_started=false;
-    this.scoreUpdate(score);
+    this.scoreUpdate(student.m_name, score);
 } 
 
 }

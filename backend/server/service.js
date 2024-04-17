@@ -9,6 +9,9 @@ let simManager = new Manager();
 const router = express.Router();
 //router.use(fileUpload({ useTempFiles: true, tempFileDir: '/tmp/' }));
 router.use(fileUpload({ }));
+
+
+
 //
 //
 router.post('/update/:userName', (req, res) => {
@@ -45,12 +48,11 @@ router.post('/getRoster', (req, res) => {
 router.post('/setRoster/:roster', (req, res) => {
     const roster = req.params.roster;
     try {
-        fs.writeFile("./assets/roster.txt", roster, (err) => {
-            if (err) throw err;
-            console.log(`${roster}`);
+        simManager.changeRoster(roster, ()=>{
+            res.status(500).json({message: 'roster changed' });
         });
     } catch (e) {
-        //res.status(500).json({message: e.message });
+        res.status(500).json({message: e.message });
     }
 
 })
@@ -78,34 +80,17 @@ router.post('/nextUpdate/:name', (req, res) => {
     }
 });
 
-//
-// updates the data file
-router.post('/remove/:fileName', (req, res) => {
-    const fileName = req.params.fileName;
-    try {
-       // console.log(fileName);
-        //fs.rmSync(`assets/${fileName}.txt`);
-        res.status(200).json({ message: 'ok' });
-    } catch (e) {
-        res.status(500).json({ message: e.message });
-    }
-});
 
 // initial file upload
 router.post('/instructorStore', (req, res) => {
     const { avatar } = req.files;
 
     try {
-        console.log(avatar.name);
-        let pName = path.join('./assets/InstructorFile.xml');
-        console.log(pName);
-        fs.copyFile(avatar.tempFilePath, pName, (err) => {
-            if (err) {
-                console.log("Error Found: ", err);
-            } else {
-                res.status(200).json({ message: 'ok' });
-            }
-        });
+        
+        simManager.instructorNewSimFile( avatar, ()=>{
+        res.status(200).json({ message: 'ok'});
+    })
+        
     } catch (e) {
         res.status(500).json({ message: e.message });
     }

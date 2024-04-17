@@ -8,7 +8,7 @@ function StudentDeleter({roster, setRoster}){
     // calls server to save the new roster
     function clickHandle(){
         const name = dropdown_menu.current.value;
-        let new_roster;
+        let new_roster = [];
         const students = roster.split(',');
         new_roster = students.filter((student)=>student!==name);
         new_roster = new_roster.join(',');

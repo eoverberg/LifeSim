@@ -213,6 +213,7 @@ class Manager{
             }
             // throw change in file write try in order to keep from have different rosters?
             this.m_roster = temp_roster;
+            this.m_roster_string = roster_string_;
             try 
             {
                 fs.writeFile("../server/assets/roster.txt", roster_string_, (err) => {
@@ -262,26 +263,14 @@ class Manager{
         }
         callback_();
     }
-    // // how to track student name 
-    //     startSim(name_){
-    //     // take in student name parameter
-        //     // check if simulation is already runnin 
-    //         for(let student of this.m_roster)
-    //     {
-    //         if (student.m_name === name_)
-        //         {
-    //             if(student.m_sim_started)
-    //             {
-    //                 this.endSim(student);
-    //             }
-    //             student.buffers = [];
-    //            student.m_current_index = 0;
-    //             student.m_sim = new Global(); // delete old object?
-    //             student.m_sim_started = true;
-    //             break;
-    //         }
-    //     }
-    // }
+
+    instructorNewSimFile(file_, callback_){
+        // find current student
+        fs.writeFile("../server/assets/InstructorFile.xml", file_.data.toString(), (err) => {
+            if (err) throw err;
+        });
+        callback_();
+    }
     
     startLoop(){
         this.m_interval = setInterval(()=>{
@@ -291,7 +280,7 @@ class Manager{
                 {
                     if (student.m_sim_started)
                     {
-                        let buffer = 500;
+                        let buffer = 200;
                         let [buffer_size, buffer_string] = student.m_sim.update(buffer);
                         if(buffer_size > 0)
                         {

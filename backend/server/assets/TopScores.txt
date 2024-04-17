@@ -1,1 +1,1 @@
-{"top_scores":[{"name":"Emma","score":4},{"name":"Noah","score":4},{"name":"Emma","score":4},{"name":"Amelia","score":4},{"name":"Oliver","score":4}]}
+{"top_scores":[{"name":"Noah","score":20},{"name":"Emma","score":9},{"name":"Liam","score":8},{"name":"Amelia","score":7},{"name":"Olivia","score":6}]}

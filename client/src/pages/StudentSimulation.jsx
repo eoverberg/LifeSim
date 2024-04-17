@@ -60,6 +60,7 @@ const StudentSimulation = () => {
         setBufferA={setBufferA}
         buffer={buffer}
         bufferA={bufferA}
+        setSimEnd={setSimEnd}
         />
         <IntervalControl
         setIntervalTime={setIntervalTime}
@@ -70,6 +71,9 @@ const StudentSimulation = () => {
         <Canvas 
         displayData={displayData}
         setSimEnd = {setSimEnd}
+        setBuffer={setBuffer}
+        setBufferA={setBufferA}
+        setBufferLine={setBufferLine}
         />
 
         </>

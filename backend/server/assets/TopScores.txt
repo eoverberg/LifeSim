@@ -1,1 +1,1 @@
-100,100,100,100,100
+{"top_scores":[{"name":"Jennifer","score":"1"},{"name":"Jennifer","score":"1"},{"name":"Jennifer","score":"1"},{"name":"Jennifer","score":"1"},{"name":"Jennifer","score":"1"}]}

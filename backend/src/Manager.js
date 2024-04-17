@@ -16,12 +16,19 @@ class Student{
         this.m_xml_data = "";// do I need this?
         this.m_combined_JSON =""; // probably need this
         this.m_combined_XML =""; // probably need this
+        this.m_end_stats_string = '{"end_stats": {"plant_gen":[], "grazer_gen":[],"predator_gen":[],"time_seconds":0}}';
+        this.m_end_stats = JSON.parse(this.m_end_stats_string);
     }
     getStats(){
         let time_seconds = this.m_sim.m_world_time;
+        this.m_end_stats.end_stats.time_seconds = time_seconds;
         let plant_gen = this.m_sim.m_plant_generation;
+        this.m_end_stats.end_stats.plant_gen = plant_gen;
         let grazer_gen = this.m_sim.m_grazer_generation;
+        this.m_end_stats.end_stats.grazer_gen = grazer_gen;
         let predator_gen = this.m_sim.m_predator_generation;
+        this.m_end_stats.end_stats.predator_gen = predator_gen;
+        this.m_end_stats_string = JSON.stringify(this.m_end_stats);
         let total_generations = plant_gen.length+grazer_gen.length+predator_gen.length;
         let time_hours = time_seconds/3600;
         let time_days = time_hours/24;
@@ -55,6 +62,24 @@ class Manager{
         // starts interval
         this.startLoop();
         
+    }
+    fetchScores(){
+        let top = this.m_top_scores;
+        let return_JSON = {"top":top,"stats":0};
+        return JSON.stringify(return_JSON);
+
+    }
+    fetchReview(name_){
+        let stats = "";
+        let student = this.findStudent(name_);
+        if (student)
+        {
+            stats = student.m_end_stats;
+        }
+        let top = this.m_top_scores;
+        let return_JSON = {"top":top,"stats":stats};
+        return JSON.stringify(return_JSON);
+
     }
 
     findStudent(name_){

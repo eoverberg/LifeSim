@@ -147,7 +147,16 @@ router.post('/getData/:fileName', (req, res) => {
 });
 router.post('/GetStats', (req, res) => {
     try {
-        res.send(simManager.m_top_scores_string);
+        res.send(simManager.fetchScores());
+    } catch (e) {
+        //res.status(500).json({message: e.message });
+    }
+
+});
+router.post('/GetStats/:name', (req, res) => {
+    const userName = req.params.name;
+    try {
+        res.send(simManager.fetchReview(userName));
     } catch (e) {
         //res.status(500).json({message: e.message });
     }

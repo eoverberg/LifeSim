@@ -314,9 +314,11 @@ getCurrent(){
 
 
 scoreUpdate(name_, score_){
+    let change_flag = false;
     if(this.m_top_scores.length < 5)
     {
-        this.m_top_scores.push(score_);
+        change_flag = true;
+        this.m_top_scores.top_scores.push({name: name_, score: Math.round(score_)});
     }
     else
     {
@@ -324,20 +326,34 @@ scoreUpdate(name_, score_){
         let temp_list = [];
         
         let name_to_insert = name_;
-        let score_to_insert = score_;
+        let score_to_insert = Math.round(score_);
         for(let pair of list)
         {
-            if(score_to_insert > parseInt(pair.score))
-            {
+            if(score_to_insert > pair.score)
+            {   
+                change_flag = true;
+                let temp_name = name_to_insert;
+                let temp_score = score_to_insert;
                 score_to_insert = pair.score;
                 name_to_insert = pair.name;
-                pair.name = name_to_insert;
-                pair.score = score_to_insert;
+                pair.name = temp_name;
+                pair.score = temp_score;
+                
+                
             }    
             temp_list.push(pair);
         }
-        this.m_top_scores.set("top_scores", temp_list);
+        this.m_top_scores.top_scores = temp_list;
+        this.m_top_scores_string = JSON.stringify(this.m_top_scores);
+        if(change_flag)
+        {
+            fs.writeFile("../server/assets/TopScores.txt", this.m_top_scores_string, (err) => {
+                if (err) throw err;
+                console.log(`${this.m_top_scores_string}`);
+            });
+        }
     }
+
 }
 
 endSim(student){

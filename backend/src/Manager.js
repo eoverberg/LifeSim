@@ -44,7 +44,7 @@ class Manager{
         this.m_roster = [];  // array of Student objects
         this.m_roster_string = "";
         this.m_instructor_file = ""; // string of xml content
-        this.m_top_scores = [];
+        this.m_top_scores = new Map();
         this.m_top_scores_string = ""; // string of top five sim information
         
         // retrieves previous saved files and sets fields
@@ -117,13 +117,10 @@ class Manager{
             fs.readFile("../server/assets/TopScores.txt", 'utf8', (error, scores) => 
             {
                 this.m_top_scores_string = scores;
-                let temp_list = [];
-                let arr = scores.split(",");
-                for(let score of arr)
-                {
-                    temp_list.push(score);
-                }
-                this.m_top_scores = temp_list;
+                let top = JSON.parse(scores);
+                
+               
+                this.m_top_scores = top;
             });
         } catch (err) 
         {
@@ -316,27 +313,30 @@ getCurrent(){
 }
 
 
-scoreUpdate(score_){
+scoreUpdate(name_, score_){
     if(this.m_top_scores.length < 5)
     {
         this.m_top_scores.push(score_);
     }
     else
     {
+        let list = this.m_top_scores.top_scores;
         let temp_list = [];
+        
+        let name_to_insert = name_;
         let score_to_insert = score_;
-        for(let current_score of this.m_top_scores)
+        for(let pair of list)
         {
-            if(score_to_insert > current_score)
+            if(score_to_insert > parseInt(pair.score))
             {
-                temp_list.push(score_to_insert);
-                score_to_insert = current_score;
+                score_to_insert = pair.score;
+                name_to_insert = pair.name;
+                pair.name = name_to_insert;
+                pair.score = score_to_insert;
             }    
-            else
-            {
-                temp_list.push(current_score);
-            }
+            temp_list.push(pair);
         }
+        this.m_top_scores.set("top_scores", temp_list);
     }
 }
 
@@ -346,7 +346,7 @@ endSim(student){
     //let score = student.m_sim.getScore(stats);
     let score = student.getStats();
     student.m_sim_started=false;
-    this.scoreUpdate(score);
+    this.scoreUpdate(student.m_name, score);
 } 
 
 }

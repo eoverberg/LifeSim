@@ -16,10 +16,11 @@ class Student{
         this.m_xml_data = "";// do I need this?
         this.m_combined_JSON =""; // probably need this
         this.m_combined_XML =""; // probably need this
-        this.m_end_stats_string = '{"end_stats": {"plant_gen":[], "grazer_gen":[],"predator_gen":[],"time_seconds":0}}';
+        this.m_end_stats_string = '{"end_stats": {"plant_gen":[], "grazer_gen":[],"predator_gen":[],"time_seconds":0, "score":0}}';
         this.m_end_stats = JSON.parse(this.m_end_stats_string);
     }
-    getStats(){
+
+    storeStats(){
         let time_seconds = this.m_sim.m_world_time;
         this.m_end_stats.end_stats.time_seconds = time_seconds;
         let plant_gen = this.m_sim.m_plant_generation;
@@ -28,12 +29,29 @@ class Student{
         this.m_end_stats.end_stats.grazer_gen = grazer_gen;
         let predator_gen = this.m_sim.m_predator_generation;
         this.m_end_stats.end_stats.predator_gen = predator_gen;
-        this.m_end_stats_string = JSON.stringify(this.m_end_stats);
+        this.m_end_stats_string = JSON.stringify(this.m_end_stats)
+    }
+    getScore(){
+        let time_seconds = this.m_end_stats.end_stats.time_seconds;
+        let plant_gen = this.m_end_stats.end_stats.plant_gen;
+        let grazer_gen = this.m_end_stats.end_stats.grazer_gen;
+        let predator_gen = this.m_end_stats.end_stats.predator_gen;
         let total_generations = plant_gen.length+grazer_gen.length+predator_gen.length;
         let time_hours = time_seconds/3600;
         let time_days = time_hours/24;
         let score = total_generations+time_days;
-        return score;
+        this.m_end_stats.end_stats.score = Math.round(score);
+        return Math.round(score);
+    }
+
+    writeLog()
+    {
+        let time_seconds = this.m_end_stats.end_stats.time_seconds;
+        this.storeStats();
+        this.getScore();
+        fs.writeFile(`../server/assets/${time_seconds}${this.m_name}.txt`, this.m_end_stats_string, (err) => {
+            if (err) throw err;
+        });
     }
 }
 
@@ -53,7 +71,7 @@ class Manager{
         this.m_instructor_file = ""; // string of xml content
         this.m_top_scores = new Map();
         this.m_top_scores_string = ""; // string of top five sim information
-        
+        this.m_loopCount = 0;
         // retrieves previous saved files and sets fields
         this.getRoster(); 
         this.getInstructorFile();
@@ -280,6 +298,7 @@ class Manager{
                 {
                     if (student.m_sim_started)
                     {
+                        
                         let buffer = 200;
                         let [buffer_size, buffer_string] = student.m_sim.update(buffer);
                         if(buffer_size > 0)
@@ -291,9 +310,16 @@ class Manager{
                         {
                             student.m_sim_started = false;
                             this.endSim(student);
+                        }
+                        if (this.m_loopCount> 10)
+                        {
+                            student.storeStats();
+                            student.writeLog();
+                            this.m_loopCount = 0;
                         }   
                     }
                 }
+                this.m_loopCount++;
             }
         }, 100);
     }
@@ -371,12 +397,11 @@ scoreUpdate(name_, score_){
 }
 
 endSim(student){
-    // time played, generations, total lifeforms, 
-    //let stats = student.m_sim.getStats();
-    //let score = student.m_sim.getScore(stats);
-    let score = student.getStats();
+    student.storeStats();
+    let score = student.getScore();
     student.m_sim_started=false;
     this.scoreUpdate(student.m_name, score);
+    student.writeLog();
 } 
 
 }

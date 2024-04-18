@@ -7,13 +7,12 @@ const Review = () => {
     //setStatistics = {setStats}
     //<GetStats> </GetStats>
     return(
-    <h>
+    <h5>
         <p>Top Scores:</p>
         <GetStatistic setStatistics = {setStatistics} name = {name}/>
         <DisplayStatistics statistics = {statistics}/>
         <p>{setStatistics}</p>
-        <p>THis is a tester</p>
-    </h>
+    </h5>
     );
     
 };

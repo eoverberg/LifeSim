@@ -191,22 +191,19 @@ class Predator extends Entity {
                 entity_.m_ignore_list.push([this.m_generation,this.m_UID, 0]);
             }
         }
-            // Predators with ss genotype are weakest and will succeed in killing and eating Grazers 50% of the time if they are caught.  
-            // If they attack another Predator they will succeed in killing and eating that Predator 5% of the time if its’ strength is SS and 25% of the time if its strength is Ss.  If two Predators with genotype ss fight there is a 50% chance one or the other will kill and eat and 50% chance they will disengage and go their own way.  
-            // If one does kill and eat the other there is an even chance as to which will succeed.
-        
-        //Predators with Ss genotype are moderately strong and will succeed in killing and eating Grazers 75% of the time if they are caught.  
-        //If they attack another Predator they will succeed in killing and eating that Predator 25% of the time if its’ strength is SS and 75% of the time if its strength is ss.  
-        //If two Predators with genotype Ss fight there is a 50% chance one or the other will kill and eat and 50% chance they will disengage and go their own way.  
-        //If one does kill and eat the other there is an even chance as to which will succeed.
-       
-        // Predators with SS genotype are the strongest and will succeed in killing and eating Grazers 95% of the time if they are caught.  
-        // If they attack another Predator they will succeed in killing and eating that Predator 75% of the time if its’ strength is Ss and 95% of the time if its’ strength is ss. 
-        // If two Predators with genotype SS fight there is a 50% chance one or the other will kill and eat and 50% chance they will disengage and go their own way.  
-        // If one does kill and eat the other there is an even chance as to which will succeed.
     }
 
     reproduce(predators_array_, generation_array_, max_offspring_, offspring_energy_) {
+
+        const next_generation = this.m_generation + 1;
+        let offspring_array = []; 
+        if(this.m_generation >= generation_array_.length)
+        {
+            generation_array_.push(0);
+        }
+
+        for(let i = 0; i < max_offspring_; i++)
+        {
         var g_string = "";
         var temp = "";
         temp = temp.concat(this.m_genes_obj.m_aggro[Math.floor(Math.random() * 2)], this.m_mate_genes[0][Math.floor(Math.random() * 2)]);
@@ -228,14 +225,8 @@ class Predator extends Entity {
         }
         
         g_string = g_string.concat(temp);
-        if(this.m_generation >= generation_array_.length)
-        {
-            generation_array_.push(0);
-        }
-        const next_generation = this.m_generation + 1;
-        let offspring_array = [];
-        for(let i = 0; i < max_offspring_; i++)
-        {
+       
+        
             generation_array_[next_generation-1] = generation_array_[next_generation-1]+1;
             let next_entity = generation_array_[next_generation-1];
             let gene_copy = new Genes(g_string, this.m_genes_obj.m_init_max_HOD, this.m_genes_obj.m_init_max_HED, this.m_genes_obj.m_init_max_HOR);
@@ -258,48 +249,12 @@ class Predator extends Entity {
         this.m_gestation_timer = 0;
     }
 
-    //utility function to move towards another entity 
-    moveTo(entity) {
-        const angle = Math.atan2(entity.m_y_pos - this.m_y_pos, entity.m_x_pos - this.m_x_pos);
-        this.m_x_pos += Math.cos(angle);
-        this.m_y_pos += Math.sin(angle);
-        this.orientation = angle;
-    }
-
-    // wantTwoRepro(){
-    //     if(this.energy >= PredatorInfo.m_energy_to_reproduce )
-    //     {
-    //         return true;
-    //     }
-    //     return false;
-    // }
-
-    // A Predator will expend a number of EU each time it moves 5 DU.  
-    // The amount of energy expended is defined in a simulation data file (<ENERGY_OUTPUT>). 
-    // The energy output is the same whether the Predator is looking for food or chasing a Grazer. 
-    //   Speed - The maximum speeds a Predator can run (see tags below) and the times it can maintain that maximum speed (<MAINTAIN_SPEED>) is defined in the data file.  
-    //        Speeds are given in DU per minute and times in minutes.  
-    //        After the maintain speed time is elapsed the Predator will slow at a rate of one DU per 15 seconds of simulation time till it comes to a stop.  
     moveSeek(target_, speed_time_, energy_use_, world_size_, obstructions_) {
-        //check distance to tarrget + reach
-        //if greater than speed.
-        //speed = same
-        // else speed = distance to edge
         
         let steering = seek([this.m_x_pos, this.m_y_pos], [target_.m_x_pos, target_.m_y_pos], this.m_speed);
         changePosition(this, steering, energy_use_, world_size_, obstructions_, this.m_speed);
         this.updateSpeed(speed_time_);
-        
-    //     let distance_moved = Math.sqrt(steering[0] ** 2 + steering[1] ** 2);
-    //     // (amount 5 DU was moved) * energy used
-    //     // floor or exact? 
-    //     let energy_used = distance_moved / 5 * energy_use_;
-    //     //console.log("oreintation1:" + this.m_orientation);
-    //     this.m_orientation = Math.atan2(steering[1],steering[0]);
-    //     this.m_x_pos += steering[0];
-    //     this.m_y_pos += steering[1];
-    //    // console.log("oreintation2:" + this.m_orientation);
-    //     this.m_energy -= energy_used;
+    
 
     }
 
@@ -308,12 +263,6 @@ class Predator extends Entity {
         let steering = wander(this, this.m_speed);
         changePosition(this, steering, energy_use_, world_size_, obstructions_, this.m_speed);
         this.updateSpeed(speed_time_);
-        // let distance_moved = Math.sqrt(steering[0] ** 2 + steering[1] ** 2);
-        // // (amount 5 DU was moved) * energy used
-        // let energy_used = Math.floor(distance_moved / 5) * energy_use_;
-        // this.m_x_pos += steering[0];
-        // this.m_y_pos += steering[1];
-        // this.m_energy -= energy_used;
     }
 
     moveFlee(target_x_y_, speed_time_, energy_use_, world_size_, obstructions_) {

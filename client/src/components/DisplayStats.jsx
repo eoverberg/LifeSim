@@ -13,10 +13,11 @@ function DisplayStatistics({statistics, setStatistics })
     const plant_stat = createRef(null)
     const grazer_stat = createRef(null)
     const pred_stat = createRef(null)
+    const last_score = createRef(null)
     useEffect(()=>{
         // kept to show the incoming JSON
-        const bar = foo.current
-        bar.innerHTML = statistics
+        //const bar = foo.current
+        //bar.innerHTML = statistics
         
         if(statistics !== "default")
         {
@@ -30,6 +31,7 @@ function DisplayStatistics({statistics, setStatistics })
             const plant = plant_stat.current
             const grazer = grazer_stat.current
             const predator = pred_stat.current
+            const score = last_score.current;
             // json of a list of scores.
             // scores should be sorted on the backend.
             let scores = JSON.parse(statistics)
@@ -48,9 +50,10 @@ function DisplayStatistics({statistics, setStatistics })
                 plant.innerHTML =   `Plant Total Generations: ${info.plant_gen.length}---Children per Generation: ${info.plant_gen}`
                 grazer.innerHTML =   `Grazer Total Generations: ${info.grazer_gen.length}---Children per Generation: ${info.grazer_gen}`
                 predator.innerHTML =   `Predator Total Generations: ${info.predator_gen.length}---Children per Generation:: ${info.predator_gen}`
+                score.innerHTML = `Score: ${info.score}` 
             }
         }
-    },[statistics,foo, first,second,third,fourth,fifth, time_stat,plant_stat,grazer_stat,pred_stat])
+    },[statistics,foo, last_score, first,second,third,fourth,fifth, time_stat,plant_stat,grazer_stat,pred_stat])
     return(
         <>
         <p ref={foo}></p>
@@ -59,10 +62,13 @@ function DisplayStatistics({statistics, setStatistics })
         <p ref={third}></p>
         <p ref={fourth}></p>
         <p ref={fifth}></p>
+        <br></br>
+        <p>Latest Run Statistics</p>
         <p ref={time_stat}></p>
         <p ref={plant_stat}></p>
         <p ref={grazer_stat}></p>
         <p ref={pred_stat}></p>
+        <p ref={last_score}></p>
         </>
     )
 }

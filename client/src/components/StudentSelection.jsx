@@ -2,13 +2,13 @@
 // when user select student, user will be directed to new site
 import React, {createRef, useEffect} from "react";
 
-
 function StudentSelection ({roster, setName}) {
     const dropdown_menu = createRef(null);
 
     // changes location when student is selected
     // used href instead of link, might create issues
     function changeHandle(){
+        localStorage.clear();
         const name = dropdown_menu.current.value;
         setName(name);
         window.location.href = `./Student/${name}`;

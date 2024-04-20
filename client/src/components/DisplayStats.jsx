@@ -129,6 +129,71 @@ function DisplayStatistics({statistics, setStatistics, displayData })
             </Grid>
         </Grid>
     )}
+    if (statistics!=="default"){
+        let scores = JSON.parse(statistics)
+        let list = scores.top.top_scores;
+        let info = scores.stats.end_stats;
+        
+  
+        const rows2 = [
+          {
+              rank: 1, 
+              name: list[0].name, 
+              score: list[0].score
+          },
+          {
+              rank: 2, 
+              name: list[1].name, 
+              score: list[1].score
+          },
+          {
+              rank: 3, 
+              name: list[2].name, 
+              score: list[2].score
+          },
+          {
+              rank: 4, 
+              name: list[3].name, 
+              score: list[3].score
+          },
+          {
+              rank: 5, 
+              name: list[4].name, 
+              score: list[4].score
+          },
+        ];
+      return(
+          <Grid container rowSpacing = {5} columnSpacing={0}>
+              <Grid item xs={12}>
+                  <Typography sx={{ mt: 4, mb: 2 }} variant="h6" component="div">Top Scores</Typography>
+                  <TableContainer component={Paper}>
+                      <Table sx={{ minWidth: 650 }} size="small" aria-label="a dense table">
+                          <TableHead>
+                              <TableRow>
+                                  <TableCell align="center" >Rank</TableCell>
+                                  <TableCell align="center" >Name</TableCell>
+                                  <TableCell align="center" >Score</TableCell>
+                              </TableRow>
+                          </TableHead>
+                          <TableBody>
+                          {
+                              rows2.map((row) => (
+                              <TableRow
+                                  key={row.rank}
+                                  sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                              >
+                                  <TableCell component="th" scope="row" align= "center">{row.rank}</TableCell>
+                                  <TableCell align="center">{row.name}</TableCell>
+                                  <TableCell align="center">{row.score}</TableCell>
+                              </TableRow>
+                              ))
+                          }
+                          </TableBody>
+                      </Table>
+                  </TableContainer>
+              </Grid>
+          </Grid>
+      )}
     else{
         return(
             <></>

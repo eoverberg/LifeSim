@@ -19,9 +19,9 @@ function InitStats({displayData}){
 
 //        }, [displayData,num_plants,num_obstacles,num_grazers,num_predators]);
         return (<>
-            <b class = "plantCounter"> Number of Plants: {num_plants} </b>
-            <b class = "grazerCounter"> Number of Grazers: {num_predators}</b>     
-            <b class = "predatorCounter"> Number of Predators: {num_grazers}</b>        
+            <b className = "plantCounter"> Number of Plants: {num_plants} </b>
+            <b className = "grazerCounter"> Number of Grazers: {num_predators}</b>     
+            <b className = "predatorCounter"> Number of Predators: {num_grazers}</b>        
             </>
           );
 }

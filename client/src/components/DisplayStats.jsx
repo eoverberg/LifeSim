@@ -1,61 +1,207 @@
-import React, {createRef, useEffect} from "react";
-//problem bitch
+import React from "react";
+import Paper from '@mui/material/Paper';
+import {Grid } from '@mui/material';
+import Typography from '@mui/material/Typography';
+import Table from '@mui/material/Table';
+import TableBody from '@mui/material/TableBody';
+import TableCell from '@mui/material/TableCell';
+import TableContainer from '@mui/material/TableContainer';
+import TableHead from '@mui/material/TableHead';
+import TableRow from '@mui/material/TableRow';
 
-function DisplayStatistics({statistics, setStatistics })
+function DisplayStatistics({statistics, setStatistics, displayData })
 {
-    const foo = createRef(null)
-    const first = createRef(null)
-    const second = createRef(null)
-    const third = createRef(null)
-    const fourth = createRef(null)
-    const fifth = createRef(null)
-    const time_stat = createRef(null)
-    const plant_stat = createRef(null)
-    const grazer_stat = createRef(null)
-    const pred_stat = createRef(null)
-    const last_score = createRef(null)
-    useEffect(()=>{
-        // kept to show the incoming JSON
-        //const bar = foo.current
-        //bar.innerHTML = statistics
-        
-        if(statistics !== "default")
+    if (displayData!=="" && statistics!=="default"){
+      let scores = JSON.parse(statistics)
+      let list = scores.top.top_scores;
+      let info = scores.stats.end_stats;
+      
+      
+        let data = displayData.split(",")
+        const rows = [
         {
-            // could be better
-            const first_spot = first.current
-            const second_spot = second.current
-            const third_spot = third.current
-            const fourth_spot = fourth.current
-            const fifth_spot = fifth.current
-            const time = time_stat.current
-            const plant = plant_stat.current
-            const grazer = grazer_stat.current
-            const predator = pred_stat.current
-            const score = last_score.current;
-            // json of a list of scores.
-            // scores should be sorted on the backend.
-            let scores = JSON.parse(statistics)
-            let list = scores.top.top_scores;
-            
-            
-       
-            first_spot.innerHTML = `First Place: ${list[0].name}-----Score:${list[0].score} `
-            second_spot.innerHTML = `Second Place: ${list[1].name}-----Score:${list[1].score} `
-            third_spot.innerHTML = `Third Place: ${list[2].name}-----Score:${list[2].score} `
-            fourth_spot.innerHTML = `Fourth Place: ${list[3].name}-----Score:${list[3].score} `
-            fifth_spot.innerHTML = `Fifth Place: ${list[4].name}------Score:${list[4].score} `
-            if (scores.stats !== "" && scores.stats !== 0 && scores.stats.end_stats.time_seconds >0){
-                let info = scores.stats.end_stats;
-                time.innerHTML =   `Total Time in Seconds: ${info.time_seconds}`
-                plant.innerHTML =   `Plant Total Generations: ${info.plant_gen.length}---Children per Generation: ${info.plant_gen}`
-                grazer.innerHTML =   `Grazer Total Generations: ${info.grazer_gen.length}---Children per Generation: ${info.grazer_gen}`
-                predator.innerHTML =   `Predator Total Generations: ${info.predator_gen.length}---Children per Generation:: ${info.predator_gen}`
-                score.innerHTML = `Score: ${info.score}` 
-            }
-        }
-    },[statistics,foo, last_score, first,second,third,fourth,fifth, time_stat,plant_stat,grazer_stat,pred_stat])
+            lf: 'Plants', 
+            sc: info.plant_gen[0], 
+            ec: parseInt(data[2]), 
+            gen: info.plant_gen.length
+        },
+        {
+            lf: 'Grazers', 
+            sc: info.grazer_gen[0], 
+            ec: parseInt(data[3]), 
+            gen: info.grazer_gen.length
+        },
+        {
+            lf: 'Predators', 
+            sc: info.predator_gen[0], 
+            ec: parseInt(data[4]), 
+            gen: info.predator_gen.length
+        },
+
+      ];
+
+      const rows2 = [
+        {
+            rank: 1, 
+            name: list[0].name, 
+            score: list[0].score
+        },
+        {
+            rank: 2, 
+            name: list[1].name, 
+            score: list[1].score
+        },
+        {
+            rank: 3, 
+            name: list[2].name, 
+            score: list[2].score
+        },
+        {
+            rank: 4, 
+            name: list[3].name, 
+            score: list[3].score
+        },
+        {
+            rank: 5, 
+            name: list[4].name, 
+            score: list[4].score
+        },
+      ];
     return(
-        <>
+        <Grid container rowSpacing = {5} columnSpacing={0}>
+            <Grid item xs={12}>
+                <Typography sx={{ mt: 4, mb: 2 }} variant="h6" component="div">Statistics </Typography>
+                <TableContainer component={Paper}>
+                    <Table sx={{ minWidth: 650 }} size="small" aria-label="a dense table">
+                        <TableHead>
+                            <TableRow>
+                                <TableCell align="center" >Lifeform</TableCell>
+                                <TableCell align="center" >Start Count</TableCell>
+                                <TableCell align="center" >End Count</TableCell>
+                                <TableCell align="center" >Generations</TableCell>
+                            </TableRow>
+                        </TableHead>
+                        <TableBody>
+                        {
+                            rows.map((row) => (
+                            <TableRow
+                                key={row.lf}
+                                sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                            >
+                                <TableCell component="th" scope="row" align= "center">{row.lf}</TableCell>
+                                <TableCell align="center">{row.sc}</TableCell>
+                                <TableCell align="center">{row.ec}</TableCell>
+                                <TableCell align="center">{row.gen}</TableCell>
+                            </TableRow>
+                            ))
+                        }
+                        </TableBody>
+                    </Table>
+                </TableContainer>
+            </Grid>
+            <Grid item xs={12}>
+                <Typography sx={{ mt: 4, mb: 2 }} variant="h6" component="div">Top Scores</Typography>
+                <TableContainer component={Paper}>
+                    <Table sx={{ minWidth: 650 }} size="small" aria-label="a dense table">
+                        <TableHead>
+                            <TableRow>
+                                <TableCell align="center" >Rank</TableCell>
+                                <TableCell align="center" >Name</TableCell>
+                                <TableCell align="center" >Score</TableCell>
+                            </TableRow>
+                        </TableHead>
+                        <TableBody>
+                        {
+                            rows2.map((row) => (
+                            <TableRow
+                                key={row.rank}
+                                sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                            >
+                                <TableCell component="th" scope="row" align= "center">{row.rank}</TableCell>
+                                <TableCell align="center">{row.name}</TableCell>
+                                <TableCell align="center">{row.score}</TableCell>
+                            </TableRow>
+                            ))
+                        }
+                        </TableBody>
+                    </Table>
+                </TableContainer>
+            </Grid>
+        </Grid>
+    )}
+    if (statistics!=="default"){
+        let scores = JSON.parse(statistics)
+        let list = scores.top.top_scores;
+        let info = scores.stats.end_stats;
+        
+  
+        const rows2 = [
+          {
+              rank: 1, 
+              name: list[0].name, 
+              score: list[0].score
+          },
+          {
+              rank: 2, 
+              name: list[1].name, 
+              score: list[1].score
+          },
+          {
+              rank: 3, 
+              name: list[2].name, 
+              score: list[2].score
+          },
+          {
+              rank: 4, 
+              name: list[3].name, 
+              score: list[3].score
+          },
+          {
+              rank: 5, 
+              name: list[4].name, 
+              score: list[4].score
+          },
+        ];
+      return(
+          <Grid container rowSpacing = {5} columnSpacing={0}>
+              <Grid item xs={12}>
+                  <Typography sx={{ mt: 4, mb: 2 }} variant="h6" component="div">Top Scores</Typography>
+                  <TableContainer component={Paper}>
+                      <Table sx={{ minWidth: 650 }} size="small" aria-label="a dense table">
+                          <TableHead>
+                              <TableRow>
+                                  <TableCell align="center" >Rank</TableCell>
+                                  <TableCell align="center" >Name</TableCell>
+                                  <TableCell align="center" >Score</TableCell>
+                              </TableRow>
+                          </TableHead>
+                          <TableBody>
+                          {
+                              rows2.map((row) => (
+                              <TableRow
+                                  key={row.rank}
+                                  sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                              >
+                                  <TableCell component="th" scope="row" align= "center">{row.rank}</TableCell>
+                                  <TableCell align="center">{row.name}</TableCell>
+                                  <TableCell align="center">{row.score}</TableCell>
+                              </TableRow>
+                              ))
+                          }
+                          </TableBody>
+                      </Table>
+                  </TableContainer>
+              </Grid>
+          </Grid>
+      )}
+    else{
+        return(
+            <></>
+        );
+    }
+}
+export default DisplayStatistics 
+/* <>
         <p ref={foo}></p>
         <p ref={first}></p>
         <p ref={second}></p>
@@ -69,7 +215,4 @@ function DisplayStatistics({statistics, setStatistics })
         <p ref={grazer_stat}></p>
         <p ref={pred_stat}></p>
         <p ref={last_score}></p>
-        </>
-    )
-}
-export default DisplayStatistics
+        </> */

@@ -113,7 +113,7 @@ test('check find findClosest', () =>
     testGlobe.newGrazer(30,30,50);
     testGlobe.newPredator(50,50,50,"aa ss ff");
     testGlobe.newObs(60,60,5,5);
-    let pred = findClosest(30,30,testGlobe.m_pred_list,testGlobe.m_obs_list, 100, 0);
+    let pred = findClosest(30,30,[],testGlobe.m_pred_list,testGlobe.m_obs_list, 100, 0);
     expect(pred).toStrictEqual(testGlobe.m_pred_list[0]);
   }
 );

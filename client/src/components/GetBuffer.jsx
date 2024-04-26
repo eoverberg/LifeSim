@@ -2,12 +2,12 @@
 
 import React, {useEffect} from "react";
 
- function GetBuffer ({name, nameMod, setMod, fileName, setFileName, buffer, setBuffer, bufferA, setBufferA, bufferFlag, setBufferFlag}){
+ function GetBuffer ({name, nameMod, setMod, fileName, setFileName, buffer, setBuffer, bufferA, setBufferA, bufferFlag, setBufferFlag, setSimEnd}){
   useEffect(()=>
   { 
     async function one() 
     {
-      const response = await fetch(`/service/nextUpdate/${name}/${nameMod}`,
+      const response = await fetch(`/service/nextUpdate/${name}`,
         { 
               method: "POST",
               headers: {Accept: "json"}
@@ -16,18 +16,21 @@ import React, {useEffect} from "react";
       await response.json();
       if (response.ok) 
       {   
-        setMod(nameMod + 1);
-        let newFileName = name.concat(nameMod);
-        setFileName(newFileName); 
-        await fetch(`/service/getBuffer/${newFileName}`,
+        setMod(nameMod+1);
+
+        await fetch(`/service/getBuffer/${name}`,
           { 
             method: "POST",
             headers: {Accept: "text"}
           }).then(r=>r.text())
           .then(text=>{
-            setBufferA(text); 
-            if (buffer===""){setBuffer(text)};
-            fetch(`/service/remove/${newFileName}`, {method: "POST",})
+            try{
+              setBufferA(text); 
+              if (buffer===""){setBuffer(text)};
+            }
+            catch(e){
+              setSimEnd(true);
+            }
           })
       }
     }

@@ -1,35 +1,9 @@
-const fs = require('fs');
-const { XMLParser,  XMLValidator} = require("fast-xml-parser");
 
-function xmlimporter(global, xmlLocation, callback){
-  console.log("import started");
-  const parser = new XMLParser();
+function JSONToClass(global, JSONData){
   //var xmlJsonObj = JSON;
 
   // Read XML content from a file
-  let studentData = fs.readFileSync(xmlLocation, 'utf-8', (error, data) => {
-    if (error) {
-      console.error('Failed to read XML file:', error);
-      return;
-    }
-  })
-  
-  // Converts XML into JSON Data
-  let studentJSON = parser.parse(studentData);
-  
-  // Validates Results
-  const result = XMLValidator.validate(studentData, {
-      allowBooleanAttributes: true
-  });
-  console.log(`Student Data Loaded: ${result}`) // return true
-  
-  // Validation Failure
-  const xmlData = `<LIFE_SIMULATION></LIFE_SIMULATION>`;
-  const result1 = XMLValidator.validate( xmlData, {
-    unpairedTags: ["extra"]
-  });
-  console.log(`Student Data Valid: ${result1}`)// throws an error
-
+  let studentJSON = JSONData;
   // saves information to the Global object passed in
   global.m_world_size_x = studentJSON.LIFE_SIMULATION.LAND_BOUNDS.WIDTH;
   global.m_world_size_y = studentJSON.LIFE_SIMULATION.LAND_BOUNDS.HEIGHT;
@@ -110,10 +84,7 @@ function xmlimporter(global, xmlLocation, callback){
     let obstacle = studentJSON.LIFE_SIMULATION.LIFE_SIMULATION.OBSTACLES.OBSTACLE;
     global.newObs(obstacle.X_POS,obstacle.Y_POS,obstacle.O_DIAMETER/2,obstacle.O_HEIGHT);
   }
-  
-
-  callback();
 }
 
 
-module.exports = xmlimporter;
+module.exports = JSONToClass;

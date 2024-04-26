@@ -3,7 +3,7 @@ const Obstacle = require("./ObstacleClass.js");
 const Grazer = require("./GrazerClass.js");
 const Predator = require("./PredatorClass.js");
 const Plant = require("./PlantClass.js");
-const { findPredator, findClosest, distanceTo, escapeObstacle } = require("./UtilitiesFunctions.jsx");
+const { findPredator, findClosest, distanceTo, escapeObstacle } = require("./UtilitiesFunctions.js");
 class Global {
     constructor() {
         this.m_int_grazer_count = 0;
@@ -120,7 +120,7 @@ class Global {
             }
             else 
             { // no predator, no reproduce, find food
-                let target = findClosest(grazer_.m_x_pos, grazer_.m_y_pos, this.m_plant_list, this.m_obs_list, grazer_food_sight, grazer_smell);
+                let target = findClosest(grazer_.m_x_pos, grazer_.m_y_pos, [], this.m_plant_list, this.m_obs_list, grazer_food_sight, grazer_smell);
                 if (target) 
                 {
                     
@@ -171,24 +171,24 @@ class Global {
                 escapeObstacle(pred_, obstruction, [this.m_world_size_x, this.m_world_size_y], obstructions);
             }
         }
-        if (pred_.m_energy < 1 || pred_.nan())
+        if (pred_.m_energy < 1 )
         {
                 pred_.beConsumed();
         }
-        else if (pred_.m_energy >= this.m_predator_stuff.m_energy_to_reproduce ) 
+        else if (pred_.m_energy >= this.m_predator_stuff.m_energy_to_reproduce && pred_.m_gestation_timer === 0) 
         {  // mating conditions 
-            target = findClosest(pred_.m_x_pos, pred_.m_y_pos, this.m_pred_list, obstructions, predator_sight, predator_smell)
+            target = findClosest(pred_.m_x_pos, pred_.m_y_pos, pred_.m_ignore_list, this.m_pred_list, obstructions, predator_sight, predator_smell)
             if (target != null) 
             {   // predator in sight
                 pred_.moveSeek(target, this.m_predator_stuff.m_maintain_speed, this.m_predator_stuff.m_energy_out, [this.m_world_size_x, this.m_world_size_y],obstructions);
                 if (distanceTo([pred_.m_x_pos, pred_.m_y_pos], [target.m_x_pos, target.m_y_pos]) < 5)
-                    {
-                        pred_.reproduce(this.m_pred_list, target, this.m_predator_generation);
+                {
+                    pred_.mate(target);
                 }
             }
             else 
             {   // no predators in sight, find food
-                target = findClosest(pred_.m_x_pos, pred_.m_y_pos, this.m_grazer_list, obstructions, predator_sight, predator_smell) //no pred in sight
+                target = findClosest(pred_.m_x_pos, pred_.m_y_pos, pred_.m_ignore_list, this.m_grazer_list, obstructions, predator_sight, predator_smell) //no pred in sight
                 if (target != null) 
                 {
                     pred_.moveSeek(target, this.m_predator_stuff.m_maintain_speed, this.m_predator_stuff.m_energy_out, [this.m_world_size_x, this.m_world_size_y],obstructions);
@@ -204,6 +204,14 @@ class Global {
             }
         }
         else { // not mating
+            if (pred_.m_gestation_timer === (this.m_predator_stuff.m_gestation_time*60))
+            {
+                pred_.reproduce(this.m_pred_list, this.m_predator_generation, this.m_predator_stuff.m_max_offsprings, this.m_predator_stuff.m_off_spring_energy);
+            }
+            if (pred_.m_gestation_timer > (this.m_predator_stuff.m_gestation_time*60))
+            {
+                pred_.m_gestation_timer = 0;
+            }
             if (pred_.m_genes_obj.m_aggro === "aa") {
                 target_x_y = findPredator(pred_.m_x_pos, pred_.m_y_pos, predator_sight, this.m_pred_list, obstructions)
                 if (target_x_y[0] !== 0 || target_x_y[1] !== 0) 
@@ -212,7 +220,7 @@ class Global {
                 }
                 else 
                 { //no predator in sight   
-                    target = findClosest(pred_.m_x_pos, pred_.m_y_pos, this.m_grazer_list, obstructions, predator_sight, predator_smell) //no pred in sight
+                    target = findClosest(pred_.m_x_pos, pred_.m_y_pos, pred_.m_ignore_list, this.m_grazer_list, obstructions, predator_sight, predator_smell) //no pred in sight
                     if (target)
                     {
                         pred_.moveSeek(target, this.m_predator_stuff.m_maintain_speed, this.m_predator_stuff.m_energy_out, [this.m_world_size_x, this.m_world_size_y],obstructions);
@@ -229,7 +237,7 @@ class Global {
             } // end "aa"
             else if (pred_.m_genes_obj.m_aggro === "Aa") 
             { // not mating just looking for food
-                target = findClosest(pred_.m_x_pos, pred_.m_y_pos, this.m_grazer_list, obstructions, predator_sight, predator_smell)
+                target = findClosest(pred_.m_x_pos, pred_.m_y_pos, pred_.m_ignore_list, this.m_grazer_list, obstructions, predator_sight, predator_smell)
                 if (target) 
                 { // grazer in sight 
                     pred_.moveSeek(target, this.m_predator_stuff.m_maintain_speed, this.m_predator_stuff.m_energy_out, [this.m_world_size_x, this.m_world_size_y],obstructions);
@@ -239,7 +247,7 @@ class Global {
                     }
                 }
                 else { // no grazer in sight   
-                    target = findClosest(pred_.m_x_pos, pred_.m_y_pos, this.m_pred_list, obstructions, predator_sight, predator_smell) //no pred in sight
+                    target = findClosest(pred_.m_x_pos, pred_.m_y_pos, pred_.m_ignore_list, this.m_pred_list, obstructions, predator_sight, predator_smell) //no pred in sight
                     if (target) 
                     {
                         pred_.moveSeek(target, this.m_predator_stuff.m_maintain_speed, this.m_predator_stuff.m_energy_out, [this.m_world_size_x, this.m_world_size_y],obstructions);
@@ -257,7 +265,7 @@ class Global {
             else if (pred_.m_genes_obj.m_aggro === "AA") 
             { //not mating just looking for food
                 targets = targets.concat(this.m_grazer_list, this.m_pred_list)
-                target = findClosest(pred_.m_x_pos, pred_.m_y_pos, targets, obstructions, predator_sight, predator_smell)
+                target = findClosest(pred_.m_x_pos, pred_.m_y_pos, pred_.m_ignore_list, targets, obstructions, predator_sight, predator_smell)
                 if (target) 
                 {
                     pred_.moveSeek(target, this.m_predator_stuff.m_maintain_speed, this.m_predator_stuff.m_energy_out,[this.m_world_size_x, this.m_world_size_y], obstructions);
@@ -272,7 +280,6 @@ class Global {
                 }
             } // end "AA"
         } // end not mating
-        pred_.m_lifetime++;
     } // end predatorDecisionTree
 
     plantDecisionTree(plant_) 
@@ -287,7 +294,7 @@ class Global {
             plant_.m_repro_timer += 1
             if (plant_.m_repro_timer % 3600 === 0) 
             {
-                plant_.reproduce(this.m_plant_list, this.m_plant_generation)
+                plant_.reproduce(this.m_plant_list, this.m_plant_generation, this.m_plant_stuff, [this.m_world_size_x, this.m_world_size_y], this.m_obs_list)
             }
         }
         plant_.m_lifetime++
@@ -298,25 +305,25 @@ class Global {
         let return_string = this.m_world_size_x + "," + this.m_world_size_y + "," + this.m_plant_list.length + "," + this.m_grazer_list.length + "," + this.m_pred_list.length + "," + this.m_obs_list.length + ",";
         for (let p of this.m_plant_list) 
         {
-            return_string += `${p.m_x_pos},`;
-            return_string += `${p.m_y_pos},`;
-            return_string += `${(p.m_radius*2)},`;
+            return_string += `${p.m_x_pos.toFixed(1)},`;
+            return_string += `${p.m_y_pos.toFixed(1)},`;
+            return_string += `${(p.m_radius*2).toFixed(1)},`;
         }
         for (let g of this.m_grazer_list) 
         {
-            return_string += `${g.m_x_pos},`;
-            return_string += `${g.m_y_pos},`;
+            return_string += `${g.m_x_pos.toFixed(1)},`;
+            return_string += `${g.m_y_pos.toFixed(1)},`;
         }
         for (let p of this.m_pred_list) 
         {
-            return_string += `${p.m_x_pos},`;
-            return_string += `${p.m_y_pos},`;
+            return_string += `${p.m_x_pos.toFixed(1)},`;
+            return_string += `${p.m_y_pos.toFixed(1)},`;
         }
         for (let o of this.m_obs_list) 
         {
-            return_string += `${o.m_x_pos},`;
-            return_string += `${o.m_y_pos},`;
-            return_string += `${(o.m_radius*2)},`;
+            return_string += `${o.m_x_pos.toFixed(1)},`;
+            return_string += `${o.m_y_pos.toFixed(1)},`;
+            return_string += `${(o.m_radius*2).toFixed(1)},`;
         }
 
         return return_string;
@@ -375,42 +382,32 @@ class Global {
         this.m_pred_list = temp_list;
         temp_list = [];
     }
-    update() 
+    update(buffer_size_) 
     {
         
         this.m_buffer_string = "";
-        let buffer_size = 500;
-        if (this.m_plant_list && this.m_grazer_list && this.m_pred_list) 
+        let i = 0;
+        for (i; i < buffer_size_ &&  (this.m_plant_list.length>0 && this.m_grazer_list.length>0 && this.m_pred_list.length>0) ; i++) 
         {
-            for (let i = 0; i < buffer_size; i++) 
-            {
-                let j = 0;
                 for (let plant of this.m_plant_list) 
                 {
                     this.plantDecisionTree(plant);
-                    j++;
                 }
-                j=0;
                 for (let grazer of this.m_grazer_list) 
                 {
                     this.grazerDecisionTree(grazer)
-                    j++;
                 }
-                j=0;
                 for (let predator of this.m_pred_list) 
                 {
                     this.predatorDecisionTree(predator);
-                    j++;
+                    predator.updateTimes();
                 }
                 this.tempDeathCheck();
                 this.m_buffer_string += this.printEnts() + "\n";
                 this.m_world_time++;
-            }
         }
-        else {
-
-        }
-        return(this.m_buffer_string);
+        
+        return([i, this.m_buffer_string]);
     }
 }
 

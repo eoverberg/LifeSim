@@ -4,6 +4,7 @@ import { useLocalStorage } from "../components/useLocalStorage";
 import IntervalControl from "../components/IntervalControl";
 import GetBuffer from "../components/GetBuffer";
 import RunBuffer from "../components/RunBuffer";
+import InitStats from "../components/InitStats";
 
 const StudentSimulation = () => {
     const [name, setName] = useLocalStorage("student_name", "");
@@ -16,6 +17,7 @@ const StudentSimulation = () => {
     const [bufferLine, setBufferLine] = useLocalStorage("buffer_line", 0);
     const [bufferA, setBufferA] = useLocalStorage("buffer_a", "")
     const [intervalTime, setIntervalTime] = useLocalStorage("interval_time", 1000)
+    const [simEnd, setSimEnd] =   useLocalStorage("sim_end", false);
     return (
         <>
         <h1>{name} </h1>
@@ -27,6 +29,9 @@ const StudentSimulation = () => {
         setFileName={setFileName}
         setMod={setMod}
         setBufferFlag={setBufferFlag}
+        setBufferLine={setBufferLine}
+        setBufferA={setBufferA}
+        setBuffer = {setBuffer}
         />
         <RunBuffer
         buffer={buffer}
@@ -40,6 +45,8 @@ const StudentSimulation = () => {
         setData={setData}
         bufferA={bufferA}
         intervalTime={intervalTime}
+        simEnd={simEnd}
+        setSimEnd = {setSimEnd}
         />
         <GetBuffer
         fileName={fileName}
@@ -53,13 +60,22 @@ const StudentSimulation = () => {
         setBufferA={setBufferA}
         buffer={buffer}
         bufferA={bufferA}
+        setSimEnd={setSimEnd}
         />
         <IntervalControl
         setIntervalTime={setIntervalTime}
         />
+        <InitStats 
+        displayData = {displayData} 
+        />
         <Canvas 
         displayData={displayData}
+        setSimEnd = {setSimEnd}
+        setBuffer={setBuffer}
+        setBufferA={setBufferA}
+        setBufferLine={setBufferLine}
         />
+
         </>
     );
 };

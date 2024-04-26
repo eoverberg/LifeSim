@@ -38,7 +38,7 @@ function drawCircle(ctx, x1, y1, d1, bColor)
   ctx.stroke();
 };
     
-function Canvas({displayData}) {
+function Canvas({displayData, setSimEnd, setBuffer, setBufferA, setBufferLine}) {
 
   const canvasRef = useRef(null); 
 
@@ -47,7 +47,9 @@ function Canvas({displayData}) {
     //reference
     const canvas = canvasRef.current;
     const context = canvas.getContext('2d');
-    let lines = displayData.split(',');
+    try{
+      let lines = displayData.split(',');
+   
     context.canvas.width = parseFloat(lines[0]);;
     context.canvas.height = parseFloat(lines[1]);
     context.canvas.style = "border:1px solid #000000;";
@@ -87,8 +89,19 @@ function Canvas({displayData}) {
     {
       drawCircle(context, parseInt(lines[obstacles_start+3*i]), parseInt(lines[obstacles_start+1+3*i]), parseFloat(lines[obstacles_start+2+3*i]),"grey");
     }
-    
-  }, [displayData]);
+    if (num_grazers === 0 || num_plants === 0 || num_predators ===0)
+    {
+      setBuffer("")
+      setBufferA("")
+      setBufferLine(0);
+      setSimEnd(true);
+    }
+    } 
+    catch(error)
+    {
+      alert("Cannot display due to error");
+    }
+  }, [displayData, setSimEnd, setBuffer, setBufferA, setBufferLine]);
 
   return (<>
     <canvas ref={canvasRef} class = "bordered-component"  />
